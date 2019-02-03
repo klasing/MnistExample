@@ -1,21 +1,22 @@
-// MnistExample.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "pch.h"
 #include <iostream>
+#include "mnist_reader.hpp"
 
-int main()
-{
-    std::cout << "Hello World!\n"; 
+//****************************************************************************
+//*                     main
+//****************************************************************************
+int main(int argc, char* argv[]) {
+	const std::string MNIST_DATA_LOCATION = "C:/Users/Klasing/MyProgramming/MyCpp/Tmp2AvoidLongName/Machinelearning_May_10_2018/MachineLearning_Sep_9_2018/Mnist/Data";
+	std::cout << "MNIST data directory: " << MNIST_DATA_LOCATION.c_str() << std::endl;
+
+	// load MNIST data
+	mnist::MNIST_dataset<std::vector, std::vector<uint8_t>, uint8_t> dataset =
+		mnist::read_dataset<std::vector, std::vector, uint8_t, uint8_t>(MNIST_DATA_LOCATION);
+
+	std::cout << "Nbr of training images = " << dataset.training_images.size() << std::endl;
+	std::cout << "Nbr of training labels = " << dataset.training_labels.size() << std::endl;
+	std::cout << "Nbr of test images = " << dataset.test_images.size() << std::endl;
+	std::cout << "Nbr of test labels = " << dataset.test_labels.size() << std::endl;
+
+	return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

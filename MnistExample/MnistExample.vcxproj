@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="mnist_reader.hpp" />
+    <ClInclude Include="mnist_reader_common.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
