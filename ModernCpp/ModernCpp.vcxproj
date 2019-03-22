@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{91662E89-0D91-4565-BE33-626FB9D9ECE6}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ModernCpp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="counter.h" />
+    <ClInclude Include="counter_noninterleaved.h" />
+    <ClInclude Include="counter_timedlock.h" />
+    <ClInclude Include="data.h" />
+    <ClInclude Include="database.h" />
+    <ClInclude Include="double_checked_lock_class.h" />
+    <ClInclude Include="employee.h" />
+    <ClInclude Include="factorial.h" />
+    <ClInclude Include="foo.h" />
+    <ClInclude Include="loop.h" />
+    <ClInclude Include="maxpool.h" />
+    <ClInclude Include="object_pool.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="request.h" />
+    <ClInclude Include="user_request.h" />
+    <ClInclude Include="wrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="auto_decltype.cpp" />
+    <ClCompile Include="BasicsOfCpp.cpp" />
+    <ClCompile Include="Chapter1.cpp" />
+    <ClCompile Include="Chapter10.cpp" />
+    <ClCompile Include="Chapter11.cpp" />
+    <ClCompile Include="Chapter12.cpp" />
+    <ClCompile Include="Chapter13.cpp" />
+    <ClCompile Include="Chapter14.cpp" />
+    <ClCompile Include="Chapter15.cpp" />
+    <ClCompile Include="Chapter16.cpp" />
+    <ClCompile Include="Chapter17.cpp" />
+    <ClCompile Include="Chapter18.cpp" />
+    <ClCompile Include="Chapter19.cpp" />
+    <ClCompile Include="Chapter2.cpp" />
+    <ClCompile Include="Chapter20.cpp" />
+    <ClCompile Include="Chapter21.cpp" />
+    <ClCompile Include="Chapter22.cpp" />
+    <ClCompile Include="Chapter23.cpp" />
+    <ClCompile Include="Chapter24.cpp" />
+    <ClCompile Include="Chapter25.cpp" />
+    <ClCompile Include="Chapter26.cpp" />
+    <ClCompile Include="Chapter27.cpp" />
+    <ClCompile Include="Chapter28.cpp" />
+    <ClCompile Include="Chapter29.cpp" />
+    <ClCompile Include="Chapter3.cpp" />
+    <ClCompile Include="Chapter4.cpp" />
+    <ClCompile Include="Chapter5.cpp" />
+    <ClCompile Include="Chapter6.cpp" />
+    <ClCompile Include="Chapter7.cpp" />
+    <ClCompile Include="Chapter8.cpp" />
+    <ClCompile Include="Chapter9.cpp" />
+    <ClCompile Include="Paragraph_10_1.cpp" />
+    <ClCompile Include="Paragraph_10_2.cpp" />
+    <ClCompile Include="Paragraph_10_3.cpp" />
+    <ClCompile Include="Paragraph_10_4.cpp" />
+    <ClCompile Include="Paragraph_10_5.cpp" />
+    <ClCompile Include="Paragraph_10_6.cpp" />
+    <ClCompile Include="Paragraph_10_7.cpp" />
+    <ClCompile Include="Paragraph_11_1.cpp" />
+    <ClCompile Include="Paragraph_11_2.cpp" />
+    <ClCompile Include="Paragraph_12_1.cpp" />
+    <ClCompile Include="Paragraph_12_2.cpp" />
+    <ClCompile Include="Paragraph_12_3.cpp" />
+    <ClCompile Include="Paragraph_12_4.cpp" />
+    <ClCompile Include="Paragraph_12_5.cpp" />
+    <ClCompile Include="Paragraph_12_6.cpp" />
+    <ClCompile Include="Paragraph_12_7.cpp" />
+    <ClCompile Include="Paragraph_13_1.cpp" />
+    <ClCompile Include="Paragraph_13_2.cpp" />
+    <ClCompile Include="Paragraph_13_3.cpp" />
+    <ClCompile Include="Paragraph_13_4.cpp" />
+    <ClCompile Include="Paragraph_13_5.cpp" />
+    <ClCompile Include="Paragraph_13_6.cpp" />
+    <ClCompile Include="Paragraph_14_1.cpp" />
+    <ClCompile Include="Paragraph_14_2.cpp" />
+    <ClCompile Include="Paragraph_14_3.cpp" />
+    <ClCompile Include="Paragraph_14_4.cpp" />
+    <ClCompile Include="Paragraph_15_1.cpp" />
+    <ClCompile Include="Paragraph_15_2.cpp" />
+    <ClCompile Include="Paragraph_15_3.cpp" />
+    <ClCompile Include="Paragraph_15_4.cpp" />
+    <ClCompile Include="Paragraph_15_5.cpp" />
+    <ClCompile Include="Paragraph_16_1.cpp" />
+    <ClCompile Include="Paragraph_16_2.cpp" />
+    <ClCompile Include="Paragraph_16_3.cpp" />
+    <ClCompile Include="Paragraph_16_4.cpp" />
+    <ClCompile Include="Paragraph_16_5.cpp" />
+    <ClCompile Include="Paragraph_16_6.cpp" />
+    <ClCompile Include="Paragraph_17_1.cpp" />
+    <ClCompile Include="Paragraph_17_2.cpp" />
+    <ClCompile Include="Paragraph_17_3.cpp" />
+    <ClCompile Include="Paragraph_17_4.cpp" />
+    <ClCompile Include="Paragraph_18_1.cpp" />
+    <ClCompile Include="Paragraph_18_10.cpp" />
+    <ClCompile Include="Paragraph_18_2.cpp" />
+    <ClCompile Include="Paragraph_18_3.cpp" />
+    <ClCompile Include="Paragraph_18_4.cpp" />
+    <ClCompile Include="Paragraph_18_5.cpp" />
+    <ClCompile Include="Paragraph_18_6.cpp" />
+    <ClCompile Include="Paragraph_18_7.cpp" />
+    <ClCompile Include="Paragraph_18_8.cpp" />
+    <ClCompile Include="Paragraph_18_9.cpp" />
+    <ClCompile Include="Paragraph_19_1.cpp" />
+    <ClCompile Include="Paragraph_19_2.cpp" />
+    <ClCompile Include="Paragraph_19_3.cpp" />
+    <ClCompile Include="Paragraph_19_4.cpp" />
+    <ClCompile Include="Paragraph_20_1.cpp" />
+    <ClCompile Include="Paragraph_20_2.cpp" />
+    <ClCompile Include="Paragraph_20_3.cpp" />
+    <ClCompile Include="Paragraph_20_4.cpp" />
+    <ClCompile Include="Paragraph_20_5.cpp" />
+    <ClCompile Include="Paragraph_20_6.cpp" />
+    <ClCompile Include="Paragraph_20_7.cpp" />
+    <ClCompile Include="Paragraph_20_8.cpp" />
+    <ClCompile Include="Paragraph_21_1.cpp" />
+    <ClCompile Include="Paragraph_21_2.cpp" />
+    <ClCompile Include="Paragraph_21_3.cpp" />
+    <ClCompile Include="Paragraph_21_4.cpp" />
+    <ClCompile Include="Paragraph_21_5.cpp" />
+    <ClCompile Include="Paragraph_21_6.cpp" />
+    <ClCompile Include="Paragraph_22_1.cpp" />
+    <ClCompile Include="Paragraph_22_10.cpp" />
+    <ClCompile Include="Paragraph_22_2.cpp" />
+    <ClCompile Include="Paragraph_22_3.cpp" />
+    <ClCompile Include="Paragraph_22_4.cpp" />
+    <ClCompile Include="Paragraph_22_5.cpp" />
+    <ClCompile Include="Paragraph_22_6.cpp" />
+    <ClCompile Include="Paragraph_22_7.cpp" />
+    <ClCompile Include="Paragraph_22_8.cpp" />
+    <ClCompile Include="Paragraph_22_9.cpp" />
+    <ClCompile Include="Paragraph_23_1.cpp" />
+    <ClCompile Include="Paragraph_23_2.cpp" />
+    <ClCompile Include="Paragraph_23_3.cpp" />
+    <ClCompile Include="Paragraph_23_4.cpp" />
+    <ClCompile Include="Paragraph_23_5.cpp" />
+    <ClCompile Include="Paragraph_23_6.cpp" />
+    <ClCompile Include="Paragraph_24_1.cpp" />
+    <ClCompile Include="Paragraph_24_2.cpp" />
+    <ClCompile Include="Paragraph_24_3.cpp" />
+    <ClCompile Include="Paragraph_24_4.cpp" />
+    <ClCompile Include="Paragraph_24_5.cpp" />
+    <ClCompile Include="Paragraph_25_1.cpp" />
+    <ClCompile Include="Paragraph_25_2.cpp" />
+    <ClCompile Include="Paragraph_25_3.cpp" />
+    <ClCompile Include="Paragraph_26_1.cpp" />
+    <ClCompile Include="Paragraph_26_2.cpp" />
+    <ClCompile Include="Paragraph_26_3.cpp" />
+    <ClCompile Include="Paragraph_26_4.cpp" />
+    <ClCompile Include="Paragraph_26_5.cpp" />
+    <ClCompile Include="Paragraph_27_1.cpp" />
+    <ClCompile Include="Paragraph_27_2.cpp" />
+    <ClCompile Include="Paragraph_27_3.cpp" />
+    <ClCompile Include="Paragraph_27_4.cpp" />
+    <ClCompile Include="Paragraph_27_5.cpp" />
+    <ClCompile Include="Paragraph_27_6.cpp" />
+    <ClCompile Include="Paragraph_28_1.cpp" />
+    <ClCompile Include="Paragraph_28_2.cpp" />
+    <ClCompile Include="Paragraph_28_3.cpp" />
+    <ClCompile Include="Paragraph_28_4.cpp" />
+    <ClCompile Include="Paragraph_29_1.cpp" />
+    <ClCompile Include="Paragraph_29_2.cpp" />
+    <ClCompile Include="Paragraph_29_3.cpp" />
+    <ClCompile Include="Paragraph_29_4.cpp" />
+    <ClCompile Include="Paragraph_29_5.cpp" />
+    <ClCompile Include="Paragraph_29_6.cpp" />
+    <ClCompile Include="Paragraph_29_7.cpp" />
+    <ClCompile Include="Paragraph_29_8.cpp" />
+    <ClCompile Include="Paragraph_29_9.cpp" />
+    <ClCompile Include="SubParagraph_11_2_1.cpp" />
+    <ClCompile Include="SubParagraph_11_2_10.cpp" />
+    <ClCompile Include="SubParagraph_11_2_11.cpp" />
+    <ClCompile Include="SubParagraph_11_2_12.cpp" />
+    <ClCompile Include="SubParagraph_11_2_13.cpp" />
+    <ClCompile Include="SubParagraph_11_2_14.cpp" />
+    <ClCompile Include="SubParagraph_11_2_2.cpp" />
+    <ClCompile Include="SubParagraph_11_2_3.cpp" />
+    <ClCompile Include="SubParagraph_11_2_4.cpp" />
+    <ClCompile Include="SubParagraph_11_2_5.cpp" />
+    <ClCompile Include="SubParagraph_11_2_6.cpp" />
+    <ClCompile Include="SubParagraph_11_2_7.cpp" />
+    <ClCompile Include="SubParagraph_11_2_8.cpp" />
+    <ClCompile Include="SubParagraph_11_2_9.cpp" />
+    <ClCompile Include="Paragraph_11_3.cpp" />
+    <ClCompile Include="Paragraph_1_1.cpp" />
+    <ClCompile Include="Paragraph_1_2.cpp" />
+    <ClCompile Include="Paragraph_1_3.cpp" />
+    <ClCompile Include="Paragraph_1_4.cpp" />
+    <ClCompile Include="Paragraph_1_5.cpp" />
+    <ClCompile Include="Paragraph_1_6.cpp" />
+    <ClCompile Include="Paragraph_2_1.cpp" />
+    <ClCompile Include="Paragraph_2_2.cpp" />
+    <ClCompile Include="Paragraph_2_3.cpp" />
+    <ClCompile Include="Paragraph_2_4.cpp" />
+    <ClCompile Include="Paragraph_2_5.cpp" />
+    <ClCompile Include="Paragraph_2_6.cpp" />
+    <ClCompile Include="Paragraph_2_7.cpp" />
+    <ClCompile Include="Paragraph_2_8.cpp" />
+    <ClCompile Include="Paragraph_3_1.cpp" />
+    <ClCompile Include="Paragraph_3_2.cpp" />
+    <ClCompile Include="Paragraph_3_3.cpp" />
+    <ClCompile Include="Paragraph_3_4.cpp" />
+    <ClCompile Include="Paragraph_3_5.cpp" />
+    <ClCompile Include="Paragraph_3_6.cpp" />
+    <ClCompile Include="Paragraph_4_1.cpp" />
+    <ClCompile Include="Paragraph_4_2.cpp" />
+    <ClCompile Include="Paragraph_4_3.cpp" />
+    <ClCompile Include="Paragraph_5_1.cpp" />
+    <ClCompile Include="Paragraph_5_2.cpp" />
+    <ClCompile Include="Paragraph_5_3.cpp" />
+    <ClCompile Include="Paragraph_5_4.cpp" />
+    <ClCompile Include="Paragraph_5_5.cpp" />
+    <ClCompile Include="Paragraph_5_6.cpp" />
+    <ClCompile Include="Paragraph_5_7.cpp" />
+    <ClCompile Include="Paragraph_5_8.cpp" />
+    <ClCompile Include="Paragraph_6_1.cpp" />
+    <ClCompile Include="Paragraph_6_2.cpp" />
+    <ClCompile Include="Paragraph_6_3.cpp" />
+    <ClCompile Include="Paragraph_6_4.cpp" />
+    <ClCompile Include="Paragraph_7_1.cpp" />
+    <ClCompile Include="Paragraph_7_2.cpp" />
+    <ClCompile Include="Paragraph_7_3.cpp" />
+    <ClCompile Include="Paragraph_7_4.cpp" />
+    <ClCompile Include="Paragraph_7_5.cpp" />
+    <ClCompile Include="Paragraph_7_6.cpp" />
+    <ClCompile Include="Paragraph_7_7.cpp" />
+    <ClCompile Include="Paragraph_7_8.cpp" />
+    <ClCompile Include="Paragraph_7_9.cpp" />
+    <ClCompile Include="Paragraph_8_1.cpp" />
+    <ClCompile Include="Paragraph_8_2.cpp" />
+    <ClCompile Include="Paragraph_8_3.cpp" />
+    <ClCompile Include="Paragraph_8_4.cpp" />
+    <ClCompile Include="Paragraph_8_5.cpp" />
+    <ClCompile Include="Paragraph_8_6.cpp" />
+    <ClCompile Include="Paragraph_8_7.cpp" />
+    <ClCompile Include="Paragraph_9_1.cpp" />
+    <ClCompile Include="Paragraph_9_2.cpp" />
+    <ClCompile Include="Paragraph_9_3.cpp" />
+    <ClCompile Include="Paragraph_9_4.cpp" />
+    <ClCompile Include="Paragraph_9_5.cpp" />
+    <ClCompile Include="Paragraph_9_6.cpp" />
+    <ClCompile Include="Paragraph_9_7.cpp" />
+    <ClCompile Include="Paragraph_9_8.cpp" />
+    <ClCompile Include="z_template_menu.cpp" />
+    <ClCompile Include="ChronoLibrary.cpp" />
+    <ClCompile Include="DesignLevelEfficiency.cpp" />
+    <ClCompile Include="DivingDeeperIntoCpp.cpp" />
+    <ClCompile Include="function_object.cpp" />
+    <ClCompile Include="GetMenuChoice.cpp" />
+    <ClCompile Include="getNumber.cpp" />
+    <ClCompile Include="lambda_expression.cpp" />
+    <ClCompile Include="Maxpool.cpp" />
+    <ClCompile Include="max_pool.cpp" />
+    <ClCompile Include="ModernCpp.cpp" />
+    <ClCompile Include="MutualExclusion.cpp" />
+    <ClCompile Include="OverviewOfAlgorithms.cpp" />
+    <ClCompile Include="Part1.cpp" />
+    <ClCompile Include="Part2.cpp" />
+    <ClCompile Include="Part3.cpp" />
+    <ClCompile Include="part4.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RandomNumberGeneration.cpp" />
+    <ClCompile Include="regular_expression.cpp" />
+    <ClCompile Include="my_tuple.cpp" />
+    <ClCompile Include="Threads.cpp" />
+    <ClCompile Include="waitForUserEvent.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
