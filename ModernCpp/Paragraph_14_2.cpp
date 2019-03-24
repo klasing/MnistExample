@@ -5,7 +5,7 @@
 //#include "SubParagraph_14_2_3.cpp"
 //#include "SubParagraph_14_2_4.cpp"
 
-inline void menu() {
+inline void paragraph_14_2() {
 	bool bProceed = true;
 	unsigned iChar = 0;
 

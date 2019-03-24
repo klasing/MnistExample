@@ -151,13 +151,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AirlineTicket.hpp" />
     <ClInclude Include="counter.h" />
     <ClInclude Include="counter_noninterleaved.h" />
     <ClInclude Include="counter_timedlock.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="database.h" />
+    <ClInclude Include="Database.hpp" />
     <ClInclude Include="double_checked_lock_class.h" />
     <ClInclude Include="employee.h" />
+    <ClInclude Include="Employee.hpp" />
     <ClInclude Include="factorial.h" />
     <ClInclude Include="foo.h" />
     <ClInclude Include="loop.h" />
@@ -391,6 +394,34 @@
     <ClCompile Include="Paragraph_9_6.cpp" />
     <ClCompile Include="Paragraph_9_7.cpp" />
     <ClCompile Include="Paragraph_9_8.cpp" />
+    <ClCompile Include="SubParagraph_14_3_1.cpp" />
+    <ClCompile Include="SubParagraph_14_3_2.cpp" />
+    <ClCompile Include="SubParagraph_14_3_3.cpp" />
+    <ClCompile Include="SubParagraph_14_3_4.cpp" />
+    <ClCompile Include="SubParagraph_14_3_5.cpp" />
+    <ClCompile Include="SubParagraph_14_3_6.cpp" />
+    <ClCompile Include="SubParagraph_14_3_7.cpp" />
+    <ClCompile Include="SubParagraph_1_1_1.cpp" />
+    <ClCompile Include="SubParagraph_1_1_10.cpp" />
+    <ClCompile Include="SubParagraph_1_1_2.cpp" />
+    <ClCompile Include="SubParagraph_1_1_3.cpp" />
+    <ClCompile Include="SubParagraph_1_1_4.cpp" />
+    <ClCompile Include="SubParagraph_1_1_5.cpp" />
+    <ClCompile Include="SubParagraph_1_1_6.cpp" />
+    <ClCompile Include="SubParagraph_1_1_7.cpp" />
+    <ClCompile Include="SubParagraph_1_1_8.cpp" />
+    <ClCompile Include="SubParagraph_1_1_9.cpp" />
+    <ClCompile Include="SubParagraph_1_2_1.cpp" />
+    <ClCompile Include="SubParagraph_1_2_2.cpp" />
+    <ClCompile Include="SubParagraph_1_2_3.cpp" />
+    <ClCompile Include="SubParagraph_1_2_4.cpp" />
+    <ClCompile Include="SubParagraph_1_2_5.cpp" />
+    <ClCompile Include="SubParagraph_1_3_1.cpp" />
+    <ClCompile Include="SubParagraph_1_5_1.cpp" />
+    <ClCompile Include="SubParagraph_1_5_2.cpp" />
+    <ClCompile Include="SubParagraph_1_5_3.cpp" />
+    <ClCompile Include="SubParagraph_1_5_4.cpp" />
+    <ClCompile Include="SubParagraph_1_5_5.cpp" />
     <ClCompile Include="z_template_menu.cpp" />
     <ClCompile Include="ChronoLibrary.cpp" />
     <ClCompile Include="DesignLevelEfficiency.cpp" />
@@ -419,6 +450,7 @@
     <ClCompile Include="my_tuple.cpp" />
     <ClCompile Include="Threads.cpp" />
     <ClCompile Include="waitForUserEvent.cpp" />
+    <ClCompile Include="z_template_subparagraph.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
