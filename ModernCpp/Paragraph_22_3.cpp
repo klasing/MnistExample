@@ -1,13 +1,13 @@
 #include "pch.h"
 
-//#include "SubParagraph_22_3_1.cpp"
-//#include "SubParagraph_22_3_2.cpp"
-//#include "SubParagraph_22_3_3.cpp"
-//#include "SubParagraph_22_3_4.cpp"
-//#include "SubParagraph_22_3_5.cpp"
-//#include "SubParagraph_22_3_6.cpp"
-//#include "SubParagraph_22_3_7.cpp"
-//#include "SubParagraph_22_3_8.cpp"
+#include "SubParagraph_22_3_1.cpp"
+#include "SubParagraph_22_3_2.cpp"
+#include "SubParagraph_22_3_3.cpp"
+#include "SubParagraph_22_3_4.cpp"
+#include "SubParagraph_22_3_5.cpp"
+#include "SubParagraph_22_3_6.cpp"
+#include "SubParagraph_22_3_7.cpp"
+#include "SubParagraph_22_3_8.cpp"
 
 inline void paragraph_22_3() {
 	bool bProceed = true;
@@ -30,28 +30,28 @@ inline void paragraph_22_3() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_22_3_1();
+			subParagraph_22_3_1();
 			break;
 		case 2:
-			//subParagraph_22_3_2();
+			subParagraph_22_3_2();
 			break;
 		case 3:
-			//subParagraph_22_3_3();
+			subParagraph_22_3_3();
 			break;
 		case 4:
-			//subParagraph_22_3_4();
+			subParagraph_22_3_4();
 			break;
 		case 5:
-			//subParagraph_22_3_5();
+			subParagraph_22_3_5();
 			break;
 		case 6:
-			//subParagraph_22_3_6();
+			subParagraph_22_3_6();
 			break;
 		case 7:
-			//subParagraph_22_3_7();
+			subParagraph_22_3_7();
 			break;
 		case 8:
-			//subParagraph_22_3_8();
+			subParagraph_22_3_8();
 			break;
 		case 0:
 			// the user wants to terminate

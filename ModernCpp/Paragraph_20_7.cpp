@@ -1,10 +1,10 @@
 #include "pch.h"
 
-//#include "SubParagraph_20_7_1.cpp"
-//#include "SubParagraph_20_7_2.cpp"
-//#include "SubParagraph_20_7_3.cpp"
-//#include "SubParagraph_20_7_4.cpp"
-//#include "SubParagraph_20_7_5.cpp"
+#include "SubParagraph_20_7_1.cpp"
+#include "SubParagraph_20_7_2.cpp"
+#include "SubParagraph_20_7_3.cpp"
+#include "SubParagraph_20_7_4.cpp"
+#include "SubParagraph_20_7_5.cpp"
 
 inline void paragraph_20_7() {
 	bool bProceed = true;
@@ -24,19 +24,19 @@ inline void paragraph_20_7() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_20_7_1();
+			subParagraph_20_7_1();
 			break;
 		case 2:
-			//subParagraph_20_7_2();
+			subParagraph_20_7_2();
 			break;
 		case 3:
-			//subParagraph_20_7_3();
+			subParagraph_20_7_3();
 			break;
 		case 4:
-			//subParagraph_20_7_4();
+			subParagraph_20_7_4();
 			break;
 		case 5:
-			//subParagraph_20_7_5();
+			subParagraph_20_7_5();
 			break;
 		case 0:
 			// the user wants to terminate
