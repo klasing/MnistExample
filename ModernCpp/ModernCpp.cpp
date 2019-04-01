@@ -5,6 +5,14 @@
 #include "Part3.cpp"
 #include "Part4.cpp"
 
+#include <mutex>
+
+//****************************************************************************
+//*                     global
+//****************************************************************************
+mutex Counter_22_4_4_a::mMutex;
+timed_mutex Counter_22_4_4_b::mTimedMutex;
+
 int main() {
 	bool bProceed = true;
 	unsigned iChar = 0;

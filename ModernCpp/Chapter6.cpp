@@ -1,9 +1,9 @@
 #include "pch.h"
 
-//#include "Paragraph_6_1.cpp"
-//#include "Paragraph_6_2.cpp"
-//#include "Paragraph_6_3.cpp"
-//#include "Paragraph_6_4.cpp"
+#include "Paragraph_6_1.cpp"
+#include "Paragraph_6_2.cpp"
+#include "Paragraph_6_3.cpp"
+#include "Paragraph_6_4.cpp"
 
 inline void chapter6() {
 	bool bProceed = true;
@@ -22,16 +22,16 @@ inline void chapter6() {
 
 		switch (iChar) {
 		case 1:
-			//paragraph_6_1();
+			paragraph_6_1();
 			break;
 		case 2:
-			//paragraph_6_2();
+			paragraph_6_2();
 			break;
 		case 3:
-			//paragraph_6_3();
+			paragraph_6_3();
 			break;
 		case 4:
-			//paragraph_6_4();
+			paragraph_6_4();
 			break;
 		case 0:
 			// the user wants to terminate
