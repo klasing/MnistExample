@@ -1,13 +1,13 @@
 #include "pch.h"
 
-#include "SpreadsheetCell_6_2_1.hpp"
+#include "SpreadsheetCell.hpp"
 
 inline void subParagraph_6_2_3() {
 	cout << "Using Objects" << endl;
 	cout << "-------------" << endl;
 
 	cout << "Objects on the Stack" << endl;
-	SpreadsheetCell_6_2_1 myCell, anotherCell;
+	SpreadsheetCell myCell, anotherCell;
 	myCell.setValue(6);
 	anotherCell.setString("3.2");
 	cout << "-> cell 1: " << myCell.getValue() << endl;
@@ -15,14 +15,14 @@ inline void subParagraph_6_2_3() {
 
 	cout << "Objects on the Heap" << endl;
 	// old style
-	SpreadsheetCell_6_2_1* myCellp = new SpreadsheetCell_6_2_1();
+	SpreadsheetCell* myCellp = new SpreadsheetCell();
 	myCellp->setValue(3.7);
 	cout << "-> cell 1: " << myCellp->getValue() << " "
 		<< myCellp->getString() << endl;
 	delete myCellp;
 	myCellp = nullptr;
 	// highly recommended to use smart pointers, nowadays
-	shared_ptr<SpreadsheetCell_6_2_1> myCellsp(new SpreadsheetCell_6_2_1());
+	shared_ptr<SpreadsheetCell> myCellsp(new SpreadsheetCell());
 	myCellsp->setValue(3.7);
 	cout << "-> cell 1: " << myCellsp->getValue() << " "
 		<< myCellsp->getString() << endl;
