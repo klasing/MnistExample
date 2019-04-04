@@ -170,19 +170,22 @@
     <ClInclude Include="loop.h" />
     <ClInclude Include="maxpool.h" />
     <ClInclude Include="Muffin.hpp" />
+    <ClInclude Include="MyWeatherPrediction.hpp" />
     <ClInclude Include="ObjectPool.hpp" />
     <ClInclude Include="object_pool.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PointSequence.hpp" />
     <ClInclude Include="request.h" />
     <ClInclude Include="Request_22_3_4.hpp" />
+    <ClInclude Include="Spreadsheet.hpp" />
     <ClInclude Include="SpreadsheetApplication.hpp" />
     <ClInclude Include="SpreadsheetCell.hpp" />
-    <ClInclude Include="Spreadsheet.hpp" />
+    <ClInclude Include="SpreadsheetImpl.hpp" />
     <ClInclude Include="tuple_print.hpp" />
     <ClInclude Include="tuple_print_helper.hpp" />
     <ClInclude Include="UserRequest.hpp" />
     <ClInclude Include="user_request.h" />
+    <ClInclude Include="WeatherPrediction.hpp" />
     <ClInclude Include="wrapper.h" />
   </ItemGroup>
   <ItemGroup>
@@ -496,6 +499,16 @@
     <ClCompile Include="SubParagraph_7_7_2.cpp" />
     <ClCompile Include="SubParagraph_7_7_3.cpp" />
     <ClCompile Include="SubParagraph_7_7_4.cpp" />
+    <ClCompile Include="SubParagraph_7_8_1.cpp" />
+    <ClCompile Include="SubParagraph_8_1_1.cpp" />
+    <ClCompile Include="SubParagraph_8_1_2.cpp" />
+    <ClCompile Include="SubParagraph_8_2_1.cpp" />
+    <ClCompile Include="SubParagraph_8_2_2.cpp" />
+    <ClCompile Include="SubParagraph_8_2_3.cpp" />
+    <ClCompile Include="SubParagraph_8_3_1.cpp" />
+    <ClCompile Include="SubParagraph_8_3_2.cpp" />
+    <ClCompile Include="SubParagraph_8_3_3.cpp" />
+    <ClCompile Include="SubParagraph_8_3_4.cpp" />
     <ClCompile Include="z_template_menu.cpp" />
     <ClCompile Include="ChronoLibrary.cpp" />
     <ClCompile Include="DesignLevelEfficiency.cpp" />

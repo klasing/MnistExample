@@ -1,12 +1,12 @@
 #include "pch.h"
 
-//#include "Paragraph_8_1.cpp"
-//#include "Paragraph_8_2.cpp"
-//#include "Paragraph_8_3.cpp"
-//#include "Paragraph_8_4.cpp"
-//#include "Paragraph_8_5.cpp"
-//#include "Paragraph_8_6.cpp"
-//#include "Paragraph_8_7.cpp"
+#include "Paragraph_8_1.cpp"
+#include "Paragraph_8_2.cpp"
+#include "Paragraph_8_3.cpp"
+#include "Paragraph_8_4.cpp"
+#include "Paragraph_8_5.cpp"
+#include "Paragraph_8_6.cpp"
+#include "Paragraph_8_7.cpp"
 
 inline void chapter8() {
 	bool bProceed = true;
@@ -28,25 +28,25 @@ inline void chapter8() {
 
 		switch (iChar) {
 		case 1:
-			//paragraph_8_1();
+			paragraph_8_1();
 			break;
 		case 2:
-			//paragraph_8_2();
+			paragraph_8_2();
 			break;
 		case 3:
-			//paragraph_8_3();
+			paragraph_8_3();
 			break;
 		case 4:
-			//paragraph_8_4();
+			paragraph_8_4();
 			break;
 		case 5:
-			//paragraph_8_5();
+			paragraph_8_5();
 			break;
 		case 6:
-			//paragraph_8_6();
+			paragraph_8_6();
 			break;
 		case 7:
-			//paragraph_8_7();
+			paragraph_8_7();
 			break;
 		case 0:
 			// the user wants to terminate

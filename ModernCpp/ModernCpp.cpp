@@ -12,8 +12,8 @@
 //****************************************************************************
 mutex Counter_22_4_4_a::mMutex;
 timed_mutex Counter_22_4_4_b::mTimedMutex;
-// used in Spreadsheet.hpp
-int Spreadsheet::sCounter = 0;
+// used in SpreadsheetImpl.hpp
+int SpreadsheetImpl::sCounter = 0;
 
 int main() {
 	bool bProceed = true;
