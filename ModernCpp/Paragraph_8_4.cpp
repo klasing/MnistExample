@@ -1,11 +1,11 @@
 #include "pch.h"
 
-//#include "SubParagraph_8_4_1.cpp"
-//#include "SubParagraph_8_4_2.cpp"
-//#include "SubParagraph_8_4_3.cpp"
-//#include "SubParagraph_8_4_4.cpp"
-//#include "SubParagraph_8_4_5.cpp"
-//#include "SubParagraph_8_4_6.cpp"
+#include "SubParagraph_8_4_1.cpp"
+#include "SubParagraph_8_4_2.cpp"
+#include "SubParagraph_8_4_3.cpp"
+#include "SubParagraph_8_4_4.cpp"
+#include "SubParagraph_8_4_5.cpp"
+#include "SubParagraph_8_4_6.cpp"
 
 inline void paragraph_8_4() {
 	bool bProceed = true;
@@ -26,22 +26,22 @@ inline void paragraph_8_4() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_8_4_1();
+			subParagraph_8_4_1();
 			break;
 		case 2:
-			//subParagraph_8_4_2();
+			subParagraph_8_4_2();
 			break;
 		case 3:
-			//subParagraph_8_4_3();
+			subParagraph_8_4_3();
 			break;
 		case 4:
-			//subParagraph_8_4_4();
+			subParagraph_8_4_4();
 			break;
 		case 5:
-			//subParagraph_8_4_5();
+			subParagraph_8_4_5();
 			break;
 		case 6:
-			//subParagraph_8_4_6();
+			subParagraph_8_4_6();
 			break;
 		case 0:
 			// the user wants to terminate

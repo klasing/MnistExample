@@ -1,13 +1,13 @@
 #include "pch.h"
 
-//#include "SubParagraph_8_6_1.cpp"
-//#include "SubParagraph_8_6_2.cpp"
-//#include "SubParagraph_8_6_3.cpp"
-//#include "SubParagraph_8_6_4.cpp"
-//#include "SubParagraph_8_6_5.cpp"
-//#include "SubParagraph_8_6_6.cpp"
-//#include "SubParagraph_8_6_7.cpp"
-//#include "SubParagraph_8_6_8.cpp"
+#include "SubParagraph_8_6_1.cpp"
+#include "SubParagraph_8_6_2.cpp"
+#include "SubParagraph_8_6_3.cpp"
+#include "SubParagraph_8_6_4.cpp"
+#include "SubParagraph_8_6_5.cpp"
+#include "SubParagraph_8_6_6.cpp"
+#include "SubParagraph_8_6_7.cpp"
+#include "SubParagraph_8_6_8.cpp"
 
 inline void paragraph_8_6() {
 	bool bProceed = true;
@@ -30,28 +30,28 @@ inline void paragraph_8_6() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_8_6_1();
+			subParagraph_8_6_1();
 			break;
 		case 2:
-			//subParagraph_8_6_2();
+			subParagraph_8_6_2();
 			break;
 		case 3:
-			//subParagraph_8_6_3();
+			subParagraph_8_6_3();
 			break;
 		case 4:
-			//subParagraph_8_6_4();
+			subParagraph_8_6_4();
 			break;
 		case 5:
-			//subParagraph_8_6_5();
+			subParagraph_8_6_5();
 			break;
 		case 6:
-			//subParagraph_8_6_6();
+			subParagraph_8_6_6();
 			break;
 		case 7:
-			//subParagraph_8_6_7();
+			subParagraph_8_6_7();
 			break;
 		case 8:
-			//subParagraph_8_6_8();
+			subParagraph_8_6_8();
 			break;
 		case 0:
 			// the user wants to terminate
