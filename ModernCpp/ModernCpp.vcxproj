@@ -178,6 +178,7 @@
     <ClInclude Include="PointSequence.hpp" />
     <ClInclude Include="request.h" />
     <ClInclude Include="Request_22_3_4.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Spreadsheet.hpp" />
     <ClInclude Include="SpreadsheetApplication.hpp" />
     <ClInclude Include="SpreadsheetCell.hpp" />
