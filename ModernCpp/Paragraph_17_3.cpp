@@ -1,8 +1,8 @@
 #include "pch.h"
 
-//#include "SubParagraph_17_3_1.cpp"
-//#include "SubParagraph_17_3_2.cpp"
-//#include "SubParagraph_17_3_3.cpp"
+#include "SubParagraph_17_3_1.cpp"
+#include "SubParagraph_17_3_2.cpp"
+#include "SubParagraph_17_3_3.cpp"
 
 inline void paragraph_17_3() {
 	bool bProceed = true;
@@ -11,7 +11,7 @@ inline void paragraph_17_3() {
 	while (bProceed) {
 		cout << "Extending the STL" << endl;
 		cout << "=================" << endl;
-		cout << " 1) Why Extending the STL" << endl;
+		cout << " 1) Why Extend the STL" << endl;
 		cout << " 2) Writing a STL Algorithm" << endl;
 		cout << " 3) Writing a STL Container" << endl;
 		cout << "Enter the number of a subject, or enter a zero to quit: ";
@@ -20,13 +20,13 @@ inline void paragraph_17_3() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_17_3_1();
+			subParagraph_17_3_1();
 			break;
 		case 2:
-			//subParagraph_17_3_2();
+			subParagraph_17_3_2();
 			break;
 		case 3:
-			//subParagraph_17_3_3();
+			subParagraph_17_3_3();
 			break;
 		case 0:
 			// the user wants to terminate

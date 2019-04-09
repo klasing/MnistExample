@@ -43,7 +43,7 @@ inline void paragraph_15_2() {
 	example1();
 	// marshalling an object
 	Muffin myMuffin;
-	istringstream myStream("Secial_muffin 6 true");
+	istringstream myStream("Special_muffin 6 true");
 	myMuffin = createMuffin(myStream);
 	cout << "-> Muffin is: ";
 	myMuffin.output();
