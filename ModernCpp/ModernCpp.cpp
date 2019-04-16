@@ -14,6 +14,9 @@ mutex Counter_22_4_4_a::mMutex;
 timed_mutex Counter_22_4_4_b::mTimedMutex;
 // used in SpreadsheetImpl.hpp
 int SpreadsheetImpl::sCounter = 0;
+// used in SubParagraph_24_4_3.cpp
+int NothingEx::sNumAllocations = 0;
+int NothingEx::sNumDeletions = 0;
 
 int main() {
 	bool bProceed = true;

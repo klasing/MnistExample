@@ -1,7 +1,7 @@
 #include "pch.h"
 
-//#include "SubParagraph_21_2_1.cpp"
-//#include "SubParagraph_21_2_2.cpp"
+#include "SubParagraph_21_2_1.cpp"
+#include "SubParagraph_21_2_2.cpp"
 
 inline void paragraph_21_2() {
 	bool bProceed = true;
@@ -18,10 +18,10 @@ inline void paragraph_21_2() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_21_2_1();
+			subParagraph_21_2_1();
 			break;
 		case 2:
-			//subParagraph_21_2_2();
+			subParagraph_21_2_2();
 			break;
 		case 0:
 			// the user wants to terminate

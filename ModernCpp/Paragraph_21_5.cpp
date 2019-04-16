@@ -1,10 +1,9 @@
 #include "pch.h"
 
-//#include "SubParagraph_21_5_1.cpp"
-//#include "SubParagraph_21_5_2.cpp"
-//#include "SubParagraph_21_5_3.cpp"
-//#include "SubParagraph_21_5_4.cpp"
-//#include "SubParagraph_21_5_5.cpp"
+#include "SubParagraph_21_5_1.cpp"
+#include "SubParagraph_21_5_2.cpp"
+#include "SubParagraph_21_5_3.cpp"
+#include "SubParagraph_21_5_4.cpp"
 
 inline void paragraph_21_5() {
 	bool bProceed = true;
@@ -23,16 +22,16 @@ inline void paragraph_21_5() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_21_5_1();
+			subParagraph_21_5_1();
 			break;
 		case 2:
-			//subParagraph_21_5_2();
+			subParagraph_21_5_2();
 			break;
 		case 3:
-			//subParagraph_21_5_3();
+			subParagraph_21_5_3();
 			break;
 		case 4:
-			//subParagraph_21_5_4();
+			subParagraph_21_5_4();
 			break;
 		case 5:
 			//subParagraph_21_5_5();

@@ -1,9 +1,9 @@
 #include "pch.h"
 
-//#include "SubParagraph_21_1_1.cpp"
-//#include "SubParagraph_21_1_2.cpp"
-//#include "SubParagraph_21_1_3.cpp"
-//#include "SubParagraph_21_1_4.cpp"
+#include "SubParagraph_21_1_1.cpp"
+#include "SubParagraph_21_1_2.cpp"
+#include "SubParagraph_21_1_3.cpp"
+#include "SubParagraph_21_1_4.cpp"
 
 inline void paragraph_21_1() {
 	bool bProceed = true;
@@ -12,7 +12,7 @@ inline void paragraph_21_1() {
 	while (bProceed) {
 		cout << "Working with Dynamic Memory" << endl;
 		cout << "===========================" << endl;
-		cout << " 1) How to Picture the Model" << endl;
+		cout << " 1) How to Picture the Memory" << endl;
 		cout << " 2) Allocation and Deallocation" << endl;
 		cout << " 3) Arrays" << endl;
 		cout << " 4) Working with pointers" << endl;
@@ -22,16 +22,16 @@ inline void paragraph_21_1() {
 
 		switch (iChar) {
 		case 1:
-			//subParagraph_21_1_1();
+			subParagraph_21_1_1();
 			break;
 		case 2:
-			//subParagraph_21_1_2();
+			subParagraph_21_1_2();
 			break;
 		case 3:
-			//subParagraph_21_1_3();
+			subParagraph_21_1_3();
 			break;
 		case 4:
-			//subParagraph_21_1_4();
+			subParagraph_21_1_4();
 			break;
 		case 0:
 			// the user wants to terminate
