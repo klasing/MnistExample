@@ -153,6 +153,18 @@
     <ClInclude Include="RoundRobin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PacketBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Error_12_3_2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorCorrelator_12_3_2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorCorrelator_12_3_3.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

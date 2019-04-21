@@ -166,6 +166,9 @@
     <ClInclude Include="double_checked_lock_class.h" />
     <ClInclude Include="employee.h" />
     <ClInclude Include="Employee.hpp" />
+    <ClInclude Include="ErrorCorrelator_12_3_2.hpp" />
+    <ClInclude Include="ErrorCorrelator_12_3_3.hpp" />
+    <ClInclude Include="Error_12_3_2.hpp" />
     <ClInclude Include="factorial.h" />
     <ClInclude Include="foo.h" />
     <ClInclude Include="loop.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="MyWeatherPrediction.hpp" />
     <ClInclude Include="ObjectPool.hpp" />
     <ClInclude Include="object_pool.h" />
+    <ClInclude Include="PacketBuffer.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PointSequence.hpp" />
     <ClInclude Include="request.h" />
