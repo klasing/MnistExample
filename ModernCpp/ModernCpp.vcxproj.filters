@@ -165,6 +165,9 @@
     <ClInclude Include="ErrorCorrelator_12_3_3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Preferences.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -10,6 +10,8 @@
 //****************************************************************************
 //*                     global
 //****************************************************************************
+// used in SubParagraph_9_7_1.cpp
+bool debug_9_7_1 = false;
 mutex Counter_22_4_4_a::mMutex;
 timed_mutex Counter_22_4_4_b::mTimedMutex;
 // used in SpreadsheetImpl.hpp

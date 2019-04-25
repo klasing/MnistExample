@@ -171,6 +171,7 @@
     <ClInclude Include="Error_12_3_2.hpp" />
     <ClInclude Include="factorial.h" />
     <ClInclude Include="foo.h" />
+    <ClInclude Include="Preferences.h" />
     <ClInclude Include="loop.h" />
     <ClInclude Include="maxpool.h" />
     <ClInclude Include="Muffin.hpp" />
