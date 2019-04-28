@@ -8,6 +8,7 @@
 #include "SubParagraph_9_5_6.cpp"
 #include "SubParagraph_9_5_7.cpp"
 #include "SubParagraph_9_5_8.cpp"
+#include "SubParagraph_9_5_8_ad1.cpp"
 
 inline void paragraph_9_5() {
 	bool bProceed = true;
@@ -52,6 +53,8 @@ inline void paragraph_9_5() {
 			break;
 		case 8:
 			subParagraph_9_5_8();
+			// extra stuff about User Defined Literal (UDL)
+			subParagraph_9_5_8_ad1();
 			break;
 		case 0:
 			// the user wants to terminate

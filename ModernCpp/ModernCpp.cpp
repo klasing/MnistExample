@@ -19,6 +19,8 @@ int SpreadsheetImpl::sCounter = 0;
 // used in SubParagraph_24_4_3.cpp
 int NothingEx::sNumAllocations = 0;
 int NothingEx::sNumDeletions = 0;
+// for use in SubParagraph_9_3_4.cpp
+inline void ThirdPartyLibraryMethod(char* str) { /* omitted */ }
 
 int main() {
 	bool bProceed = true;

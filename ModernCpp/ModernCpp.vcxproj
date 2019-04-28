@@ -672,6 +672,7 @@
     <ClCompile Include="SubParagraph_9_5_6.cpp" />
     <ClCompile Include="SubParagraph_9_5_7.cpp" />
     <ClCompile Include="SubParagraph_9_5_8.cpp" />
+    <ClCompile Include="SubParagraph_9_5_8_ad1.cpp" />
     <ClCompile Include="SubParagraph_9_7_1.cpp" />
     <ClCompile Include="SubParagraph_9_7_2.cpp" />
     <ClCompile Include="z_template_menu.cpp" />
