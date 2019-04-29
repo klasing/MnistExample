@@ -21,6 +21,29 @@ int NothingEx::sNumAllocations = 0;
 int NothingEx::sNumDeletions = 0;
 // for use in SubParagraph_9_3_4.cpp
 inline void ThirdPartyLibraryMethod(char* str) { /* omitted */ }
+// for use in SubParagraph_9_2_2
+// prototype: external linkage
+inline void f_9_2_2();
+// prototype: internal linkage (by the keyword static)
+// this does not work with my compiler
+//static inline void f_9_2_2();
+inline void f_9_2_2() {
+	cout << "-> f\n";
+}
+// the same effect as internal linkage with the keyword static
+// can be achieved by using an anonymous namespace
+// this does works with my compiler
+//namespace {
+//	// prototype
+//	inline void f_9_2_2();
+//	inline void f_9_2_2() {
+//		cout << "-> f\n";
+//	}
+//}
+int xExtern = 3;
+// order of appearance is order of initialization
+// first
+int Demo_9_2_3::x = 3;
 
 int main() {
 	bool bProceed = true;

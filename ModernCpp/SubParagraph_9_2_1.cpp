@@ -10,6 +10,18 @@ inline void doSomething_9_2_1(const BigClass_9_2_1& arg) {
 	// Implementation here
 }
 
+//const int getArraySize_9_2_1() { return 32; }
+constexpr int getArraySize_9_2_1() { return 32; }
+
+class Rect_9_2_1 {
+public:
+	constexpr Rect_9_2_1(int width, int height)
+		: mWidth(width), mHeight(height) {}
+	constexpr int getArea() const { return mWidth * mHeight; }
+private:
+	int mWidth, mHeight;
+};
+
 inline void subParagraph_9_2_1() {
 	cout << "The const Keyword" << endl;
 	cout << "-----------------" << endl;
@@ -43,4 +55,13 @@ inline void subParagraph_9_2_1() {
 	//zRef = 4;
 	cout << "d) const Methods" << endl;
 	cout << "a) The constexpr Keyword (C++11)" << endl;
+	// Invalid in C++
+	// but, when the function is a constexpr
+	// OK with C++11
+	//int myArray[getArraySize_9_2_1()];
+	// OK with C++11
+	int myArray[getArraySize_9_2_1() + 1];
+	constexpr Rect_9_2_1 r(8, 2);
+	// OK with C++11
+	int myArray_[r.getArea()];
 }
