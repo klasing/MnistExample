@@ -44,6 +44,22 @@ int xExtern = 3;
 // order of appearance is order of initialization
 // first
 int Demo_9_2_3::x = 3;
+// used in SubParagraph_29_2_2.cpp
+const string Logger_29_2_2::kLogLevelDebug = "DEBUG";
+const string Logger_29_2_2::kLogLevelInfo = "INFO";
+const string Logger_29_2_2::kLogLevelError = "ERROR";
+const char* const Logger_29_2_2::kLogFileName = "log.out";
+bool Logger_29_2_2::sInitialized = false;
+ofstream Logger_29_2_2::sOutputStream;
+const string Logger_29_2_2_a::kLogLevelDebug = "DEBUG";
+const string Logger_29_2_2_a::kLogLevelInfo = "INFO";
+const string Logger_29_2_2_a::kLogLevelError = "ERROR";
+// used in SubParagraph_29_5_1.cpp
+const string Logger_29_5_1::kLogLevelDebug = "DEBUG";
+const string Logger_29_5_1::kLogLevelInfo = "INFO";
+const string Logger_29_5_1::kLogLevelError = "ERROR";
+// used in SubParagraph_29_8_1.cpp
+map<int, vector<Listener_29_8_1*>> EventRegistry_29_8_1::sListenerMap;
 
 int main() {
 	bool bProceed = true;

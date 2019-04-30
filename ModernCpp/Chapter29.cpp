@@ -11,6 +11,9 @@
 #include "Paragraph_29_9.cpp"
 
 inline void chapter29() {
+	// goto:
+	// https://en.wikipedia.org/wiki/Design_Patterns
+	// to learn about all 23 patterns
 	bool bProceed = true;
 	unsigned iChar = 0;
 
