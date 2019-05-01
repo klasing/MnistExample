@@ -4,3 +4,9 @@ INFO: First info
 INFO: Second info
 INFO: Third info
 DEBUG: Logger shutting down
+INFO: Initializing Logger
+DEBUG: Ready for logging
+INFO: First info
+INFO: Second info
+INFO: Third info
+DEBUG: Logger shutting down

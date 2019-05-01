@@ -54,6 +54,17 @@ ofstream Logger_29_2_2::sOutputStream;
 const string Logger_29_2_2_a::kLogLevelDebug = "DEBUG";
 const string Logger_29_2_2_a::kLogLevelInfo = "INFO";
 const string Logger_29_2_2_a::kLogLevelError = "ERROR";
+const char* const Logger_29_2_2_a::kLogFileName = "log_a.out";
+// The static instance will be constructed when the program starts and
+// destructed when it ends.
+Logger_29_2_2_a Logger_29_2_2_a::sInstance;
+// used in SubParagraph_29_2_4.cpp
+const string Logger_29_2_4::kLogLevelDebug = "DEBUG";
+const string Logger_29_2_4::kLogLevelInfo = "INFO";
+const string Logger_29_2_4::kLogLevelError = "ERROR";
+const char* const Logger_29_2_4::kLogFileName = "log_b.out";
+Logger_29_2_4* Logger_29_2_4::pInstance = nullptr;
+mutex Logger_29_2_4::sMutex;
 // used in SubParagraph_29_5_1.cpp
 const string Logger_29_5_1::kLogLevelDebug = "DEBUG";
 const string Logger_29_5_1::kLogLevelInfo = "INFO";
