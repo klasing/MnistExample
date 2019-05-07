@@ -17,6 +17,12 @@ Mutex_2_5 Singleton_2_5::mutex;
 // used in chapter_3_6.cpp
 vector<float> FlyweightCharacterStore_3_6::fontSizes(3);
 vector<string> FlyweightCharacterStore_3_6::fontNames(3);
+// used in chapter_4_6.cpp
+const string NAME = "Object";
+vector<Command*> Command::commandList;
+vector<Memento*> Command::mementoList;
+int Command::numCommands = 0;
+int Command::maxCommands = 0;
 
 int main() {
 	bool bProceed = true;
