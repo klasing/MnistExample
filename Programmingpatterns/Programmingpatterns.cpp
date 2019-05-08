@@ -23,6 +23,10 @@ vector<Command*> Command::commandList;
 vector<Memento*> Command::mementoList;
 int Command::numCommands = 0;
 int Command::maxCommands = 0;
+// used in chapter_4_8.cpp
+using namespace ns_chapter_4_8;
+shared_ptr<StandingState> FighterState::standing(new StandingState);
+shared_ptr<DivingState> FighterState::diving(new DivingState);
 
 int main() {
 	bool bProceed = true;
