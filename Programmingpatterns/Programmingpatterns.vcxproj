@@ -183,6 +183,16 @@
     <ClCompile Include="part4.cpp" />
     <ClCompile Include="Programmingpatterns.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common_.h" />
+    <ClInclude Include="src\Controller_.hpp" />
+    <ClInclude Include="src\Model_.hpp" />
+    <ClInclude Include="src\Student.hpp" />
+    <ClInclude Include="src\StudentController.hpp" />
+    <ClInclude Include="src\StudentView.hpp" />
+    <ClInclude Include="src\StudentViewTwo.hpp" />
+    <ClInclude Include="src\View_.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
