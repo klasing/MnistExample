@@ -1,6 +1,5 @@
 // Listing 2.1 
 // A function that returns while a thread still has access to local variables
-#pragma once
 #include <iostream>
 #include <thread>
 

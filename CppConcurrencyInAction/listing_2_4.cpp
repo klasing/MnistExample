@@ -1,6 +1,5 @@
 // Listing 2.4
 // Detaching a thread to handle other documents
-#pragma once
 #include <iostream>
 #include <string>
 #include <thread>

@@ -7,6 +7,10 @@
 #include "listing_2_2.cpp"
 #include "listing_2_3.cpp"
 #include "listing_2_4.cpp"
+#include "listing_2_5.cpp"
+#include "listing_2_6.cpp"
+#include "listing_2_7.cpp"
+#include "listing_2_8.cpp"
 
 using namespace std;
 int main() {
@@ -32,6 +36,17 @@ int main() {
 	using namespace ns_listing_2_4;
 	// the functional behaviour in this example, is not like it should be
 	edit_document("first file name");
+	using namespace ns_listing_2_5;
+	thread t1(ns_listing_2_5::f());
+	thread t2(ns_listing_2_5::g());
+	t1.join();
+	t2.join();
+	using namespace ns_listing_2_6;
+	ns_listing_2_6::f();
+	using namespace ns_listing_2_7;
+	ns_listing_2_7::f();
+	using namespace ns_listing_2_8;
+
 }
 //	bool bProceed = true;
 //	unsigned iChar = 0;

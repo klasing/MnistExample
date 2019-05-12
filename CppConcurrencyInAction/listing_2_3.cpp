@@ -1,7 +1,6 @@
 // Listing 2.3 
 // Using RAII to wait for a thread to complete
 // Resource Aquisition Is Initialization (RAII)
-#pragma once
 #include <iostream>
 #include <thread>
 

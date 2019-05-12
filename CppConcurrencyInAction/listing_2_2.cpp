@@ -1,6 +1,5 @@
 // Listing 2.2 
 // Waiting for a thread to finish
-#pragma once
 #include <iostream>
 #include <thread>
 

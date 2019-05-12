@@ -1,6 +1,5 @@
 // Listing 1.1
 // A simple Hello, Concurrent World program
-#pragma once
 #include <iostream>
 
 using namespace std;
