@@ -29,7 +29,7 @@ inline void DataChange_(string data) {
 
 inline void chapter_4_12() {
 	// C++ version of: 
-	// c
+	// https://www.tutorialspoint.com/design_pattern/mvc_pattern.htm
 	cout << "Model-View-Controller (MVC)" << endl;
 	cout << "---------------------------" << endl;
 
