@@ -1,3 +1,11 @@
+// Look at:
+// https://stackoverflow.com/questions/51422188/vs-2017-c-cannot-open-source-file-sqlite3-h
+// After installing:
+// https://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
+//  1 - Rewritten using a Model-View-Controller pattern
+//  2 - Rewritten using function pointers for conveying
+//      messages from controller to view, and
+//      records from controller to view
 #include <iostream>
 #include <string>
 #include <vector>
@@ -5,6 +13,9 @@
 #include "CppSQLite3.h"
 
 using namespace std;
+//****************************************************************************
+//*                     CompanyRecord
+//****************************************************************************
 class CompanyRecord {
 public:
 	void setId(const string& id) { this->id = id; }
@@ -24,6 +35,9 @@ private:
 typedef void(*MessageHandler)(const string&);
 typedef void(*DataHandler)(vector<CompanyRecord>&);
 
+//****************************************************************************
+//*                     Model
+//****************************************************************************
 class Model {
 public:
 	void setHandler(MessageHandler messageHandler,
@@ -128,6 +142,9 @@ private:
 
 vector<CompanyRecord> Model::returnData;
 
+//****************************************************************************
+//*                     View
+//****************************************************************************
 class View {
 public:
 	static void messageChange(const string& newMessage) {
@@ -191,6 +208,9 @@ public:
 	}
 };
 
+//****************************************************************************
+//*                     Controller
+//****************************************************************************
 class Controller {
 public:
 	Controller(const Model& model, const View& view) :
@@ -206,6 +226,9 @@ private:
 	View view;
 };
 
+//****************************************************************************
+//*                     main
+//****************************************************************************
 int main() {
 	Model model;
 	View view;
