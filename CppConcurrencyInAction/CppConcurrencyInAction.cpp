@@ -11,8 +11,15 @@
 #include "listing_2_6.cpp"
 #include "listing_2_7.cpp"
 #include "listing_2_8.cpp"
+#include "listing_3_1.cpp"
 
 using namespace std;
+// used in listing_3_1.cpp
+namespace ns_listing_3_1 {
+	list<int> some_list;
+	mutex some_mutex;
+}
+
 int main() {
 	using namespace ns_listing_1_1;
 	thread t(hello);
@@ -46,7 +53,8 @@ int main() {
 	using namespace ns_listing_2_7;
 	ns_listing_2_7::f();
 	using namespace ns_listing_2_8;
-
+	ns_listing_2_8::f();
+	using namespace ns_listing_3_1;
 }
 //	bool bProceed = true;
 //	unsigned iChar = 0;

@@ -161,6 +161,11 @@
     <ClCompile Include="listing_2_6.cpp" />
     <ClCompile Include="listing_2_7.cpp" />
     <ClCompile Include="listing_2_8.cpp" />
+    <ClCompile Include="listing_3_1.cpp" />
+    <ClCompile Include="listing_3_2.cpp" />
+    <ClCompile Include="listing_3_3.cpp" />
+    <ClCompile Include="listing_3_4.cpp" />
+    <ClCompile Include="listing_3_5.cpp" />
     <ClCompile Include="Part1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
