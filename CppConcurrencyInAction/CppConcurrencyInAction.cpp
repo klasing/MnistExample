@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <utility>
 
 //#include "part1.cpp"
 #include "listing_1_1.cpp"
@@ -12,6 +13,9 @@
 #include "listing_2_7.cpp"
 #include "listing_2_8.cpp"
 #include "listing_3_1.cpp"
+
+#include "listing_A_1.cpp"
+#include "listing_A_2.cpp"
 
 using namespace std;
 // used in listing_3_1.cpp
@@ -55,6 +59,18 @@ int main() {
 	using namespace ns_listing_2_8;
 	ns_listing_2_8::f();
 	using namespace ns_listing_3_1;
+	// TODO
+	using namespace ns_listing_A_1;
+	X x1;
+	X x2 = move(x1);
+	X x3 = static_cast<X&&>(x2);
+	using namespace ns_listing_A_2;
+	move_only m1;
+	// Error, copy constructor is declared deleted
+	// compiler complains: attemting to reference a deleted function
+	//move_only m2(m1);
+	// OK, move constructor found
+	move_only m3(move(m1));
 }
 //	bool bProceed = true;
 //	unsigned iChar = 0;

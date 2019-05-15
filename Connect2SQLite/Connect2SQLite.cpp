@@ -1,3 +1,10 @@
+//////////////////////////////////////////////////////////////////////////////
+// SQlite prepared statement, look at:
+// https://stackoverflow.com/questions/31745465/how-to-prepare-sql-statements-and-bind-parameters#
+// command line interface (CLI) for SQLite, look at:
+// https://sqlite.org/cli.html
+// http://www.sqlitetutorial.net/sqlite-commands/
+//////////////////////////////////////////////////////////////////////////////
 // Look at:
 // https://stackoverflow.com/questions/51422188/vs-2017-c-cannot-open-source-file-sqlite3-h
 // After installing:

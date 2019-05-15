@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Connect2SQLite.cpp" />
     <ClCompile Include="CppSQLite3.cpp" />
+    <ClCompile Include="listing_3_7.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSQLite3.h" />

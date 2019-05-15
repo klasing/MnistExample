@@ -63,5 +63,14 @@
     <ClCompile Include="listing_3_5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="listing_3_6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="listing_a_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="listing_a_2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
