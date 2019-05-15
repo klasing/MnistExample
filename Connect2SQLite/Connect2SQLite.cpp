@@ -2,11 +2,11 @@
 // https://stackoverflow.com/questions/51422188/vs-2017-c-cannot-open-source-file-sqlite3-h
 // After installing:
 // https://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
-// Look at:
+// Look at, for the contact database construction:
 // http://www.sqlitetutorial.net/sqlite-create-table/
-// for the contact database construction
 //  1 - Rewritten to access the contact batabase
 //  2 - Using raw string for declaring sql statement
+//  3 - Rewritten to let user choose schema
 
 #include <iostream>
 #include <string>
@@ -229,7 +229,8 @@ private:
 		return 0;
 	}
 public:
-	static const string NAME_DB;
+	//static const string NAME_DB;
+	static string NAME_DB;
 private:
 	MessageHandler messageHandler = nullptr;
 	DataHandler dataHandler = nullptr;
@@ -240,7 +241,8 @@ private:
 	static vector<tuple_contact> returnDataContact;
 };
 //const string Model::NAME_DB = "company.db";
-const string Model::NAME_DB = "contact.db";
+//const string Model::NAME_DB = "contact.db";
+string Model::NAME_DB = "";
 vector<tuple_company> Model::returnData;
 vector<tuple_contact> Model::returnDataContact;
 
@@ -275,6 +277,42 @@ public:
 			cout << "Group........: " << get<6>(newTuple) << endl;
 			cout << endl;
 		}
+	}
+	bool menuSchemaRequest(Model& model) {
+		int iChar;
+		bool bProceed = true;
+		bool bContinueApp = true;
+
+		while (bProceed) {
+			cout << "SQLite schema" << endl;
+			cout << "=============" << endl;
+			cout << " 1) Company" << endl;
+			cout << " 2) Contact" << endl;
+			cout << "Enter the number of a subject, or enter a zero to quit: ";
+			cin >> iChar;
+
+			switch (iChar) {
+			case 1:
+				Model::NAME_DB = "company.db";
+				bProceed = false;
+				bContinueApp = true;
+				break;
+			case 2:
+				Model::NAME_DB = "contact.db";
+				bProceed = false;
+				bContinueApp = true;
+				break;
+			case 0:
+				// the user wants to quit
+				bProceed = false;
+				bContinueApp = false;
+				break;
+			default:
+				// the input, given by the user, is not an available option
+				cout << "The entered number is not recognized, please try again." << endl;
+			} // eof switch
+		}
+		return bContinueApp;
 	}
 	void menuUserRequest(Model& model) {
 		int iChar;
@@ -331,6 +369,9 @@ class Controller {
 public:
 	Controller(const Model& model, const View& view) :
 		model(model), view(view) {}
+	bool processSchemaRequest() {
+		return view.menuSchemaRequest(model);
+	}
 	bool onLoad() {
 		return model.openDB();
 	}
@@ -351,6 +392,10 @@ int main() {
 	model.setHandler(&View::messageChange, &View::dataChange,
 		&View::dataChangeContact);
 	Controller controller(model, view);
+
+	if (!controller.processSchemaRequest())
+		// user wants to quit
+		return 0;
 
 	if (controller.onLoad()) {
 		// database is sucessfully opened
