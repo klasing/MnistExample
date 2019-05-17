@@ -252,5 +252,11 @@
     <ClCompile Include="example_d_7_2_b.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="example_d_7_1_d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="example_d_7_1_c.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

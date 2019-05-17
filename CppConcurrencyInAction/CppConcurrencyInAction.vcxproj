@@ -23,7 +23,7 @@
     <ProjectGuid>{A9E6367D-7D91-46F6-9B9A-92656B028D69}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CppConcurrencyInAction</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -154,6 +154,8 @@
     <ClCompile Include="..\Connect2SQLite\listing_3_7.cpp" />
     <ClCompile Include="..\ModernCpp\z_template_paragraph.cpp" />
     <ClCompile Include="CppConcurrencyInAction.cpp" />
+    <ClCompile Include="example_d_7_1_c.cpp" />
+    <ClCompile Include="example_d_7_1_d.cpp" />
     <ClCompile Include="example_d_7_2_a.cpp" />
     <ClCompile Include="example_d_7_2_b.cpp" />
     <ClCompile Include="listing_1_1.cpp" />

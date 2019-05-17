@@ -1,10 +1,441 @@
-//////////////////////////////////////////////////////////////////////////////
+
 // SQlite prepared statement, look at:
 // https://stackoverflow.com/questions/31745465/how-to-prepare-sql-statements-and-bind-parameters#
 // command line interface (CLI) for SQLite, look at:
 // https://sqlite.org/cli.html
 // http://www.sqlitetutorial.net/sqlite-commands/
+// Rewritten for a templated dataChange() method in the View object
+// method is now named dataChangeEx()
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <tuple>
+
+#include "CppSQLite3.h"
+
+using namespace std;
+
+typedef void(*MessageHandler)(const string&);
+
+typedef string key, name, age, address, salary;
+typedef tuple<key, name, age, address, salary> tuple_company;
+typedef void(*DataHandler)(vector<tuple_company>&);
+
+typedef string contact_id, first_name, last_name, email, phone, group_id, name;
+typedef tuple<contact_id, first_name, last_name, email, phone, group_id, name> tuple_contact;
+typedef void(*DataHandlerContact)(vector<tuple_contact>&);
+
+//****************************************************************************
+//*                     Model
+//****************************************************************************
+class Model {
+public:
+	void setHandler(MessageHandler messageHandler, DataHandler dataHandler,
+		DataHandlerContact dataHandlerContact) {
+		this->messageHandler = messageHandler;
+		this->dataHandler = dataHandler;
+		this->dataHandlerContact = dataHandlerContact;
+	}
+	//const string& getNameDb() const { return Model::NAME_DB; }
+
+	bool openDB() {
+		bool success;
+		string message;
+
+		int rc = sqlite3_open(Model::NAME_DB.c_str(), &db);
+		if (rc) {
+			// error opening the database
+			success = false;
+			message = "open " + Model::NAME_DB + " failed: " + *sqlite3_errmsg(db);
+		}
+		else {
+			// database is sucessfully opened
+			success = true;
+			message = "open " + Model::NAME_DB + " succeeded";
+		}
+		messageHandler(message);
+		return success;
+	}
+
+	void closeDB() const {
+		sqlite3_close(db);
+		messageHandler("close " + Model::NAME_DB);
+	}
+	void dropTable() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "DROP TABLE COMPANY;";
+			execute("Table dropped successfully");
+		}
+		if (Model::NAME_DB == "contact.db") {
+			sql = "DROP TABLE CONTACTS;";
+			execute("Table dropped successfully");
+			sql = "DROP TABLE GROUPS;";
+			execute("Table dropped successfully");
+			sql = "DROP TABLE CONTACT_GROUPS;";
+			execute("Table dropped successfully");
+		}
+
+	}
+	void createTable() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "CREATE TABLE COMPANY(" \
+				"ID      INT PRIMARY KEY NOT NULL," \
+				"NAME    TEXT            NOT NULL," \
+				"AGE     INT             NOT NULL," \
+				"ADDRESS CHAR(50)," \
+				"SALARY  REAL);";
+			execute("Table created successfully");
+		}
+		if (Model::NAME_DB == "contact.db") {
+			sql = R"~(CREATE TABLE contacts(
+				contact_id INTEGER PRIMARY KEY,
+				first_name TEXT NOT NULL,
+				last_name  TEXT NOT NULL,
+				email text NOT NULL UNIQUE,
+				phone text NOT NULL UNIQUE
+				);)~";
+			execute("Table created successfully");
+			sql = R"~(CREATE TABLE groups(
+				group_id integer PRIMARY KEY,
+				name     text NOT NULL
+				);)~";
+			execute("Table created successfully");
+			sql = R"~(CREATE TABLE contact_groups(
+				contact_id integer,
+				group_id integer,
+				PRIMARY KEY (contact_id, group_id),
+				FOREIGN KEY (contact_id) REFERENCES contacts (contact_id)
+				ON DELETE CASCADE ON UPDATE NO ACTION,
+				FOREIGN KEY (group_id) REFERENCES groups (group_id)
+				ON DELETE CASCADE ON UPDATE NO ACTION
+				);)~";
+			execute("Table created successfully");
+		}
+	}
+	void createRecord() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY) " \
+				"VALUES (1, 'Paul', 32, 'California', 20000.00);" \
+				"INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY) " \
+				"VALUES (2, 'Allen', 25, 'Texas', 15000.00);" \
+				"INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY) " \
+				"VALUES (3, 'Teddy', 23, 'Norway', 20000.00);" \
+				"INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY) " \
+				"VALUES (4, 'Mark', 25, 'Rich-Mond', 65000.00);";
+			execute("Records created successfully");
+		}
+		if (Model::NAME_DB == "contact.db") {
+			sql = R"~(INSERT INTO contacts(contact_id, first_name, last_name, email, phone) 
+				VALUES(1001, 'Paul', 'Blake', 'paul.blake@wemail.com', '1234567890');
+				INSERT INTO contacts(contact_id, first_name, last_name, email, phone) 
+				VALUES(1011, 'Allen', 'Wood', 'allen_wood@mail4me.com', '9876543210');
+				INSERT INTO contacts(contact_id, first_name, last_name, email, phone) 
+				VALUES(1013, 'Teddy', 'Hammersmith', 't.hammersmith@hotmail.us', '6513013229');
+				INSERT INTO contacts(contact_id, first_name, last_name, email, phone) 
+				VALUES(1021, 'Mark', 'Gold', 'markgold@provider.dk', '6379981234');)~";
+			execute("Records created successfully");
+			sql = R"~(INSERT INTO groups(group_id, name) 
+				VALUES(10, 'Friend');
+				INSERT INTO groups(group_id, name) 
+				VALUES(30, 'Family');
+				INSERT INTO groups(group_id, name) 
+				VALUES(70, 'Acquaintance');)~";
+			execute("Records created successfully");
+			sql = R"~(INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1001, 10);
+				INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1001, 30);
+				INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1011, 10);
+				INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1013, 30);
+				INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1021, 70);)~";
+			execute("Records created successfully");
+		}
+	}
+	void readRecord() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "SELECT * FROM COMPANY;";
+			// callback method is called for each record
+			execute("Operation done successfully");
+			dataHandler(returnData);
+		}
+		if (Model::NAME_DB == "contact.db") {
+			//sql = R"~(SELECT * FROM CONTACTS;)~";
+			sql = R"~(SELECT c.*, g.* FROM contacts c
+				JOIN contact_groups cg ON cg.contact_id = c.contact_id
+				JOIN groups g ON cg.group_id = g.group_id;)~";
+			// callback method is called for each record
+			execute("Operation done successfully");
+			dataHandlerContact(returnDataContact);
+		}
+	}
+	void updateRecord() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "UPDATE COMPANY SET SALARY = 25000.00 WHERE ID = 1;";
+			execute("Operation done successfully");
+		}
+		if (Model::NAME_DB == "contact.db") {
+		}
+	}
+	void deleteRecord() {
+		if (Model::NAME_DB == "company.db") {
+			sql = "DELETE FROM COMPANY WHERE ID = 2;";
+			execute("Operation done successfully");
+		}
+		if (Model::NAME_DB == "contact.db") {
+		}
+	}
+private:
+	void execute(const string & msg) {
+		char* pszErrMsg = 0;
+		int rc;
+		const char* data = "Callback function called";
+
+		// clear vector preceding callback
+		returnData.clear();
+		returnDataContact.clear();
+
+		rc = sqlite3_exec(db, sql.c_str(), callback, (void*)data, &pszErrMsg);
+
+		if (rc != SQLITE_OK) {
+			messageHandler("SQL error: " + static_cast<string>(pszErrMsg));
+			sqlite3_free(pszErrMsg);
+		}
+		else
+			messageHandler(msg.c_str());
+	}
+	static int callback(void* data, int argc, char** argv, char** aszColName) {
+		if (Model::NAME_DB == "company.db") {
+			tuple_company newTuple(static_cast<string>(argv[0]),
+				static_cast<string>(argv[1]),
+				static_cast<string>(argv[2]),
+				static_cast<string>(argv[3]),
+				static_cast<string>(argv[4]));
+			Model::returnData.push_back(newTuple);
+		}
+		if (Model::NAME_DB == "contact.db") {
+			tuple_contact newTuple(static_cast<string>(argv[0]),
+				static_cast<string>(argv[1]),
+				static_cast<string>(argv[2]),
+				static_cast<string>(argv[3]),
+				static_cast<string>(argv[4]),
+				static_cast<string>(argv[5]),
+				static_cast<string>(argv[6]));
+			Model::returnDataContact.push_back(newTuple);
+		}
+		return 0;
+	}
+public:
+	//static const string NAME_DB;
+	static string NAME_DB;
+private:
+	MessageHandler messageHandler = nullptr;
+	DataHandler dataHandler = nullptr;
+	DataHandlerContact dataHandlerContact = nullptr;
+	sqlite3* db;
+	string sql;
+	static vector<tuple_company> returnData;
+	static vector<tuple_contact> returnDataContact;
+};
+//const string Model::NAME_DB = "company.db";
+//const string Model::NAME_DB = "contact.db";
+string Model::NAME_DB = "";
+vector<tuple_company> Model::returnData;
+vector<tuple_contact> Model::returnDataContact;
+
+//****************************************************************************
+//*                     View
+//****************************************************************************
+class View {
+public:
+	static void messageChange(const string& newMessage) {
+		cout << newMessage << endl;
+	}
+	//static void dataChange(vector<tuple_company>& newData) {
+	//	for (auto it = newData.begin(); it < newData.end(); ++it) {
+	//		tuple_company newTuple = *it;
+	//		cout << "ID........: " << get<0>(newTuple) << endl;
+	//		cout << "Name......: " << get<1>(newTuple) << endl;
+	//		cout << "Age.......: " << get<2>(newTuple) << endl;
+	//		cout << "Address...: " << get<3>(newTuple) << endl;
+	//		cout << "Salary....: " << get<4>(newTuple) << endl;
+	//		cout << endl;
+	//	}
+	//}
+	//static void dataChangeContact(vector<tuple_contact>& newData) {
+	//	for (auto it = newData.begin(); it < newData.end(); ++it) {
+	//		tuple_contact newTuple = *it;
+	//		cout << "ID...........: " << get<0>(newTuple) << endl;
+	//		cout << "First name...: " << get<1>(newTuple) << endl;
+	//		cout << "Last name....: " << get<2>(newTuple) << endl;
+	//		cout << "email........: " << get<3>(newTuple) << endl;
+	//		cout << "phone........: " << get<4>(newTuple) << endl;
+	//		cout << "Group ID.....: " << get<5>(newTuple) << endl;
+	//		cout << "Group........: " << get<6>(newTuple) << endl;
+	//		cout << endl;
+	//	}
+	//}
+	template <typename T>
+	static void dataChangeEx(vector<T>& newData) {
+		if (typeid(newData) == typeid(vector<tuple_company>)) {
+			for (auto it = newData.begin(); it < newData.end(); ++it) {
+				tuple_company newTuple = *it;
+				cout << "ID........: " << get<0>(newTuple) << endl;
+				cout << "Name......: " << get<1>(newTuple) << endl;
+				cout << "Age.......: " << get<2>(newTuple) << endl;
+				cout << "Address...: " << get<3>(newTuple) << endl;
+				cout << "Salary....: " << get<4>(newTuple) << endl;
+				cout << endl;
+			}
+			return;
+		}
+		if (typeid(newData) == typeid(vector<tuple_contact>)) {
+			for (auto it = newData.begin(); it < newData.end(); ++it) {
+				tuple_contact newTuple = *it;
+				cout << "ID...........: " << get<0>(newTuple) << endl;
+				cout << "First name...: " << get<1>(newTuple) << endl;
+				cout << "Last name....: " << get<2>(newTuple) << endl;
+				cout << "email........: " << get<3>(newTuple) << endl;
+				cout << "phone........: " << get<4>(newTuple) << endl;
+				cout << "Group ID.....: " << get<5>(newTuple) << endl;
+				cout << "Group........: " << get<6>(newTuple) << endl;
+				cout << endl;
+			}
+			return;
+		}
+	}
+	bool menuSchemaRequest(Model& model) {
+		int iChar;
+		bool bProceed = true;
+		bool bContinueApp = true;
+
+		while (bProceed) {
+			cout << "SQLite schema" << endl;
+			cout << "=============" << endl;
+			cout << " 1) Company" << endl;
+			cout << " 2) Contact" << endl;
+			cout << "Enter the number of a subject, or enter a zero to quit: ";
+			cin >> iChar;
+
+			switch (iChar) {
+			case 1:
+				Model::NAME_DB = "company.db";
+				bProceed = false;
+				bContinueApp = true;
+				break;
+			case 2:
+				Model::NAME_DB = "contact.db";
+				bProceed = false;
+				bContinueApp = true;
+				break;
+			case 0:
+				// the user wants to quit
+				bProceed = false;
+				bContinueApp = false;
+				break;
+			default:
+				// the input, given by the user, is not an available option
+				cout << "The entered number is not recognized, please try again." << endl;
+			} // eof switch
+		}
+		return bContinueApp;
+	}
+	void menuUserRequest(Model& model) {
+		int iChar;
+		bool bProceed = true;
+
+		while (bProceed) {
+			cout << "SQLite database" << endl;
+			cout << "===============" << endl;
+			cout << " 1) Drop table" << endl;
+			cout << " 2) Create table" << endl;
+			cout << " 3) Create Record" << endl;
+			cout << " 4) Read record" << endl;
+			cout << " 5) Update record" << endl;
+			cout << " 6) Delete record" << endl;
+			cout << "Enter the number of a subject, or enter a zero to quit: ";
+
+			cin >> iChar;
+
+			switch (iChar) {
+			case 1:
+				model.dropTable();
+				break;
+			case 2:
+				model.createTable();
+				break;
+			case 3:
+				model.createRecord();
+				break;
+			case 4:
+				model.readRecord();
+				break;
+			case 5:
+				model.updateRecord();
+				break;
+			case 6:
+				model.deleteRecord();
+				break;
+			case 0:
+				model.closeDB();
+				bProceed = false;
+				break;
+			default:
+				// the input, given by the user, is not an available option
+				cout << "The entered number is not recognized, please try again." << endl;
+			} // eof switch
+		}
+	}
+};
+
+//****************************************************************************
+//*                     Controller
+//****************************************************************************
+class Controller {
+public:
+	Controller(const Model& model, const View& view) :
+		model(model), view(view) {}
+	bool processSchemaRequest() {
+		return view.menuSchemaRequest(model);
+	}
+	bool onLoad() {
+		return model.openDB();
+	}
+	void processUserRequest() {
+		view.menuUserRequest(model);
+	}
+private:
+	Model model;
+	View view;
+};
+
+//****************************************************************************
+//*                     main
+//****************************************************************************
+int main() {
+	Model model;
+	View view;
+	//model.setHandler(&View::messageChange, &View::dataChange,
+	//	&View::dataChangeContact);
+	model.setHandler(&View::messageChange, &View::dataChangeEx,
+		&View::dataChangeEx);
+	Controller controller(model, view);
+
+	if (!controller.processSchemaRequest())
+		// user wants to quit
+		return 0;
+
+	if (controller.onLoad()) {
+		// database is sucessfully opened
+		controller.processUserRequest();
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
+/*
 // Look at:
 // https://stackoverflow.com/questions/51422188/vs-2017-c-cannot-open-source-file-sqlite3-h
 // After installing:
@@ -411,6 +842,8 @@ int main() {
 		controller.processUserRequest();
 	}
 }
+*/
+//////////////////////////////////////////////////////////////////////////////
 /*
 // Look at:
 // https://stackoverflow.com/questions/51422188/vs-2017-c-cannot-open-source-file-sqlite3-h
