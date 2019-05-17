@@ -154,6 +154,8 @@ public:
 			sql = R"~(INSERT INTO contact_groups(contact_id, group_id) 
 				VALUES(1001, 10);
 				INSERT INTO contact_groups(contact_id, group_id) 
+				VALUES(1001, 30);
+				INSERT INTO contact_groups(contact_id, group_id) 
 				VALUES(1011, 10);
 				INSERT INTO contact_groups(contact_id, group_id) 
 				VALUES(1013, 30);

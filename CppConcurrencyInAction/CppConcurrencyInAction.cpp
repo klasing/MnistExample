@@ -1,99 +1,124 @@
 #include <iostream>
-#include <thread>
-#include <utility>
 
-//#include "part1.cpp"
-#include "listing_1_1.cpp"
-#include "listing_2_1.cpp"
-#include "listing_2_2.cpp"
-#include "listing_2_3.cpp"
-#include "listing_2_4.cpp"
-#include "listing_2_5.cpp"
-#include "listing_2_6.cpp"
-#include "listing_2_7.cpp"
-#include "listing_2_8.cpp"
-#include "listing_3_1.cpp"
+#include "partD.cpp";
 
-#include "listing_A_1.cpp"
-#include "listing_A_2.cpp"
-
-using namespace std;
-// used in listing_3_1.cpp
-namespace ns_listing_3_1 {
-	list<int> some_list;
-	mutex some_mutex;
-}
+// used in example_d_7_2_a.cpp
+std::mutex ns_d_7_2_a::g_display_mutex;
 
 int main() {
-	using namespace ns_listing_1_1;
-	thread t(hello);
-	t.join();
-	using namespace ns_listing_2_1;
-	oops();
-	using namespace ns_listing_2_2;
-	try {
-		f();
+	bool bProceed = true;
+	unsigned iChar = 0;
+
+	while (bProceed) {
+		cout << "C++ Concurency In Action" << endl;
+		cout << "========================" << endl;
+		//cout << " 1) Hello, world of concurrency in C++!" << endl;
+		cout << "12) C++ Thread Library reference" << endl;
+		cout << "Enter the number of a subject, or enter a zero to quit: ";
+
+		cin >> iChar;
+
+		switch (iChar) {
+		case 12:
+			partD();
+			break;
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			cout << "The entered number is not recognized, please try again." << endl;
+		} // eof switch
 	}
-	catch (...) {
-		cout << "-> [main] exception catched" << endl;
-	}
-	using namespace ns_listing_2_3;
-	try {
-		ns_listing_2_3::f();
-	}
-	catch (...) {
-		cout << "-> [main] exception catched" << endl;
-	}
-	using namespace ns_listing_2_4;
-	// the functional behaviour in this example, is not like it should be
-	edit_document("first file name");
-	using namespace ns_listing_2_5;
-	thread t1(ns_listing_2_5::f());
-	thread t2(ns_listing_2_5::g());
-	t1.join();
-	t2.join();
-	using namespace ns_listing_2_6;
-	ns_listing_2_6::f();
-	using namespace ns_listing_2_7;
-	ns_listing_2_7::f();
-	using namespace ns_listing_2_8;
-	ns_listing_2_8::f();
-	using namespace ns_listing_3_1;
-	// TODO
-	using namespace ns_listing_A_1;
-	X x1;
-	X x2 = move(x1);
-	X x3 = static_cast<X&&>(x2);
-	using namespace ns_listing_A_2;
-	move_only m1;
-	// Error, copy constructor is declared deleted
-	// compiler complains: attemting to reference a deleted function
-	//move_only m2(m1);
-	// OK, move constructor found
-	move_only m3(move(m1));
 }
-//	bool bProceed = true;
-//	unsigned iChar = 0;
+//#include <iostream>
+//#include <thread>
+//#include <utility>
 //
-//	while (bProceed) {
-//		cout << "C++ Concurency In Action" << endl;
-//		cout << "========================" << endl;
-//		cout << " 1) Hello, world of concurrency in C++!" << endl;
-//		cout << "Enter the number of a subject, or enter a zero to quit: ";
+////#include "part1.cpp"
+//#include "listing_1_1.cpp"
+//#include "listing_2_1.cpp"
+//#include "listing_2_2.cpp"
+//#include "listing_2_3.cpp"
+//#include "listing_2_4.cpp"
+//#include "listing_2_5.cpp"
+//#include "listing_2_6.cpp"
+//#include "listing_2_7.cpp"
+//#include "listing_2_8.cpp"
+//#include "listing_3_1.cpp"
 //
-//		cin >> iChar;
+//#include "listing_A_1.cpp"
+//#include "listing_A_2.cpp"
+//#include "listing_A_3.cpp"
+//#include "listing_A_4.cpp"
 //
-//		switch (iChar) {
-//		case 1:
-//			part1();
-//			break;
-//		case 0:
-//			// the user wants to terminate
-//			bProceed = false;
-//			break;
-//		default:
-//			// the input, given by the user, is not an available option
-//			cout << "The entered number is not recognized, please try again." << endl;
-//		} // eof switch
+//using namespace std;
+//// used in listing_3_1.cpp
+//namespace ns_listing_3_1 {
+//	list<int> some_list;
+//	mutex some_mutex;
+//}
+//namespace ns_listing_A_4 {
+//	condition_variable cond;
+//	bool data_ready;
+//	mutex m;
+//}
+//
+//int main() {
+//	using namespace ns_listing_1_1;
+//	thread t(hello);
+//	t.join();
+//	using namespace ns_listing_2_1;
+//	oops();
+//	using namespace ns_listing_2_2;
+//	try {
+//		f();
 //	}
+//	catch (...) {
+//		cout << "-> [main] exception catched" << endl;
+//	}
+//	using namespace ns_listing_2_3;
+//	try {
+//		ns_listing_2_3::f();
+//	}
+//	catch (...) {
+//		cout << "-> [main] exception catched" << endl;
+//	}
+//	using namespace ns_listing_2_4;
+//	// the functional behaviour in this example, is not like it should be
+//	edit_document("first file name");
+//	using namespace ns_listing_2_5;
+//	thread t1(ns_listing_2_5::f());
+//	thread t2(ns_listing_2_5::g());
+//	t1.join();
+//	t2.join();
+//	using namespace ns_listing_2_6;
+//	ns_listing_2_6::f();
+//	using namespace ns_listing_2_7;
+//	ns_listing_2_7::f();
+//	using namespace ns_listing_2_8;
+//	ns_listing_2_8::f();
+//	using namespace ns_listing_3_1;
+//	// TODO
+//	using namespace ns_listing_A_1;
+//	X x1;
+//	X x2 = move(x1);
+//	X x3 = static_cast<X&&>(x2);
+//	using namespace ns_listing_A_2;
+//	move_only m1;
+//	// Error, copy constructor is declared deleted
+//	// compiler complains: attemting to reference a deleted function
+//	//move_only m2(m1);
+//	// OK, move constructor found
+//	move_only m3(move(m1));
+//	using namespace ns_listing_A_3;
+//	CX cx1(1, 2);
+//	CX cx2 = create_cx();
+//	CX cx3 = clone(cx1);
+//	int array[foo_squared(half_double(make_cx(10)))];
+//	using namespace ns_listing_A_4;
+//	thread t_a4(wait_for_data);
+//	ns_listing_A_4::data_ready = true;
+//	t_a4.join();
 //}

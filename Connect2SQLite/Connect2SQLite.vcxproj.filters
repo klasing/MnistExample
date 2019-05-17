@@ -21,9 +21,6 @@
     <ClCompile Include="CppSQLite3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="listing_3_7.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sqlite3.h">
