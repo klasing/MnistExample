@@ -1,7 +1,7 @@
 // Look at:
 // https://stackoverflow.com/questions/31745465/how-to-prepare-sql-statements-and-bind-parameters#
 //  1 - Rewritten for cleaner binding to dataChangeXXX() method in View object
-//  2 - Rewritten to insert user defined record
+//  2 - Rewritten to insert a user defined record
 #include <iostream>
 #include <string>
 #include <vector>
@@ -185,8 +185,17 @@ public:
 		if (Model::NAME_DB == "contact.db") {
 		}
 	}
-	void insertRecord(const tuple_company& newRecord) {
+	void insertRecord(const tuple_company newRecord) {
 		if (Model::NAME_DB == "company.db") {
+			sql =  "SELECT max(ID) FROM COMPANY;";
+			execute("Operation done successfully");
+			string key = to_string(++Model::highestKeyValueCompany);
+			// insert new record
+			sql = "INSERT INTO COMPANY(ID, NAME, AGE, ADDRESS, SALARY) \
+				VALUES(" + key + ",'" +  get<1>(newRecord) + "'," +
+				get<2>(newRecord) + ",'" + get<3>(newRecord) + "'," + 
+				get<4>(newRecord) + ");";
+			execute("Record inserted successfully");
 		}
 		if (Model::NAME_DB == "contact.db") {
 		}
@@ -212,6 +221,11 @@ private:
 	}
 	static int callback(void* data, int argc, char** argv, char** aszColName) {
 		if (Model::NAME_DB == "company.db") {
+			string colName = *aszColName;
+			if (colName == "max(ID)") {
+				Model::highestKeyValueCompany = stoi(argv[0]);
+				return 0;
+			}
 			tuple_company newTuple(static_cast<string>(argv[0]),
 				static_cast<string>(argv[1]),
 				static_cast<string>(argv[2]),
@@ -242,12 +256,14 @@ private:
 	string sql;
 	static vector<tuple_company> returnDataCompany;
 	static vector<tuple_contact> returnDataContact;
+	static int highestKeyValueCompany;
 };
 //const string Model::NAME_DB = "company.db";
 //const string Model::NAME_DB = "contact.db";
 string Model::NAME_DB = "";
 vector<tuple_company> Model::returnDataCompany;
 vector<tuple_contact> Model::returnDataContact;
+int Model::highestKeyValueCompany = 0;
 
 //****************************************************************************
 //*                     View
@@ -369,7 +385,12 @@ public:
 	}
 	void insertRequest(Model& model) {
 		if (model.getNameDb() == "company.db") {
-			tuple_company newRecord;
+			string name, age, address, salary;
+			cout << "Name......: "; cin >> name;
+			cout << "Age.......: "; cin >> age;
+			cout << "Address...: "; cin >> address;
+			cout << "Salary....: "; cin >> salary;
+			tuple_company newRecord("", name, age, address, salary);
 			model.insertRecord(newRecord);
 		}
 		if (model.getNameDb() == "contact.db") {
