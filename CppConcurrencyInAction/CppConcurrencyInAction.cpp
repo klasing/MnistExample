@@ -1,7 +1,18 @@
 #include <iostream>
 
-#include "partD.cpp";
+#include "part3.cpp"
+#include "partD.cpp"
 
+// used in listing_3_1.cpp
+list<int> ns_listing_3_1::some_list;
+mutex ns_listing_3_1::some_mutex;
+// used in listing_3_2.cpp
+ns_listing_3_2::some_data* ns_listing_3_2::unprotected;
+ns_listing_3_2::data_wrapper ns_listing_3_2::x;
+// used in listing_3_11.cpp
+struct ns_listing_3_11::some_resource;
+std::shared_ptr<ns_listing_3_11::some_resource> ns_listing_3_11::resource_ptr;
+std::mutex ns_listing_3_11::resource_mutex;
 // used in example_d_7_2_a.cpp
 std::mutex ns_d_7_2_a::g_display_mutex;
 
@@ -13,12 +24,16 @@ int main() {
 		cout << "C++ Concurency In Action" << endl;
 		cout << "========================" << endl;
 		//cout << " 1) Hello, world of concurrency in C++!" << endl;
+		cout << " 3) Sharing data between threads" << endl;
 		cout << "12) C++ Thread Library reference" << endl;
 		cout << "Enter the number of a subject, or enter a zero to quit: ";
 
 		cin >> iChar;
 
 		switch (iChar) {
+		case 3:
+			part3();
+			break;
 		case 12:
 			partD();
 			break;

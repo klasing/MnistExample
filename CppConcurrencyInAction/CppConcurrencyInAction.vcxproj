@@ -84,13 +84,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_70_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +153,10 @@
   <ItemGroup>
     <ClCompile Include="..\Connect2SQLite\listing_3_7.cpp" />
     <ClCompile Include="..\ModernCpp\z_template_paragraph.cpp" />
+    <ClCompile Include="chapter_3_1.cpp" />
+    <ClCompile Include="chapter_3_2.cpp" />
+    <ClCompile Include="chapter_3_3.cpp" />
+    <ClCompile Include="chapter_3_4.cpp" />
     <ClCompile Include="CppConcurrencyInAction.cpp" />
     <ClCompile Include="example_d_7_1_c.cpp" />
     <ClCompile Include="example_d_7_1_d.cpp" />
@@ -168,6 +172,9 @@
     <ClCompile Include="listing_2_7.cpp" />
     <ClCompile Include="listing_2_8.cpp" />
     <ClCompile Include="listing_3_1.cpp" />
+    <ClCompile Include="listing_3_11.cpp" />
+    <ClCompile Include="listing_3_12.cpp" />
+    <ClCompile Include="listing_3_13.cpp" />
     <ClCompile Include="listing_3_2.cpp" />
     <ClCompile Include="listing_3_3.cpp" />
     <ClCompile Include="listing_3_4.cpp" />
@@ -184,6 +191,19 @@
     <ClCompile Include="chapter_d_5.cpp" />
     <ClCompile Include="chapter_d_6.cpp" />
     <ClCompile Include="chapter_d_7.cpp" />
+    <ClCompile Include="paragraph_3_1_1.cpp" />
+    <ClCompile Include="paragraph_3_1_2.cpp" />
+    <ClCompile Include="paragraph_3_2_1.cpp" />
+    <ClCompile Include="paragraph_3_2_2.cpp" />
+    <ClCompile Include="paragraph_3_2_3.cpp" />
+    <ClCompile Include="paragraph_3_2_4.cpp" />
+    <ClCompile Include="paragraph_3_2_5.cpp" />
+    <ClCompile Include="paragraph_3_2_6.cpp" />
+    <ClCompile Include="paragraph_3_2_7.cpp" />
+    <ClCompile Include="paragraph_3_2_8.cpp" />
+    <ClCompile Include="paragraph_3_3_1.cpp" />
+    <ClCompile Include="paragraph_3_3_2.cpp" />
+    <ClCompile Include="paragraph_3_3_3.cpp" />
     <ClCompile Include="paragraph_d_1_1.cpp" />
     <ClCompile Include="paragraph_d_1_2.cpp" />
     <ClCompile Include="paragraph_d_1_3.cpp" />
@@ -230,6 +250,7 @@
     <ClCompile Include="paragraph_d_7_1.cpp" />
     <ClCompile Include="paragraph_d_7_2.cpp" />
     <ClCompile Include="Part1.cpp" />
+    <ClCompile Include="Part3.cpp" />
     <ClCompile Include="PartD.cpp" />
     <ClCompile Include="z_template_chapter.cpp" />
   </ItemGroup>

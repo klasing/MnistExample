@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "chapter_d_1.cpp";
-#include "chapter_d_2.cpp";
-#include "chapter_d_3.cpp";
-#include "chapter_d_4.cpp";
-#include "chapter_d_5.cpp";
-#include "chapter_d_6.cpp";
-#include "chapter_d_7.cpp";
+#include "chapter_d_1.cpp"
+#include "chapter_d_2.cpp"
+#include "chapter_d_3.cpp"
+#include "chapter_d_4.cpp"
+#include "chapter_d_5.cpp"
+#include "chapter_d_6.cpp"
+#include "chapter_d_7.cpp"
 
 using namespace std;
 inline void partD() {

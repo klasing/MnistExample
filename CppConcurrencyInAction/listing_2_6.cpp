@@ -30,10 +30,10 @@ namespace ns_listing_2_6 {
 	}
 
 	inline void f() {
-		int some_local_state;
-		// constructor is never called???
-		scoped_thread t(thread(func(some_local_state)));
+		//int some_local_state;
+		//// constructor is never called???
+		//scoped_thread t(thread(func(some_local_state)));
 
-		do_something_in_current_thread();
+		//do_something_in_current_thread();
 	}
 }

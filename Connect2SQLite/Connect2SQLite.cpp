@@ -1,5 +1,7 @@
 // Look at:
 // https://stackoverflow.com/questions/31745465/how-to-prepare-sql-statements-and-bind-parameters#
+// For a tutorial, look at:
+// http://zetcode.com/db/sqlitec/
 //  1 - Rewritten for cleaner binding to dataChangeXXX() method in View object
 //  2 - Rewritten to insert a user defined record
 #include <iostream>
@@ -196,6 +198,10 @@ public:
 				get<2>(newRecord) + ",'" + get<3>(newRecord) + "'," + 
 				get<4>(newRecord) + ");";
 			execute("Record inserted successfully");
+			// this only works when an insert was committed
+			// when the app starts there has not been an insert yet, and the function
+			// will return zero
+			//cout << "key value last insert: " << sqlite3_last_insert_rowid(db) << endl;
 		}
 		if (Model::NAME_DB == "contact.db") {
 		}
@@ -252,7 +258,7 @@ private:
 	MessageHandler messageHandler = nullptr;
 	DataHandlerCompany dataHandlerCompany = nullptr;
 	DataHandlerContact dataHandlerContact = nullptr;
-	sqlite3* db;
+	sqlite3* db = nullptr;
 	string sql;
 	static vector<tuple_company> returnDataCompany;
 	static vector<tuple_contact> returnDataContact;

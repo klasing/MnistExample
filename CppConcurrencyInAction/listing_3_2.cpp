@@ -21,11 +21,11 @@ namespace ns_listing_3_2 {
 			func(data);
 		}
 	};
-	some_data* unprotected;
+	extern some_data* unprotected;
 	inline void malicious_funtion(some_data& protected_data) {
 		unprotected = &protected_data;
 	}
-	data_wrapper x;
+	extern data_wrapper x;
 	inline void foo() {
 		x.process_data(malicious_funtion);
 		unprotected->do_something();
