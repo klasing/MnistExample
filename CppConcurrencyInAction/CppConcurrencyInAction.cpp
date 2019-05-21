@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "part3.cpp"
+#include "part4.cpp"
 #include "partD.cpp"
 
 // used in listing_3_1.cpp
@@ -13,6 +14,17 @@ ns_listing_3_2::data_wrapper ns_listing_3_2::x;
 struct ns_listing_3_11::some_resource;
 std::shared_ptr<ns_listing_3_11::some_resource> ns_listing_3_11::resource_ptr;
 std::mutex ns_listing_3_11::resource_mutex;
+// used in listing_4_1.cpp
+std::mutex ns_listing_4_1::mut;
+std::queue<ns_listing_4_1::data_chunk> ns_listing_4_1::data_queue;
+std::condition_variable ns_listing_4_1::data_cond;
+int ns_listing_4_1::nPrepare = 0;
+int ns_listing_4_1::nProcess = 0;
+const int ns_listing_4_1::NCHUNK = 10;
+// used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
+boost::shared_mutex ns_example_44_10::mutex;
+vector<int> ns_example_44_10::random_numbers;
+int ns_example_44_10::sum = 0;
 // used in example_d_7_2_a.cpp
 std::mutex ns_d_7_2_a::g_display_mutex;
 
@@ -25,6 +37,7 @@ int main() {
 		cout << "========================" << endl;
 		//cout << " 1) Hello, world of concurrency in C++!" << endl;
 		cout << " 3) Sharing data between threads" << endl;
+		cout << " 4) Synchronizing concurrent operations" << endl;
 		cout << "12) C++ Thread Library reference" << endl;
 		cout << "Enter the number of a subject, or enter a zero to quit: ";
 
@@ -33,6 +46,9 @@ int main() {
 		switch (iChar) {
 		case 3:
 			part3();
+			break;
+		case 4:
+			part4();
 			break;
 		case 12:
 			partD();

@@ -90,11 +90,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_70_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_69_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_69_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,7 +158,13 @@
     <ClCompile Include="chapter_3_2.cpp" />
     <ClCompile Include="chapter_3_3.cpp" />
     <ClCompile Include="chapter_3_4.cpp" />
+    <ClCompile Include="chapter_4_1.cpp" />
+    <ClCompile Include="chapter_4_2.cpp" />
+    <ClCompile Include="chapter_4_3.cpp" />
+    <ClCompile Include="chapter_4_4.cpp" />
+    <ClCompile Include="chapter_4_5.cpp" />
     <ClCompile Include="CppConcurrencyInAction.cpp" />
+    <ClCompile Include="example_44_10.cpp" />
     <ClCompile Include="example_d_7_1_c.cpp" />
     <ClCompile Include="example_d_7_1_d.cpp" />
     <ClCompile Include="example_d_7_2_a.cpp" />
@@ -180,6 +187,7 @@
     <ClCompile Include="listing_3_4.cpp" />
     <ClCompile Include="listing_3_5.cpp" />
     <ClCompile Include="listing_3_6.cpp" />
+    <ClCompile Include="listing_4_1.cpp" />
     <ClCompile Include="listing_a_1.cpp" />
     <ClCompile Include="listing_a_2.cpp" />
     <ClCompile Include="listing_a_3.cpp" />
@@ -204,6 +212,19 @@
     <ClCompile Include="paragraph_3_3_1.cpp" />
     <ClCompile Include="paragraph_3_3_2.cpp" />
     <ClCompile Include="paragraph_3_3_3.cpp" />
+    <ClCompile Include="paragraph_4_1_1.cpp" />
+    <ClCompile Include="paragraph_4_1_2.cpp" />
+    <ClCompile Include="paragraph_4_2_1.cpp" />
+    <ClCompile Include="paragraph_4_2_2.cpp" />
+    <ClCompile Include="paragraph_4_2_3.cpp" />
+    <ClCompile Include="paragraph_4_2_4.cpp" />
+    <ClCompile Include="paragraph_4_2_5.cpp" />
+    <ClCompile Include="paragraph_4_3_1.cpp" />
+    <ClCompile Include="paragraph_4_3_2.cpp" />
+    <ClCompile Include="paragraph_4_3_3.cpp" />
+    <ClCompile Include="paragraph_4_3_4.cpp" />
+    <ClCompile Include="paragraph_4_4_1.cpp" />
+    <ClCompile Include="paragraph_4_4_2.cpp" />
     <ClCompile Include="paragraph_d_1_1.cpp" />
     <ClCompile Include="paragraph_d_1_2.cpp" />
     <ClCompile Include="paragraph_d_1_3.cpp" />
@@ -251,6 +272,7 @@
     <ClCompile Include="paragraph_d_7_2.cpp" />
     <ClCompile Include="Part1.cpp" />
     <ClCompile Include="Part3.cpp" />
+    <ClCompile Include="Part4.cpp" />
     <ClCompile Include="PartD.cpp" />
     <ClCompile Include="z_template_chapter.cpp" />
   </ItemGroup>
