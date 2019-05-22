@@ -16,6 +16,11 @@
 #include "example_1_6.cpp"
 #include "example_1_7.cpp"
 #include "example_1_8.cpp"
+#include "example_1_9.cpp"
+#include "example_2_1.cpp"
+#include "example_2_2.cpp"
+#include "example_2_3.cpp"
+#include "exercise_2_1.cpp"
 
 int main()
 {
@@ -29,6 +34,11 @@ int main()
 	ns_example_1_6::example_1_6();
 	ns_example_1_7::example_1_7();
 	ns_example_1_8::example_1_8();
+	ns_example_1_9::example_1_9(); // has issues
+	ns_example_2_1::example_2_1();
+	ns_example_2_2::example_2_2();
+	ns_example_2_3::example_2_3();
+	ns_exercise_2_1::exercise_2_1();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

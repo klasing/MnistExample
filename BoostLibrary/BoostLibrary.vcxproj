@@ -162,7 +162,11 @@
     <ClCompile Include="example_1_7.cpp" />
     <ClCompile Include="example_1_8.cpp" />
     <ClCompile Include="example_1_9.cpp" />
+    <ClCompile Include="example_2_1.cpp" />
+    <ClCompile Include="example_2_2.cpp" />
+    <ClCompile Include="example_2_3.cpp" />
     <ClCompile Include="example_template.cpp" />
+    <ClCompile Include="exercise_2_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

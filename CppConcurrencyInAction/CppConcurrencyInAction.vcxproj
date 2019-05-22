@@ -189,6 +189,8 @@
     <ClCompile Include="listing_3_6.cpp" />
     <ClCompile Include="listing_4_1.cpp" />
     <ClCompile Include="listing_4_2.cpp" />
+    <ClCompile Include="listing_4_3.cpp" />
+    <ClCompile Include="listing_4_4.cpp" />
     <ClCompile Include="listing_a_1.cpp" />
     <ClCompile Include="listing_a_2.cpp" />
     <ClCompile Include="listing_a_3.cpp" />
