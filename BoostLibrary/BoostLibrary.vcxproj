@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_70_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -165,9 +165,13 @@
     <ClCompile Include="example_2_1.cpp" />
     <ClCompile Include="example_2_2.cpp" />
     <ClCompile Include="example_2_3.cpp" />
+    <ClCompile Include="example_3_1.cpp" />
+    <ClCompile Include="example_3_2.cpp" />
+    <ClCompile Include="example_3_3.cpp" />
     <ClCompile Include="example_template.cpp" />
     <ClCompile Include="exercise_2_1.cpp" />
     <ClCompile Include="exercise_2_1_starter.cpp" />
+    <ClCompile Include="exercise_3_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

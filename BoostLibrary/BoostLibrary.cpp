@@ -23,6 +23,10 @@
 #include "example_2_3.cpp"
 #include "exercise_2_1_starter.cpp"
 #include "exercise_2_1.cpp"
+#include "example_3_1.cpp"
+#include "example_3_2.cpp"
+#include "example_3_3.cpp"
+#include "exercise_3_1.cpp"
 
 // used in exercise_2_1_starter.cpp
 const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
@@ -46,6 +50,10 @@ int main()
 	ns_example_2_3::example_2_3();
 	ns_exercise_2_1_starter::exercise_2_1_starter();
 	ns_exercise_2_1::exercise_2_1();
+	ns_example_3_1::example_3_1();
+	ns_example_3_2::example_3_2();
+	ns_example_3_3::example_3_3();
+	ns_exercise_3_1::exercise_3_1();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
