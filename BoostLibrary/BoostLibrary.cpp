@@ -7,6 +7,7 @@
 //    Additional Include Directories : C:\Program Files\boost\boost_1_70_0\stage\lib
 
 #include <iostream>
+#include <string>
 
 #include "example_1_1.cpp"
 #include "example_1_2.cpp"
@@ -20,7 +21,12 @@
 #include "example_2_1.cpp"
 #include "example_2_2.cpp"
 #include "example_2_3.cpp"
+#include "exercise_2_1_starter.cpp"
 #include "exercise_2_1.cpp"
+
+// used in exercise_2_1_starter.cpp
+const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
+const string ns_exercise_2_1_starter::oiink = "Oiiink";
 
 int main()
 {
@@ -38,6 +44,7 @@ int main()
 	ns_example_2_1::example_2_1();
 	ns_example_2_2::example_2_2();
 	ns_example_2_3::example_2_3();
+	ns_exercise_2_1_starter::exercise_2_1_starter();
 	ns_exercise_2_1::exercise_2_1();
 }
 
