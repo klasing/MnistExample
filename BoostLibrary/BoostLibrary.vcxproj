@@ -168,6 +168,15 @@
     <ClCompile Include="example_3_1.cpp" />
     <ClCompile Include="example_3_2.cpp" />
     <ClCompile Include="example_3_3.cpp" />
+    <ClCompile Include="example_4_1.cpp" />
+    <ClCompile Include="example_4_2.cpp" />
+    <ClCompile Include="example_4_3.cpp" />
+    <ClCompile Include="example_4_4.cpp" />
+    <ClCompile Include="example_4_5.cpp" />
+    <ClCompile Include="example_4_6.cpp" />
+    <ClCompile Include="example_5_1.cpp" />
+    <ClCompile Include="example_5_2.cpp" />
+    <ClCompile Include="example_5_3.cpp" />
     <ClCompile Include="example_template.cpp" />
     <ClCompile Include="exercise_2_1.cpp" />
     <ClCompile Include="exercise_2_1_starter.cpp" />

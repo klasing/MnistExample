@@ -27,6 +27,15 @@
 #include "example_3_2.cpp"
 #include "example_3_3.cpp"
 #include "exercise_3_1.cpp"
+#include "example_4_1.cpp"
+#include "example_4_2.cpp"
+#include "example_4_3.cpp"
+#include "example_4_4.cpp"
+#include "example_4_5.cpp"
+#include "example_4_6.cpp"
+#include "example_5_1.cpp"
+#include "example_5_2.cpp"
+#include "example_5_3.cpp"
 
 // used in exercise_2_1_starter.cpp
 const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
@@ -36,24 +45,33 @@ int main()
 {
     std::cout << "Hello World!\n";
 
-	ns_example_1_1::example_1_1();
-	ns_example_1_2::example_1_2();
-	ns_example_1_3::example_1_3();
-	ns_example_1_4::example_1_4();
-	ns_example_1_5::example_1_5();
-	ns_example_1_6::example_1_6();
-	ns_example_1_7::example_1_7();
-	ns_example_1_8::example_1_8();
-	ns_example_1_9::example_1_9(); // has issues
-	ns_example_2_1::example_2_1();
-	ns_example_2_2::example_2_2();
-	ns_example_2_3::example_2_3();
-	ns_exercise_2_1_starter::exercise_2_1_starter();
-	ns_exercise_2_1::exercise_2_1();
-	ns_example_3_1::example_3_1();
-	ns_example_3_2::example_3_2();
-	ns_example_3_3::example_3_3();
-	ns_exercise_3_1::exercise_3_1();
+	//ns_example_1_1::example_1_1();
+	//ns_example_1_2::example_1_2();
+	//ns_example_1_3::example_1_3();
+	//ns_example_1_4::example_1_4();
+	//ns_example_1_5::example_1_5();
+	//ns_example_1_6::example_1_6();
+	//ns_example_1_7::example_1_7();
+	//ns_example_1_8::example_1_8();
+	//ns_example_1_9::example_1_9(); // has issues
+	//ns_example_2_1::example_2_1();
+	//ns_example_2_2::example_2_2();
+	//ns_example_2_3::example_2_3();
+	//ns_exercise_2_1_starter::exercise_2_1_starter();
+	//ns_exercise_2_1::exercise_2_1();
+	//ns_example_3_1::example_3_1();
+	//ns_example_3_2::example_3_2();
+	//ns_example_3_3::example_3_3();
+	//ns_exercise_3_1::exercise_3_1();
+	//_example_4_1::example_4_1();
+	//ns_example_4_2::example_4_2();
+	//ns_example_4_3::example_4_3();
+	//ns_example_4_4::example_4_4();
+	//ns_example_4_5::example_4_5();
+	//ns_example_4_6::example_4_6();
+	//ns_example_5_1::example_5_1();
+	//ns_example_5_2::example_5_2();
+	ns_example_5_3::example_5_3();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
