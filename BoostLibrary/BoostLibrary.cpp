@@ -36,6 +36,16 @@
 #include "example_5_1.cpp"
 #include "example_5_2.cpp"
 #include "example_5_3.cpp"
+#include "example_5_4.cpp"
+#include "example_5_5.cpp"
+#include "example_5_6.cpp"
+#include "example_5_7.cpp"
+#include "example_5_8.cpp"
+#include "example_5_9.cpp"
+#include "example_5_10.cpp"
+#include "example_5_11.cpp"
+#include "example_5_12.cpp"
+#include "exercise_5_1.cpp"
 
 // used in exercise_2_1_starter.cpp
 const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
@@ -43,6 +53,7 @@ const string ns_exercise_2_1_starter::oiink = "Oiiink";
 
 int main()
 {
+
     std::cout << "Hello World!\n";
 
 	//ns_example_1_1::example_1_1();
@@ -71,7 +82,17 @@ int main()
 	//ns_example_4_6::example_4_6();
 	//ns_example_5_1::example_5_1();
 	//ns_example_5_2::example_5_2();
-	ns_example_5_3::example_5_3();
+	//ns_example_5_3::example_5_3();
+	//ns_example_5_4::example_5_4();
+	//ns_example_5_5::example_5_5();
+	//ns_example_5_6::example_5_6();
+	//ns_example_5_7::example_5_7();
+	//ns_example_5_8::example_5_8();
+	//ns_example_5_9::example_5_9();
+	//ns_example_5_10::example_5_10();
+	//ns_example_5_11::example_5_11();
+	//ns_example_5_12::example_5_12(); // has issues
+	//ns_exercise_5_1::exercise_5_1(); // has issues
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
