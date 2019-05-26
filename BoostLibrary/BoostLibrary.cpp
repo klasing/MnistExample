@@ -46,6 +46,17 @@
 #include "example_5_11.cpp"
 #include "example_5_12.cpp"
 #include "exercise_5_1.cpp"
+#include "example_6_1.cpp"
+#include "example_6_2.cpp"
+#include "example_7_1.cpp"
+#include "example_7_2.cpp"
+#include "example_7_3.cpp"
+#include "example_7_4.cpp"
+#include "example_7_5.cpp"
+#include "example_7_6.cpp"
+#include "example_7_7.cpp"
+#include "example_7_8.cpp"
+#include "example_7_9.cpp"
 
 // used in exercise_2_1_starter.cpp
 const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
@@ -93,6 +104,17 @@ int main()
 	//ns_example_5_11::example_5_11();
 	//ns_example_5_12::example_5_12(); // has issues
 	//ns_exercise_5_1::exercise_5_1(); // has issues
+	//ns_example_6_1::example_6_1();
+	//ns_example_6_2::example_6_2();
+	//ns_example_7_1::example_7_1();
+	//ns_example_7_2::example_7_2();
+	//ns_example_7_3::example_7_3();
+	//ns_example_7_4::example_7_4();
+	//ns_example_7_5::example_7_5();
+	//ns_example_7_6::example_7_6();
+	//ns_example_7_7::example_7_7();
+	//ns_example_7_8::example_7_8();
+	//ns_example_7_9::example_7_9();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
