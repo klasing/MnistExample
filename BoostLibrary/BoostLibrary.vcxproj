@@ -197,6 +197,14 @@
     <ClCompile Include="example_7_7.cpp" />
     <ClCompile Include="example_7_8.cpp" />
     <ClCompile Include="example_7_9.cpp" />
+    <ClCompile Include="example_8_1.cpp" />
+    <ClCompile Include="example_8_2.cpp" />
+    <ClCompile Include="example_8_3.cpp" />
+    <ClCompile Include="example_8_4.cpp" />
+    <ClCompile Include="example_8_5.cpp" />
+    <ClCompile Include="example_8_6.cpp" />
+    <ClCompile Include="example_8_7.cpp" />
+    <ClCompile Include="example_8_8.cpp" />
     <ClCompile Include="example_template.cpp" />
     <ClCompile Include="exercise_2_1.cpp" />
     <ClCompile Include="exercise_2_1_starter.cpp" />
