@@ -205,6 +205,7 @@
     <ClCompile Include="example_8_6.cpp" />
     <ClCompile Include="example_8_7.cpp" />
     <ClCompile Include="example_8_8.cpp" />
+    <ClCompile Include="example_9_1.cpp" />
     <ClCompile Include="example_template.cpp" />
     <ClCompile Include="exercise_2_1.cpp" />
     <ClCompile Include="exercise_2_1_starter.cpp" />

@@ -189,5 +189,8 @@
     <ClCompile Include="example_8_8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="example_9_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

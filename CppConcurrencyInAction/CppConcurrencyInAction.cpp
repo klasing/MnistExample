@@ -2,6 +2,7 @@
 
 #include "part3.cpp"
 #include "part4.cpp"
+#include "part5.cpp"
 #include "partD.cpp"
 
 // used in listing_3_1.cpp
@@ -21,7 +22,24 @@ std::condition_variable ns_listing_4_1::data_cond;
 int ns_listing_4_1::nPrepare = 0;
 int ns_listing_4_1::nProcess = 0;
 const int ns_listing_4_1::NCHUNK = 10;
+// used in listing_5_2.cpp
+// TODO not used yet
+//vector<int> ns_listing_5_2::data;
+//atomic<bool> ns_listing_5_2::data_ready(false);
+// used in listing_5_4.cpp
+// TODO not used yet
+//atomic<bool> ns_listing_5_4::x, ns_listing_5_4::y;
+//atomic<int> ns_listing_5_4::z;
+// used in listing_5_5.cpp
+// TODO not used yet
+//atomic<bool> ns_listing_5_5::x, ns_listing_5_5::y;
+//atomic<int> ns_listing_5_5::z;
 // used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
+
+// used in listing_5_6.cpp
+// TODO not used yet
+//unsigned const ns_listing_5_6::loop_count = 10;
+
 boost::shared_mutex ns_example_44_10::mutex;
 vector<int> ns_example_44_10::random_numbers;
 int ns_example_44_10::sum = 0;
@@ -38,6 +56,7 @@ int main() {
 		//cout << " 1) Hello, world of concurrency in C++!" << endl;
 		cout << " 3) Sharing data between threads" << endl;
 		cout << " 4) Synchronizing concurrent operations" << endl;
+		cout << " 5) The C++ memory model and operations on atomic types" << endl;
 		cout << "12) C++ Thread Library reference" << endl;
 		cout << "Enter the number of a subject, or enter a zero to quit: ";
 
@@ -49,6 +68,9 @@ int main() {
 			break;
 		case 4:
 			part4();
+			break;
+		case 5:
+			part5();
 			break;
 		case 12:
 			partD();
