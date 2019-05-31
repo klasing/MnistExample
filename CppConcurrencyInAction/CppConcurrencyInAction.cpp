@@ -22,27 +22,48 @@ std::condition_variable ns_listing_4_1::data_cond;
 int ns_listing_4_1::nPrepare = 0;
 int ns_listing_4_1::nProcess = 0;
 const int ns_listing_4_1::NCHUNK = 10;
+
+// used in example_5_1.cpp
+atomic_flag ns_example_5_1::lock_stream = ATOMIC_FLAG_INIT;
+stringstream ns_example_5_1::stream;
+
+// used in listing_5_1.cpp
+class ns_listing_5_1::spinlock_mutex;
+ns_listing_5_1::spinlock_mutex ns_listing_5_1::sm;
+stringstream ns_listing_5_1::stream;
+
 // used in listing_5_2.cpp
-// TODO not used yet
-//vector<int> ns_listing_5_2::data;
-//atomic<bool> ns_listing_5_2::data_ready(false);
+vector<int> ns_listing_5_2::data;
+atomic<bool> ns_listing_5_2::data_ready(false);
+
 // used in listing_5_4.cpp
-// TODO not used yet
-//atomic<bool> ns_listing_5_4::x, ns_listing_5_4::y;
-//atomic<int> ns_listing_5_4::z;
+atomic<bool> ns_listing_5_4::x, ns_listing_5_4::y;
+atomic<int> ns_listing_5_4::z;
+
 // used in listing_5_5.cpp
-// TODO not used yet
-//atomic<bool> ns_listing_5_5::x, ns_listing_5_5::y;
-//atomic<int> ns_listing_5_5::z;
-// used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
+atomic<bool> ns_listing_5_5::x, ns_listing_5_5::y;
+atomic<int> ns_listing_5_5::z;
 
 // used in listing_5_6.cpp
-// TODO not used yet
-//unsigned const ns_listing_5_6::loop_count = 10;
+atomic<int> ns_listing_5_6::x(0), ns_listing_5_6::y(0), ns_listing_5_6::z(0);
+atomic<bool> ns_listing_5_6::go;
+class ns_listing_5_6::read_values;
+constexpr int loop_count = 10;
+ns_listing_5_6::read_values ns_listing_5_6::values1[loop_count];
+ns_listing_5_6::read_values ns_listing_5_6::values2[loop_count];
+ns_listing_5_6::read_values ns_listing_5_6::values3[loop_count];
+ns_listing_5_6::read_values ns_listing_5_6::values4[loop_count];
+ns_listing_5_6::read_values ns_listing_5_6::values5[loop_count];
 
+// used in listing_5_7.cpp
+atomic<bool> ns_listing_5_7::x, ns_listing_5_7::y;
+atomic<int> ns_listing_5_7::z;
+
+// used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
 boost::shared_mutex ns_example_44_10::mutex;
 vector<int> ns_example_44_10::random_numbers;
 int ns_example_44_10::sum = 0;
+
 // used in example_d_7_2_a.cpp
 std::mutex ns_d_7_2_a::g_display_mutex;
 

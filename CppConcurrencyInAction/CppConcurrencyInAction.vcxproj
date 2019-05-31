@@ -174,7 +174,7 @@
     <ClCompile Include="example_d_7_1_d.cpp" />
     <ClCompile Include="example_d_7_2_a.cpp" />
     <ClCompile Include="example_d_7_2_b.cpp" />
-    <ClCompile Include="lisitng_5_6.cpp" />
+    <ClCompile Include="listing_5_6.cpp" />
     <ClCompile Include="listing_1_1.cpp" />
     <ClCompile Include="listing_2_1.cpp" />
     <ClCompile Include="listing_2_2.cpp" />
@@ -202,6 +202,8 @@
     <ClCompile Include="listing_5_3.cpp" />
     <ClCompile Include="listing_5_4.cpp" />
     <ClCompile Include="listing_5_5.cpp" />
+    <ClCompile Include="listing_5_7.cpp" />
+    <ClCompile Include="listing_5_8.cpp" />
     <ClCompile Include="listing_a_1.cpp" />
     <ClCompile Include="listing_a_2.cpp" />
     <ClCompile Include="listing_a_3.cpp" />

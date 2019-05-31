@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "listing_5_2.cpp"
+
 #include "paragraph_5_3_1.cpp"
 #include "paragraph_5_3_2.cpp"
 #include "paragraph_5_3_3.cpp"
@@ -11,6 +13,8 @@ using namespace std;
 inline void chapter_5_3() {
 	bool bProceed = true;
 	unsigned iChar = 0;
+
+	ns_listing_5_2::listing_5_2();
 
 	while (bProceed) {
 		cout << "5.3 Sychronizing operations and enforcing ordering" << endl;

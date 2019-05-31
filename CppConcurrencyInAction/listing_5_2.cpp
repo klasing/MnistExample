@@ -9,7 +9,7 @@
 using namespace std;
 namespace ns_listing_5_2 {
 	extern vector<int> data;
-	extern atomic<bool> data_ready(false);
+	extern atomic<bool> data_ready;
 
 	inline void reader_thread() {
 		while (!data_ready.load()) { // (1)
@@ -21,5 +21,16 @@ namespace ns_listing_5_2 {
 	inline void writer_thread() {
 		data.push_back(42); // (3)
 		data_ready = true; // (4)
+		cout << "-> data written" << endl;
+	}
+
+	inline void listing_5_2() {
+		//cout << "-> listing_5_2()" << endl;
+
+		thread t1(writer_thread);
+		thread t2(reader_thread);
+
+		t1.join();
+		t2.join();
 	}
 }

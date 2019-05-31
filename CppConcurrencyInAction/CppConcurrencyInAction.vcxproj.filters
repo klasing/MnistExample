@@ -408,9 +408,6 @@
     <ClCompile Include="listing_5_5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lisitng_5_6.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="part5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -475,6 +472,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="example_5_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="listing_5_6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="listing_5_7.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="listing_5_8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

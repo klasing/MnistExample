@@ -1,9 +1,15 @@
 // Listing 5.1
 // Implementation of a spinlock mutex using std::atomic_flag
 #include <atomic>
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <sstream>
 
 using namespace std;
 namespace ns_listing_5_1 {
+	extern stringstream stream;
+
 	class spinlock_mutex {
 		//atomic_flag flag;
 		atomic_flag flag = ATOMIC_FLAG_INIT;
@@ -18,7 +24,21 @@ namespace ns_listing_5_1 {
 		}
 	};
 
-	inline void listing_5_1() {
+	extern spinlock_mutex sm;
 
+	inline void append_number(int x) {
+		sm.lock();
+		stream << "-> thread #" << x << '\n';
+		sm.unlock();
+	}
+
+	inline void listing_5_1() {
+		vector<thread> threads;
+		for (int i = 1; i <= 10; ++i)
+			threads.push_back(thread(append_number, i));
+		for (auto& th : threads)
+			th.join();
+
+		cout << stream.str();
 	}
 }
