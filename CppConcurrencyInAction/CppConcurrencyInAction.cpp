@@ -59,6 +59,14 @@ ns_listing_5_6::read_values ns_listing_5_6::values5[loop_count];
 atomic<bool> ns_listing_5_7::x, ns_listing_5_7::y;
 atomic<int> ns_listing_5_7::z;
 
+// used in listing_5_8.cpp
+atomic<bool> ns_listing_5_8::x, ns_listing_5_8::y;
+atomic<int> ns_listing_5_8::z;
+
+// used in listing_5_9.cpp
+atomic<int> ns_listing_5_9::data[5];
+atomic<bool> ns_listing_5_9::sync1(false), ns_listing_5_9::sync2(false);
+
 // used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
 boost::shared_mutex ns_example_44_10::mutex;
 vector<int> ns_example_44_10::random_numbers;
@@ -66,6 +74,10 @@ int ns_example_44_10::sum = 0;
 
 // used in example_d_7_2_a.cpp
 std::mutex ns_d_7_2_a::g_display_mutex;
+
+// used in cppref_use_atomic_flag.cpp
+//atomic_flag ns_cppref_use_atomic_flag::lock_stream = ATOMIC_FLAG_INIT;
+//stringstream ns_cppref_use_atomic_flag::stream;
 
 int main() {
 	bool bProceed = true;

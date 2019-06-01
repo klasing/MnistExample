@@ -483,5 +483,14 @@
     <ClCompile Include="listing_5_8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="listing_5_9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cppref_use_atomic_flag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cppref_construct_atomic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

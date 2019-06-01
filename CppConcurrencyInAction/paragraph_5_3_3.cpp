@@ -5,6 +5,7 @@
 #include "listing_5_6.cpp"
 #include "listing_5_7.cpp"
 #include "listing_5_8.cpp"
+#include "listing_5_9.cpp"
 
 using namespace std;
 inline void paragraph_5_3_3() {
@@ -22,4 +23,7 @@ inline void paragraph_5_3_3() {
 	ns_listing_5_7::listing_5_7();
 	ns_listing_5_8::listing_5_8();
 	cout << "f) Transitive synchronization with aquire-release ordering" << endl;
+	ns_listing_5_9::listing_5_9();
+	cout << "g) Data dependency with aquire-release ordering and memory_order_consume" << endl;
+
 }

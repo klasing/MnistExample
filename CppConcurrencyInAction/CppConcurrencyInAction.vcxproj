@@ -168,6 +168,7 @@
     <ClCompile Include="chapter_5_3.cpp" />
     <ClCompile Include="chapter_5_4.cpp" />
     <ClCompile Include="CppConcurrencyInAction.cpp" />
+    <ClCompile Include="cppref_construct_atomic.cpp" />
     <ClCompile Include="example_44_10.cpp" />
     <ClCompile Include="example_5_1.cpp" />
     <ClCompile Include="example_d_7_1_c.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="listing_5_5.cpp" />
     <ClCompile Include="listing_5_7.cpp" />
     <ClCompile Include="listing_5_8.cpp" />
+    <ClCompile Include="listing_5_9.cpp" />
     <ClCompile Include="listing_a_1.cpp" />
     <ClCompile Include="listing_a_2.cpp" />
     <ClCompile Include="listing_a_3.cpp" />
@@ -307,6 +309,7 @@
     <ClCompile Include="Part4.cpp" />
     <ClCompile Include="part5.cpp" />
     <ClCompile Include="PartD.cpp" />
+    <ClCompile Include="cppref_use_atomic_flag.cpp" />
     <ClCompile Include="z_template_chapter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
