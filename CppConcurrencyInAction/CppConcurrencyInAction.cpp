@@ -3,6 +3,7 @@
 #include "part3.cpp"
 #include "part4.cpp"
 #include "part5.cpp"
+#include "part6.cpp"
 #include "partD.cpp"
 
 // used in listing_3_1.cpp
@@ -67,6 +68,25 @@ atomic<int> ns_listing_5_8::z;
 atomic<int> ns_listing_5_9::data[5];
 atomic<bool> ns_listing_5_9::sync1(false), ns_listing_5_9::sync2(false);
 
+// used in listing_5_10.cpp
+class ns_listing_5_10::X;
+atomic<ns_listing_5_10::X*> ns_listing_5_10::p;
+atomic<int> ns_listing_5_10::a;
+
+// used in listing_5_11.cpp
+vector<int> ns_listing_5_11::queue_data;
+atomic<int> ns_listing_5_11::count;
+
+// used in listing_5_12.cpp
+atomic<bool> ns_listing_5_12::x, ns_listing_5_12::y;
+atomic<int> ns_listing_5_12::z;
+
+// used in listing_5_13.cpp
+bool ns_listing_5_13::x;
+atomic<bool> ns_listing_5_13::y;
+atomic<int> ns_listing_5_13::z;
+
+
 // used in example_44_10.cpp (belongs to paragraph_3_3_3.cpp)
 boost::shared_mutex ns_example_44_10::mutex;
 vector<int> ns_example_44_10::random_numbers;
@@ -90,6 +110,7 @@ int main() {
 		cout << " 3) Sharing data between threads" << endl;
 		cout << " 4) Synchronizing concurrent operations" << endl;
 		cout << " 5) The C++ memory model and operations on atomic types" << endl;
+		cout << " 6) Designing lock-based concurrent data structures" << endl;
 		cout << "12) C++ Thread Library reference" << endl;
 		cout << "Enter the number of a subject, or enter a zero to quit: ";
 
@@ -104,6 +125,9 @@ int main() {
 			break;
 		case 5:
 			part5();
+			break;
+		case 6:
+			part6();
 			break;
 		case 12:
 			partD();

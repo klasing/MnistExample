@@ -167,7 +167,14 @@
     <ClCompile Include="chapter_5_2.cpp" />
     <ClCompile Include="chapter_5_3.cpp" />
     <ClCompile Include="chapter_5_4.cpp" />
+    <ClCompile Include="chapter_6_1.cpp" />
+    <ClCompile Include="chapter_6_2.cpp" />
+    <ClCompile Include="chapter_6_3.cpp" />
+    <ClCompile Include="chapter_6_4.cpp" />
     <ClCompile Include="CppConcurrencyInAction.cpp" />
+    <ClCompile Include="cppmem_example_1.cpp" />
+    <ClCompile Include="cppmem_example_2.cpp" />
+    <ClCompile Include="cppmem_example_8_1.cpp" />
     <ClCompile Include="cppref_construct_atomic.cpp" />
     <ClCompile Include="example_44_10.cpp" />
     <ClCompile Include="example_5_1.cpp" />
@@ -175,6 +182,10 @@
     <ClCompile Include="example_d_7_1_d.cpp" />
     <ClCompile Include="example_d_7_2_a.cpp" />
     <ClCompile Include="example_d_7_2_b.cpp" />
+    <ClCompile Include="listing_5_10.cpp" />
+    <ClCompile Include="listing_5_11.cpp" />
+    <ClCompile Include="listing_5_12.cpp" />
+    <ClCompile Include="listing_5_13.cpp" />
     <ClCompile Include="listing_5_6.cpp" />
     <ClCompile Include="listing_1_1.cpp" />
     <ClCompile Include="listing_2_1.cpp" />
@@ -206,6 +217,7 @@
     <ClCompile Include="listing_5_7.cpp" />
     <ClCompile Include="listing_5_8.cpp" />
     <ClCompile Include="listing_5_9.cpp" />
+    <ClCompile Include="listing_6_1.cpp" />
     <ClCompile Include="listing_a_1.cpp" />
     <ClCompile Include="listing_a_2.cpp" />
     <ClCompile Include="listing_a_3.cpp" />
@@ -259,6 +271,12 @@
     <ClCompile Include="paragraph_5_3_4.cpp" />
     <ClCompile Include="paragraph_5_3_5.cpp" />
     <ClCompile Include="paragraph_5_3_6.cpp" />
+    <ClCompile Include="paragraph_6_1_1.cpp" />
+    <ClCompile Include="paragraph_6_2_1.cpp" />
+    <ClCompile Include="paragraph_6_2_2.cpp" />
+    <ClCompile Include="paragraph_6_2_3.cpp" />
+    <ClCompile Include="paragraph_6_3_1.cpp" />
+    <ClCompile Include="paragraph_6_3_2.cpp" />
     <ClCompile Include="paragraph_d_1_1.cpp" />
     <ClCompile Include="paragraph_d_1_2.cpp" />
     <ClCompile Include="paragraph_d_1_3.cpp" />
@@ -308,6 +326,7 @@
     <ClCompile Include="Part3.cpp" />
     <ClCompile Include="Part4.cpp" />
     <ClCompile Include="part5.cpp" />
+    <ClCompile Include="part6.cpp" />
     <ClCompile Include="PartD.cpp" />
     <ClCompile Include="cppref_use_atomic_flag.cpp" />
     <ClCompile Include="z_template_chapter.cpp" />
