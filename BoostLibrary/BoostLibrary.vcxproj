@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>C:\Program Files\boost\boost_1_70_0\stage\lib;C:\Program Files\boost\boost_1_70_0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -95,7 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_70_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_70_0\lib\;C:\Program Files\boost\boost_1_70_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -153,64 +154,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoostLibrary.cpp" />
-    <ClCompile Include="example_1_1.cpp" />
-    <ClCompile Include="example_1_2.cpp" />
-    <ClCompile Include="example_1_3.cpp" />
-    <ClCompile Include="example_1_4.cpp" />
-    <ClCompile Include="example_1_5.cpp" />
-    <ClCompile Include="example_1_6.cpp" />
-    <ClCompile Include="example_1_7.cpp" />
-    <ClCompile Include="example_1_8.cpp" />
-    <ClCompile Include="example_1_9.cpp" />
-    <ClCompile Include="example_2_1.cpp" />
-    <ClCompile Include="example_2_2.cpp" />
-    <ClCompile Include="example_2_3.cpp" />
-    <ClCompile Include="example_3_1.cpp" />
-    <ClCompile Include="example_3_2.cpp" />
-    <ClCompile Include="example_3_3.cpp" />
-    <ClCompile Include="example_4_1.cpp" />
-    <ClCompile Include="example_4_2.cpp" />
-    <ClCompile Include="example_4_3.cpp" />
-    <ClCompile Include="example_4_4.cpp" />
-    <ClCompile Include="example_4_5.cpp" />
-    <ClCompile Include="example_4_6.cpp" />
-    <ClCompile Include="example_5_1.cpp" />
-    <ClCompile Include="example_5_10.cpp" />
-    <ClCompile Include="example_5_11.cpp" />
-    <ClCompile Include="example_5_12.cpp" />
-    <ClCompile Include="example_5_2.cpp" />
-    <ClCompile Include="example_5_3.cpp" />
-    <ClCompile Include="example_5_4.cpp" />
-    <ClCompile Include="example_5_5.cpp" />
-    <ClCompile Include="example_5_6.cpp" />
-    <ClCompile Include="example_5_7.cpp" />
-    <ClCompile Include="example_5_8.cpp" />
-    <ClCompile Include="example_5_9.cpp" />
-    <ClCompile Include="example_6_1.cpp" />
-    <ClCompile Include="example_6_2.cpp" />
-    <ClCompile Include="example_7_1.cpp" />
-    <ClCompile Include="example_7_2.cpp" />
-    <ClCompile Include="example_7_3.cpp" />
-    <ClCompile Include="example_7_4.cpp" />
-    <ClCompile Include="example_7_5.cpp" />
-    <ClCompile Include="example_7_6.cpp" />
-    <ClCompile Include="example_7_7.cpp" />
-    <ClCompile Include="example_7_8.cpp" />
-    <ClCompile Include="example_7_9.cpp" />
-    <ClCompile Include="example_8_1.cpp" />
-    <ClCompile Include="example_8_2.cpp" />
-    <ClCompile Include="example_8_3.cpp" />
-    <ClCompile Include="example_8_4.cpp" />
-    <ClCompile Include="example_8_5.cpp" />
-    <ClCompile Include="example_8_6.cpp" />
-    <ClCompile Include="example_8_7.cpp" />
-    <ClCompile Include="example_8_8.cpp" />
-    <ClCompile Include="example_9_1.cpp" />
-    <ClCompile Include="example_template.cpp" />
-    <ClCompile Include="exercise_2_1.cpp" />
-    <ClCompile Include="exercise_2_1_starter.cpp" />
-    <ClCompile Include="exercise_3_1.cpp" />
-    <ClCompile Include="exercise_5_1.cpp" />
+    <ClCompile Include="example_32_5.cpp" />
+    <ClCompile Include="example_32_6.cpp" />
+    <ClCompile Include="example_http_client_sync.cpp" />
+    <ClCompile Include="example_websocket_client_sync.cpp" />
+    <ClCompile Include="exercise_32_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
