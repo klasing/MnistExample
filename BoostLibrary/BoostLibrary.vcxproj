@@ -156,6 +156,7 @@
     <ClCompile Include="BoostLibrary.cpp" />
     <ClCompile Include="example_32_5.cpp" />
     <ClCompile Include="example_32_6.cpp" />
+    <ClCompile Include="example_32_7.cpp" />
     <ClCompile Include="example_http_client_sync.cpp" />
     <ClCompile Include="example_websocket_client_sync.cpp" />
     <ClCompile Include="exercise_32_1.cpp" />

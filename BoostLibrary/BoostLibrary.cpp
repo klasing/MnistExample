@@ -5,7 +5,7 @@
 //    Precompiled Header : Not Using Precompiled Headers
 // 2) Configuration Properties Linker General
 //    Additional Include Directories : C:\Program Files\boost\boost_1_70_0\stage\lib
-
+#define _WIN32_WINNT 0x0601
 
 #include <iostream>
 #include <string>
@@ -72,8 +72,9 @@
 //#include "example_32_4.cpp"
 //#include "example_32_5.cpp"
 //#include "example_32_6.cpp"
+#include "example_32_7.cpp"
 //#include "example_http_client_sync.cpp"
-#include "example_websocket_client_sync.cpp"
+//#include "example_websocket_client_sync.cpp"
 //
 //// used in exercise_2_1_starter.cpp
 //const string ns_exercise_2_1_starter::muuuh = "Muuuh!";
@@ -92,6 +93,14 @@
 //	ns_example_32_6::tcp_endpoint };
 //tcp::socket ns_example_32_6::tcp_socket{ ns_example_32_6::ioservice };
 //string ns_example_32_6::data;
+
+// used in example_32_7
+io_service ns_example_32_7::ioservice;
+tcp::endpoint ns_example_32_7::tcp_endpoint{ tcp::v4(), 2014 };
+tcp::acceptor ns_example_32_7::tcp_acceptor{ 
+	ns_example_32_7::ioservice, 
+	ns_example_32_7::tcp_endpoint };
+list<tcp::socket> ns_example_32_7::tcp_sockets;
 
 int main() {
     std::cout << "Hello World!\n";
@@ -159,6 +168,9 @@ int main() {
 	//ns_example_32_4::example_32_4();
 	//ns_example_32_5::example_32_5();
 	//ns_example_32_6::example_32_6();
+	ns_example_32_7::example_32_7();
+	// example taken from:
+	// https://www.boost.org/doc/libs/1_70_0/libs/beast/doc/html/beast/examples.html
 	//char cmd[] = "http-client-sync";
 	//char host[] = "www.example.com";
 	//char port[] = "80";
@@ -166,13 +178,15 @@ int main() {
 	//char* argv[] = { cmd, host , port, target };
 	//ns_example_http_client_sync::example_http_client_sync(
 	//	4, argv);
-	char cmd[] = "websocket-client-sync";
-	char host[] = "echo.websocket.org";
-	char port[] = "80";
-	char text[] = "\"Hello, world!\"";
-	char* argv[] = { cmd, host , port, text };
-	ns_example_websocket_client_sync::example_websocket_client_sync(
-		4, argv);
+	// example taken from:
+	// https://www.boost.org/doc/libs/1_70_0/libs/beast/doc/html/beast/examples.html
+	//char cmd[] = "websocket-client-sync";
+	//char host[] = "echo.websocket.org";
+	//char port[] = "80";
+	//char text[] = "\"Hello, world!\"";
+	//char* argv[] = { cmd, host , port, text };
+	//ns_example_websocket_client_sync::example_websocket_client_sync(
+	//	4, argv);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

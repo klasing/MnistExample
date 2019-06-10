@@ -1,6 +1,8 @@
 // Example http client sync
 // taken from:
 // https://www.boost.org/doc/libs/1_66_0/libs/beast/doc/html/beast/quick_start.html
+#define _WIN32_WINNT 0x0601
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>

@@ -1,6 +1,8 @@
 // Example websocket client sync
 // taken from:
 // https://www.boost.org/doc/libs/1_66_0/libs/beast/doc/html/beast/quick_start.html
+#define _WIN32_WINNT 0x0601
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/asio/connect.hpp>
