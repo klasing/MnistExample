@@ -15,31 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoostLibrary.cpp">
+    <ClCompile Include="BoostNetworkProgramming.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="example_32_5.cpp">
+    <ClCompile Include="synchronous_server_1_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="example_32_6.cpp">
+    <ClCompile Include="asynchronous_client_1_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="exercise_32_1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example_http_client_sync.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example_websocket_client_sync.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example_32_7.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="http_server_async.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="do_get_ip_net_table.cpp">
+    <ClCompile Include="asynchronous_server_1_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

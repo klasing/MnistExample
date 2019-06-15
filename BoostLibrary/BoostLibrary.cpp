@@ -72,7 +72,8 @@
 //#include "example_32_4.cpp"
 //#include "example_32_5.cpp"
 //#include "example_32_6.cpp"
-#include "example_32_7.cpp"
+#include "exercise_32_1.cpp"
+//#include "example_32_7.cpp"
 //#include "example_http_client_sync.cpp"
 //#include "example_websocket_client_sync.cpp"
 //
@@ -95,12 +96,12 @@
 //string ns_example_32_6::data;
 
 // used in example_32_7
-io_service ns_example_32_7::ioservice;
-tcp::endpoint ns_example_32_7::tcp_endpoint{ tcp::v4(), 2014 };
-tcp::acceptor ns_example_32_7::tcp_acceptor{ 
-	ns_example_32_7::ioservice, 
-	ns_example_32_7::tcp_endpoint };
-list<tcp::socket> ns_example_32_7::tcp_sockets;
+//io_service ns_example_32_7::ioservice;
+//tcp::endpoint ns_example_32_7::tcp_endpoint{ tcp::v4(), 2014 };
+//tcp::acceptor ns_example_32_7::tcp_acceptor{ 
+//	ns_example_32_7::ioservice, 
+//	ns_example_32_7::tcp_endpoint };
+//list<tcp::socket> ns_example_32_7::tcp_sockets;
 
 int main() {
     std::cout << "Hello World!\n";
@@ -168,7 +169,8 @@ int main() {
 	//ns_example_32_4::example_32_4();
 	//ns_example_32_5::example_32_5();
 	//ns_example_32_6::example_32_6();
-	ns_example_32_7::example_32_7();
+	ns_exercise_32_1::exercise_32_1();
+	//ns_example_32_7::example_32_7();
 	// example taken from:
 	// https://www.boost.org/doc/libs/1_70_0/libs/beast/doc/html/beast/examples.html
 	//char cmd[] = "http-client-sync";
