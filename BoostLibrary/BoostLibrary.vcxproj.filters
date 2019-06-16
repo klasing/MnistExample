@@ -42,5 +42,8 @@
     <ClCompile Include="do_get_ip_net_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="http_client_async.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

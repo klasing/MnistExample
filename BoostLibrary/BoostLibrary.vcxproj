@@ -162,6 +162,7 @@
     <ClCompile Include="example_http_client_sync.cpp" />
     <ClCompile Include="example_websocket_client_sync.cpp" />
     <ClCompile Include="exercise_32_1.cpp" />
+    <ClCompile Include="http_client_async.cpp" />
     <ClCompile Include="http_server_async.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
