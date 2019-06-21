@@ -131,7 +131,6 @@ void do_transfer(
 //                      main
 //****************************************************************************
 int main() {
-
 	const string IP_ADDRESS  = "192.168.178.14";
 	const string PORT_NUMBER = "8080";
 
