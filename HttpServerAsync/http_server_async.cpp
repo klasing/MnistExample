@@ -8,6 +8,8 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -210,8 +212,20 @@ namespace ns_http_server_async {
 		// Respond to a PUT request
 		if (req.method() == http::verb::put) {
 			std::cout << "-> PUT message received" << std::endl;
-			//std::cout << "-> Body: " << req.body() << std::endl;
-			std::cout << "-> Body: " << req[http::field::body] << std::endl;
+			// used with experimental
+			//std::cout << "-> Body: " << req[http::field::body] << std::endl;
+			std::cout << "-> File: " << req.target() << std::endl;
+			// https://github.com/boostorg/beast/issues/819
+			std::cout << "-> Message: " << std::endl;
+			std::cout << req << std::endl;
+
+			// Store the received file on disk
+			std::string file_destination_ = static_cast<std::string>(req.target());
+			// remove the forward slash
+			file_destination_.erase(0, 1);
+			boost::filesystem::path p{ file_destination_ };
+			boost::filesystem::ofstream ofs{ p };
+			ofs << req.body();
 
 			http::response<http::string_body> res{
 				http::status::ok, req.version() };
@@ -449,6 +463,9 @@ namespace ns_http_server_async {
 		void
 			on_accept(beast::error_code ec, tcp::socket socket)
 		{
+			std::string remote_endpoint = boost::lexical_cast<std::string>(socket.remote_endpoint());
+			std::cout << "Remote endpoint " << remote_endpoint.c_str() << std::endl;
+
 			if (ec)
 			{
 				fail(ec, "accept");
