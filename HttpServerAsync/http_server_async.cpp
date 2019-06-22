@@ -10,6 +10,7 @@
 #include <boost/config.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -18,6 +19,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+//#include <regex>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -225,6 +227,8 @@ namespace ns_http_server_async {
 			file_destination_.erase(0, 1);
 			boost::filesystem::path p{ file_destination_ };
 			boost::filesystem::ofstream ofs{ p };
+			// remove all the \r-characters (return) from the payload
+			boost::erase_all(req.body(), "\r");
 			ofs << req.body();
 
 			http::response<http::string_body> res{
