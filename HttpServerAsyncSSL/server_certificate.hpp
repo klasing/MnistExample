@@ -6,29 +6,38 @@
 //     b) Let the OpenSSL DLLs reside in the C:\openssl\bin directory
 //        Not in the Windows System directory
 // 2) install openssl
-//    2.1) Run a cmd prompt as an administrator
-//    2.2) cd C:\openssl\bin
-//    2.3) Run openssl dhparam -out dh.pem 2048 (this takes a long time)
-//    2.4) Run openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 10000 -out cert.pem
-//      a) Add some parameters: NL UTRECHT UTRECHT MYCOMPANY . LAPPIE KLASING1159@GMAIL.COM
-//         Can't see why this is important, so far
-//    2.5) Run openssl x509 -text -noout -in cert.pem
-//         To see the certificate
-//    Install info
-//    https://www.cloudinsidr.com/content/how-to-install-the-most-recent-version-of-openssl-on-windows-10-in-64-bit/
+//   2.1) Run a cmd prompt as an administrator
+//   2.2) cd C:\openssl\bin
+//   2.3) Run openssl dhparam -out dh.pem 2048 (this takes a long time)
+//   2.4) Run openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 10000 -out cert.pem
+//     a) Add some parameters: NL UTRECHT UTRECHT MYCOMPANY . LAPPIE KLASING1159@GMAIL.COM
+//        Can't see why this is important, so far
+//   2.5) Run openssl x509 -text -noout -in cert.pem
+//        To see the certificate
+//   Install info
+//   https://www.cloudinsidr.com/content/how-to-install-the-most-recent-version-of-openssl-on-windows-10-in-64-bit/
 // 3) configure VS2019 IDE for openssl
-//    3.1) C/C++ Additional Include Directories:
-//         C:\openssl\include
-//         C:\openssl\lib
-//    3.2) Linker Additional Library Directories
-//         C:\openssl\lib
-//    3.3) Linker->Input->Additional Dependencies
-//         ssleay32.lib
-//         libeay32.lib
-//    Info about download version and setting the path
-//    https://stackoverflow.com/questions/11955443/compile-failure-for-boost-ssl
-//    Info about the Additional dependencies
-//    https://www.dreamincode.net/forums/topic/84483-error-lnk2019-on-openssl-using-vc/
+//   3.1) C/C++ Additional Include Directories:
+//        C:\openssl\include
+//        C:\openssl\lib
+//   3.2) Linker Additional Library Directories
+//        C:\openssl\lib
+//   3.3) Linker->Input->Additional Dependencies
+//        ssleay32.lib
+//        libeay32.lib
+//   Info about download version and setting the path
+//   https://stackoverflow.com/questions/11955443/compile-failure-for-boost-ssl
+//   Info about the Additional dependencies
+//   https://www.dreamincode.net/forums/topic/84483-error-lnk2019-on-openssl-using-vc/
+// 4) Install DLLs
+//   4.1) Go to:
+//   http://docwiki.embarcadero.com/RADStudio/Rio/en/OpenSSL
+//   Click on the link OpenSSL compressed library files
+//   You'll end up in https://indy.fulgan.com/SSL/ file server
+//   I chose to download openssl-1.0.2s-i386-win32.zip
+//   4.2) Copy ssleay32.dll and libeay32.dll to
+//   [C:\Windows\System32] not sure this one is required
+//   C:\Windows\SysWOW64
 // 
 // server_certificate.hpp
 // Taken from:

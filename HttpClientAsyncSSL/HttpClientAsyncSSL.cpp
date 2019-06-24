@@ -9,7 +9,11 @@ int main()
 	std::cout << "=====================" << std::endl;
 
 	char cmd[] = "http-client-async-ssl";
-	char* argv[] = { cmd };
-	int argc = 1;
+	char host[] = "127.0.0.1";
+	char port[] = "8080";
+	char target[] = "/";
+	char version[] = "1.0";
+	char* argv[] = { cmd, host , port, target, version };
+	int argc = 5;
 	ns_http_client_async_ssl::http_client_async_ssl(argc, argv);
 }
