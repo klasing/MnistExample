@@ -494,10 +494,10 @@ namespace ns_http_server_async_ssl {
 			else
 			{
 				// Create the session and run it
-				//std::make_shared<session>(
-				//	std::move(socket),
-				//	ctx_,
-				//	doc_root_)->run();
+				std::make_shared<session>(
+					std::move(socket),
+					ctx_,
+					doc_root_)->run();
 			}
 
 			// Accept another connection

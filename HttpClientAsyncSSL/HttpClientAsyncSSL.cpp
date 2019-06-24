@@ -11,7 +11,7 @@ int main()
 	char cmd[] = "http-client-async-ssl";
 	char host[] = "127.0.0.1";
 	char port[] = "8080";
-	char target[] = "/";
+	char target[] = "/index.html";
 	char version[] = "1.0";
 	char* argv[] = { cmd, host , port, target, version };
 	int argc = 5;
