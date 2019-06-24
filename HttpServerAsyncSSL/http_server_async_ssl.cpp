@@ -11,6 +11,7 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -158,7 +159,7 @@ namespace ns_http_server_async_ssl {
 
 		// Request path must be absolute and not contain "..".
 		if (req.target().empty() ||
-			req.target()[0] != '/' ||
+			//req.target()[0] != '/' ||
 			req.target().find("..") != beast::string_view::npos)
 			return send(bad_request("Illegal request-target"));
 
@@ -166,6 +167,10 @@ namespace ns_http_server_async_ssl {
 		std::string path = path_cat(doc_root, req.target());
 		if (req.target().back() == '/')
 			path.append("index.html");
+
+		// this is a HACK
+		//path = "index.html";
+		path.erase(0, 2);
 
 		// Attempt to open the file
 		beast::error_code ec;
