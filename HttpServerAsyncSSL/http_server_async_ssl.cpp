@@ -1,6 +1,4 @@
 // http_server_async_ssl.cpp
-// Taken from:
-// https://www.boost.org/doc/libs/1_70_0/libs/beast/example/http/server/async-ssl/http_server_async_ssl.cpp
 #define _WIN32_WINNT 0x0601
 
 #include "server_certificate.hpp"
@@ -11,7 +9,6 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -28,9 +25,9 @@ namespace ssl = boost::asio::ssl;       // from <boost/asio/ssl.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 namespace ns_http_server_async_ssl {
-	//***************************************************************************
-	//*                    mime_type
-	//***************************************************************************
+	//************************************************************************
+	//*                 mime_type
+	//************************************************************************
 	// Return a reasonable mime type based on the extension of a file.
 	inline beast::string_view
 		mime_type(beast::string_view path)
@@ -67,9 +64,9 @@ namespace ns_http_server_async_ssl {
 		return "application/text";
 	}
 
-	//***************************************************************************
-	//*                    path_cat
-	//***************************************************************************
+	//************************************************************************
+	//*                 path_cat
+	//************************************************************************
 	// Append an HTTP rel-path to a local filesystem path.
 	// The returned path is normalized for the platform.
 	inline std::string
@@ -97,9 +94,9 @@ namespace ns_http_server_async_ssl {
 		return result;
 	}
 
-	//***************************************************************************
-	//*                    handle_request
-	//***************************************************************************
+	//************************************************************************
+	//*                 handle_request
+	//************************************************************************
 	// This function produces an HTTP response for the given
 	// request. The type of the response object depends on the
 	// contents of the request, so the interface requires the
@@ -159,7 +156,7 @@ namespace ns_http_server_async_ssl {
 
 		// Request path must be absolute and not contain "..".
 		if (req.target().empty() ||
-			//req.target()[0] != '/' ||
+			req.target()[0] != '/' ||
 			req.target().find("..") != beast::string_view::npos)
 			return send(bad_request("Illegal request-target"));
 
@@ -167,10 +164,6 @@ namespace ns_http_server_async_ssl {
 		std::string path = path_cat(doc_root, req.target());
 		if (req.target().back() == '/')
 			path.append("index.html");
-
-		// this is a HACK
-		//path = "index.html";
-		path.erase(0, 2);
 
 		// Attempt to open the file
 		beast::error_code ec;
@@ -211,9 +204,9 @@ namespace ns_http_server_async_ssl {
 		return send(std::move(res));
 	}
 
-	//***************************************************************************
-	//*                    fail
-	//***************************************************************************
+	//************************************************************************
+	//*                 fail
+	//************************************************************************
 	// Report a failure
 	inline void
 		fail(beast::error_code ec, char const* what)
@@ -241,9 +234,6 @@ namespace ns_http_server_async_ssl {
 		std::cerr << what << ": " << ec.message() << "\n";
 	}
 
-	//***************************************************************************
-	//*                    session
-	//***************************************************************************
 	// Handles an HTTP server connection
 	class session : public std::enable_shared_from_this<session>
 	{
@@ -290,7 +280,7 @@ namespace ns_http_server_async_ssl {
 		http::request<http::string_body> req_;
 		std::shared_ptr<void> res_;
 		send_lambda lambda_;
-	
+
 	public:
 		// Take ownership of the socket
 		explicit
@@ -355,7 +345,7 @@ namespace ns_http_server_async_ssl {
 
 			// This means they closed the connection
 			if (ec == http::error::end_of_stream)
-				//return do_close();
+				return do_close();
 
 			if (ec)
 				return fail(ec, "read");
@@ -412,9 +402,9 @@ namespace ns_http_server_async_ssl {
 		}
 	};
 
-	//***************************************************************************
-	//*                    listener
-	//***************************************************************************
+	//************************************************************************
+	//*                 listener
+	//************************************************************************
 	// Accepts incoming connections and launches the sessions
 	class listener : public std::enable_shared_from_this<listener>
 	{
@@ -422,7 +412,6 @@ namespace ns_http_server_async_ssl {
 		ssl::context& ctx_;
 		tcp::acceptor acceptor_;
 		std::shared_ptr<std::string const> doc_root_;
-
 	public:
 		listener(
 			net::io_context& ioc,
@@ -435,6 +424,7 @@ namespace ns_http_server_async_ssl {
 			, doc_root_(doc_root)
 		{
 			std::cout << "<<constructor>> listener()" << std::endl;
+
 			beast::error_code ec;
 
 			// Open the acceptor
@@ -477,6 +467,7 @@ namespace ns_http_server_async_ssl {
 		{
 			do_accept();
 		}
+
 	private:
 		void
 			do_accept()
@@ -510,12 +501,10 @@ namespace ns_http_server_async_ssl {
 		}
 	};
 
-	//***************************************************************************
-	//*                    http_server_async_ssl
-	//***************************************************************************
+	//************************************************************************
+	//*                 http_server_async_ssl
+	//************************************************************************
 	inline int http_server_async_ssl(int argc, char* argv[]) {
-		std::cout << "http_server_async_ssl()" << std::endl;
-
 		// Check command line arguments.
 		if (argc != 5)
 		{
@@ -535,9 +524,6 @@ namespace ns_http_server_async_ssl {
 
 		// The SSL context is required, and holds certificates
 		ssl::context ctx{ ssl::context::tlsv12 };
-
-		// This holds the self-signed certificate used by the server
-		load_server_certificate(ctx);
 
 		// Create and launch a listening port
 		std::make_shared<listener>(
