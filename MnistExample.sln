@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpClientAsync", "HttpClie
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpServerAsyncSSL", "HttpServerAsyncSSL\HttpServerAsyncSSL.vcxproj", "{CD672F88-4E0A-4184-9740-6B6076AAC2D1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpClientAsyncSSL", "HttpClientAsyncSSL\HttpClientAsyncSSL.vcxproj", "{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -131,6 +133,14 @@ Global
 		{CD672F88-4E0A-4184-9740-6B6076AAC2D1}.Release|x64.Build.0 = Release|x64
 		{CD672F88-4E0A-4184-9740-6B6076AAC2D1}.Release|x86.ActiveCfg = Release|Win32
 		{CD672F88-4E0A-4184-9740-6B6076AAC2D1}.Release|x86.Build.0 = Release|Win32
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Debug|x64.ActiveCfg = Debug|x64
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Debug|x64.Build.0 = Debug|x64
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Debug|x86.ActiveCfg = Debug|Win32
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Debug|x86.Build.0 = Debug|Win32
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Release|x64.ActiveCfg = Release|x64
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Release|x64.Build.0 = Release|x64
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Release|x86.ActiveCfg = Release|Win32
+		{AD6C640E-3818-4792-9FDA-FE0D2B3B91D5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
