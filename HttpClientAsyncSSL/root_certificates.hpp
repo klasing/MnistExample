@@ -1,4 +1,4 @@
-﻿// root_certificates.hpp
+// root_certificates.hpp
 #ifndef BOOST_BEAST_EXAMPLE_COMMON_ROOT_CERTIFICATES_HPP
 #define BOOST_BEAST_EXAMPLE_COMMON_ROOT_CERTIFICATES_HPP
 
@@ -8,6 +8,7 @@
 namespace ssl = boost::asio::ssl; // from <boost/asio/ssl.hpp>
 
 namespace detail {
+
 	// The template argument is gratuituous, to
 	// allow the implementation to be header-only.
 	//
@@ -77,10 +78,10 @@ namespace detail {
 			CN = GeoTrust Global CA
 			O = GeoTrust Inc.
 			C = US
-			Valid to: Friday, ‎May ‎20, ‎2022 9:00:00 PM
+			Valid to: Friday, ?May ?20, ?2022 9:00:00 PM
 
 			Thumbprint(sha1):
-			‎de 28 f4 a4 ff e5 b9 2f a3 c5 03 d1 a3 49 a7 f9 96 2a 82 12
+			?de 28 f4 a4 ff e5 b9 2f a3 c5 03 d1 a3 49 a7 f9 96 2a 82 12
 		*/
 		;
 
@@ -89,7 +90,9 @@ namespace detail {
 		if (ec)
 			return;
 	}
+
 } // detail
+
 // Load the root certificates into an ssl::context
 //
 // This function is inline so that its easy to take
