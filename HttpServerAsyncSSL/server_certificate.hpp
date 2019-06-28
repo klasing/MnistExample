@@ -1,4 +1,6 @@
 // server_certificate.hpp
+// Taken from:
+// https://www.boost.org/doc/libs/1_70_0/libs/beast/example/common/server_certificate.hpp
 #ifndef BOOST_BEAST_EXAMPLE_COMMON_SERVER_CERTIFICATE_HPP
 #define BOOST_BEAST_EXAMPLE_COMMON_SERVER_CERTIFICATE_HPP
 
@@ -26,7 +28,6 @@ load_server_certificate(boost::asio::ssl::context& ctx)
 		winpty openssl dhparam -out dh.pem 2048
 		winpty openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 10000 -out cert.pem -subj "//C=US\ST=CA\L=Los Angeles\O=Beast\CN=www.example.com"
 	*/
-
 	std::string const cert =
 		"-----BEGIN CERTIFICATE-----\n"
 		"MIIDaDCCAlCgAwIBAgIJAO8vBu8i8exWMA0GCSqGSIb3DQEBCwUAMEkxCzAJBgNV\n"

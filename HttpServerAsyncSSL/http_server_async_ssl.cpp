@@ -1,14 +1,18 @@
 // http_server_async_ssl.cpp
+// Taken from:
+// https://www.boost.org/doc/libs/1_70_0/libs/beast/example/http/server/async/http_server_async.cpp
+// and from:
+// https://www.boost.org/doc/libs/1_70_0/libs/beast/example/http/server/async-ssl/http_server_async_ssl.cpp
 #define _WIN32_WINNT 0x0601
-
-#include "server_certificate.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
-#include <boost/beast/ssl.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -21,13 +25,11 @@
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
-namespace ssl = boost::asio::ssl;       // from <boost/asio/ssl.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
-
 namespace ns_http_server_async_ssl {
-	//************************************************************************
-	//*                 mime_type
-	//************************************************************************
+	//***************************************************************************
+	//*                    mime_type
+	//***************************************************************************
 	// Return a reasonable mime type based on the extension of a file.
 	inline beast::string_view
 		mime_type(beast::string_view path)
@@ -64,9 +66,9 @@ namespace ns_http_server_async_ssl {
 		return "application/text";
 	}
 
-	//************************************************************************
-	//*                 path_cat
-	//************************************************************************
+	//***************************************************************************
+	//*                    path_cat
+	//***************************************************************************
 	// Append an HTTP rel-path to a local filesystem path.
 	// The returned path is normalized for the platform.
 	inline std::string
@@ -94,9 +96,9 @@ namespace ns_http_server_async_ssl {
 		return result;
 	}
 
-	//************************************************************************
-	//*                 handle_request
-	//************************************************************************
+	//***************************************************************************
+	//*                    handle_request
+	//***************************************************************************
 	// This function produces an HTTP response for the given
 	// request. The type of the response object depends on the
 	// contents of the request, so the interface requires the
@@ -151,6 +153,7 @@ namespace ns_http_server_async_ssl {
 
 		// Make sure we can handle the method
 		if (req.method() != http::verb::get &&
+			req.method() != http::verb::put &&
 			req.method() != http::verb::head)
 			return send(bad_request("Unknown HTTP-method"));
 
@@ -160,31 +163,47 @@ namespace ns_http_server_async_ssl {
 			req.target().find("..") != beast::string_view::npos)
 			return send(bad_request("Illegal request-target"));
 
-		// Build the path to the requested file
-		std::string path = path_cat(doc_root, req.target());
-		if (req.target().back() == '/')
-			path.append("index.html");
+		if (req.method() == http::verb::get ||
+			req.method() == http::verb::head) {
+			// Build the path to the requested file
+			std::string path = path_cat(doc_root, req.target());
+			if (req.target().back() == '/')
+				// the default file for download when no file name 
+				// is given from the client
+				path.append("index.html");
 
-		// Attempt to open the file
-		beast::error_code ec;
-		http::file_body::value_type body;
-		body.open(path.c_str(), beast::file_mode::scan, ec);
+			// Attempt to open the file
+			beast::error_code ec;
+			http::file_body::value_type body;
+			body.open(path.c_str(), beast::file_mode::scan, ec);
 
-		// Handle the case where the file doesn't exist
-		if (ec == beast::errc::no_such_file_or_directory)
-			return send(not_found(req.target()));
+			// Handle the case where the file doesn't exist
+			if (ec == beast::errc::no_such_file_or_directory)
+				return send(not_found(req.target()));
 
-		// Handle an unknown error
-		if (ec)
-			return send(server_error(ec.message()));
+			// Handle an unknown error
+			if (ec)
+				return send(server_error(ec.message()));
 
-		// Cache the size since we need it after the move
-		auto const size = body.size();
+			// Cache the size since we need it after the move
+			auto const size = body.size();
 
-		// Respond to HEAD request
-		if (req.method() == http::verb::head)
-		{
-			http::response<http::empty_body> res{ http::status::ok, req.version() };
+			// Respond to HEAD request
+			if (req.method() == http::verb::head)
+			{
+				http::response<http::empty_body> res{ http::status::ok, req.version() };
+				res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+				res.set(http::field::content_type, mime_type(path));
+				res.content_length(size);
+				res.keep_alive(req.keep_alive());
+				return send(std::move(res));
+			}
+
+			// Respond to GET request
+			http::response<http::file_body> res{
+				std::piecewise_construct,
+				std::make_tuple(std::move(body)),
+				std::make_tuple(http::status::ok, req.version()) };
 			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
 			res.set(http::field::content_type, mime_type(path));
 			res.content_length(size);
@@ -192,48 +211,48 @@ namespace ns_http_server_async_ssl {
 			return send(std::move(res));
 		}
 
-		// Respond to GET request
-		http::response<http::file_body> res{
-			std::piecewise_construct,
-			std::make_tuple(std::move(body)),
-			std::make_tuple(http::status::ok, req.version()) };
-		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-		res.set(http::field::content_type, mime_type(path));
-		res.content_length(size);
-		res.keep_alive(req.keep_alive());
-		return send(std::move(res));
+
+		// Respond to a PUT request
+		if (req.method() == http::verb::put) {
+			std::cout << "-> PUT message received" << std::endl;
+			// used with experimental
+			//std::cout << "-> Body: " << req[http::field::body] << std::endl;
+			std::cout << "-> File: " << req.target() << std::endl;
+			// https://github.com/boostorg/beast/issues/819
+			std::cout << "-> Message: " << std::endl;
+			std::cout << req << std::endl;
+
+			// Store the received file on disk
+			std::string file_destination_ = static_cast<std::string>(req.target());
+			// remove the forward slash
+			file_destination_.erase(0, 1);
+			boost::filesystem::path p{ file_destination_ };
+			boost::filesystem::ofstream ofs{ p };
+			// remove all the \r-characters (return) from the payload
+			boost::erase_all(req.body(), "\r");
+			ofs << req.body();
+
+			http::response<http::string_body> res{
+				http::status::ok, req.version() };
+			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+			res.keep_alive(req.keep_alive());
+			return send(std::move(res));
+		}
 	}
 
-	//************************************************************************
-	//*                 fail
-	//************************************************************************
+	//***************************************************************************
+	//*                    fail
+	//***************************************************************************
 	// Report a failure
 	inline void
 		fail(beast::error_code ec, char const* what)
 	{
-		// ssl::error::stream_truncated, also known as an SSL "short read",
-		// indicates the peer closed the connection without performing the
-		// required closing handshake (for example, Google does this to
-		// improve performance). Generally this can be a security issue,
-		// but if your communication protocol is self-terminated (as
-		// it is with both HTTP and WebSocket) then you may simply
-		// ignore the lack of close_notify.
-		//
-		// https://github.com/boostorg/beast/issues/38
-		//
-		// https://security.stackexchange.com/questions/91435/how-to-handle-a-malicious-ssl-tls-shutdown
-		//
-		// When a short read would cut off the end of an HTTP message,
-		// Beast returns the error beast::http::error::partial_message.
-		// Therefore, if we see a short read here, it has occurred
-		// after the message has been completed, so it is safe to ignore it.
-
-		if (ec == net::ssl::error::stream_truncated)
-			return;
-
 		std::cerr << what << ": " << ec.message() << "\n";
 	}
 
+	//***************************************************************************
+	//*                    session
+	//***************************************************************************
 	// Handles an HTTP server connection
 	class session : public std::enable_shared_from_this<session>
 	{
@@ -274,7 +293,7 @@ namespace ns_http_server_async_ssl {
 			}
 		};
 
-		beast::ssl_stream<beast::tcp_stream> stream_;
+		beast::tcp_stream stream_;
 		beast::flat_buffer buffer_;
 		std::shared_ptr<std::string const> doc_root_;
 		http::request<http::string_body> req_;
@@ -282,13 +301,11 @@ namespace ns_http_server_async_ssl {
 		send_lambda lambda_;
 
 	public:
-		// Take ownership of the socket
-		explicit
-			session(
-				tcp::socket&& socket,
-				ssl::context& ctx,
-				std::shared_ptr<std::string const> const& doc_root)
-			: stream_(std::move(socket), ctx)
+		// Take ownership of the stream
+		session(
+			tcp::socket&& socket,
+			std::shared_ptr<std::string const> const& doc_root)
+			: stream_(std::move(socket))
 			, doc_root_(doc_root)
 			, lambda_(*this)
 		{
@@ -299,23 +316,6 @@ namespace ns_http_server_async_ssl {
 		void
 			run()
 		{
-			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
-
-			// Perform the SSL handshake
-			stream_.async_handshake(
-				ssl::stream_base::server,
-				beast::bind_front_handler(
-					&session::on_handshake,
-					shared_from_this()));
-		}
-
-		void
-			on_handshake(beast::error_code ec)
-		{
-			if (ec)
-				return fail(ec, "handshake");
-
 			do_read();
 		}
 
@@ -327,7 +327,7 @@ namespace ns_http_server_async_ssl {
 			req_ = {};
 
 			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			stream_.expires_after(std::chrono::seconds(30));
 
 			// Read a request
 			http::async_read(stream_, buffer_, req_,
@@ -382,49 +382,34 @@ namespace ns_http_server_async_ssl {
 		void
 			do_close()
 		{
-			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
-
-			// Perform the SSL shutdown
-			stream_.async_shutdown(
-				beast::bind_front_handler(
-					&session::on_shutdown,
-					shared_from_this()));
-		}
-
-		void
-			on_shutdown(beast::error_code ec)
-		{
-			if (ec)
-				return fail(ec, "shutdown");
+			// Send a TCP shutdown
+			beast::error_code ec;
+			stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
 
 			// At this point the connection is closed gracefully
 		}
 	};
 
-	//************************************************************************
-	//*                 listener
-	//************************************************************************
+	//***************************************************************************
+	//*                    listener
+	//***************************************************************************
 	// Accepts incoming connections and launches the sessions
 	class listener : public std::enable_shared_from_this<listener>
 	{
 		net::io_context& ioc_;
-		ssl::context& ctx_;
 		tcp::acceptor acceptor_;
 		std::shared_ptr<std::string const> doc_root_;
+
 	public:
 		listener(
 			net::io_context& ioc,
-			ssl::context& ctx,
 			tcp::endpoint endpoint,
 			std::shared_ptr<std::string const> const& doc_root)
 			: ioc_(ioc)
-			, ctx_(ctx)
-			, acceptor_(ioc)
+			, acceptor_(net::make_strand(ioc))
 			, doc_root_(doc_root)
 		{
 			std::cout << "<<constructor>> listener()" << std::endl;
-
 			beast::error_code ec;
 
 			// Open the acceptor
@@ -483,6 +468,9 @@ namespace ns_http_server_async_ssl {
 		void
 			on_accept(beast::error_code ec, tcp::socket socket)
 		{
+			std::string remote_endpoint = boost::lexical_cast<std::string>(socket.remote_endpoint());
+			std::cout << "Remote endpoint " << remote_endpoint.c_str() << std::endl;
+
 			if (ec)
 			{
 				fail(ec, "accept");
@@ -492,7 +480,6 @@ namespace ns_http_server_async_ssl {
 				// Create the session and run it
 				std::make_shared<session>(
 					std::move(socket),
-					ctx_,
 					doc_root_)->run();
 			}
 
@@ -501,10 +488,11 @@ namespace ns_http_server_async_ssl {
 		}
 	};
 
-	//************************************************************************
-	//*                 http_server_async_ssl
-	//************************************************************************
-	inline int http_server_async_ssl(int argc, char* argv[]) {
+	//***************************************************************************
+	//*                    http_server_async_ssl
+	//***************************************************************************
+	inline int http_server_async_ssl(int argc, char* argv[])
+	{
 		// Check command line arguments.
 		if (argc != 5)
 		{
@@ -522,13 +510,9 @@ namespace ns_http_server_async_ssl {
 		// The io_context is required for all I/O
 		net::io_context ioc{ threads };
 
-		// The SSL context is required, and holds certificates
-		ssl::context ctx{ ssl::context::tlsv12 };
-
 		// Create and launch a listening port
 		std::make_shared<listener>(
 			ioc,
-			ctx,
 			tcp::endpoint{ address, port },
 			doc_root)->run();
 

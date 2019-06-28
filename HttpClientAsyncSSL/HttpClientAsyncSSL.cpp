@@ -5,11 +5,11 @@
 
 int main()
 {
-    std::cout << "Http Client Async SSL" << std::endl;
+	std::cout << "Http Client Async SSL" << std::endl;
 	std::cout << "=====================" << std::endl;
 
 	char cmd[] = "http-client-async-ssl";
-	char host[] = "127.0.0.1";// "192.168.178.14";
+	char host[] = /*"127.0.0.1";*/ "192.168.178.14";
 	char port[] = "8080";// "443";
 	char target[] = "/index.html";
 	char version[] = "1.0";
