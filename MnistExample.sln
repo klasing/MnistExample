@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpServerAsyncSSL", "HttpS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpClientAsyncSSL", "HttpClientAsyncSSL\HttpClientAsyncSSL.vcxproj", "{74FDC3B9-EB6A-44AA-A4F7-95CD634928E8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BoostTestCertSSL", "BoostTestCertSSL\BoostTestCertSSL.vcxproj", "{75231737-C5B3-49E0-97E0-EA109FB0B94E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -141,6 +143,14 @@ Global
 		{74FDC3B9-EB6A-44AA-A4F7-95CD634928E8}.Release|x64.Build.0 = Release|x64
 		{74FDC3B9-EB6A-44AA-A4F7-95CD634928E8}.Release|x86.ActiveCfg = Release|Win32
 		{74FDC3B9-EB6A-44AA-A4F7-95CD634928E8}.Release|x86.Build.0 = Release|Win32
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Debug|x64.ActiveCfg = Debug|x64
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Debug|x64.Build.0 = Debug|x64
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Debug|x86.ActiveCfg = Debug|Win32
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Debug|x86.Build.0 = Debug|Win32
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Release|x64.ActiveCfg = Release|x64
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Release|x64.Build.0 = Release|x64
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Release|x86.ActiveCfg = Release|Win32
+		{75231737-C5B3-49E0-97E0-EA109FB0B94E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

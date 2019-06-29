@@ -5,8 +5,11 @@
 // https://www.boost.org/doc/libs/1_70_0/libs/beast/example/http/server/async-ssl/http_server_async_ssl.cpp
 #define _WIN32_WINNT 0x0601
 
+#include "server_certificate.hpp"
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
+#include <boost/beast/ssl.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
@@ -25,6 +28,7 @@
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
+namespace ssl = boost::asio::ssl;		// from <boost/asio/ssl.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 namespace ns_http_server_async_ssl {
 	//***************************************************************************
@@ -293,7 +297,7 @@ namespace ns_http_server_async_ssl {
 			}
 		};
 
-		beast::tcp_stream stream_;
+		beast::ssl_stream<beast::tcp_stream> stream_;
 		beast::flat_buffer buffer_;
 		std::shared_ptr<std::string const> doc_root_;
 		http::request<http::string_body> req_;
@@ -302,10 +306,12 @@ namespace ns_http_server_async_ssl {
 
 	public:
 		// Take ownership of the stream
+		explicit
 		session(
 			tcp::socket&& socket,
+			ssl::context& ctx,
 			std::shared_ptr<std::string const> const& doc_root)
-			: stream_(std::move(socket))
+			: stream_(std::move(socket), ctx)
 			, doc_root_(doc_root)
 			, lambda_(*this)
 		{
@@ -316,6 +322,23 @@ namespace ns_http_server_async_ssl {
 		void
 			run()
 		{
+			// Set the timeout.
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+
+			// Perform the SSL handshake
+			stream_.async_handshake(
+				ssl::stream_base::server,
+				beast::bind_front_handler(
+					&session::on_handshake,
+					shared_from_this()));
+		}
+
+		void
+			on_handshake(beast::error_code ec)
+		{
+			if (ec)
+				return fail(ec, "handshake");
+
 			do_read();
 		}
 
@@ -327,7 +350,7 @@ namespace ns_http_server_async_ssl {
 			req_ = {};
 
 			// Set the timeout.
-			stream_.expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
 
 			// Read a request
 			http::async_read(stream_, buffer_, req_,
@@ -382,9 +405,21 @@ namespace ns_http_server_async_ssl {
 		void
 			do_close()
 		{
-			// Send a TCP shutdown
-			beast::error_code ec;
-			stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
+			// Set the timeout.
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+
+			// Perform the SSL shotdown
+			stream_.async_shutdown(
+				beast::bind_front_handler(
+					&session::on_shutdown,
+					shared_from_this()));
+		}
+
+		void
+			on_shutdown(beast::error_code ec)
+		{
+			if (ec)
+				return fail(ec, "shutdown");
 
 			// At this point the connection is closed gracefully
 		}
@@ -397,15 +432,18 @@ namespace ns_http_server_async_ssl {
 	class listener : public std::enable_shared_from_this<listener>
 	{
 		net::io_context& ioc_;
+		ssl::context& ctx_;
 		tcp::acceptor acceptor_;
 		std::shared_ptr<std::string const> doc_root_;
 
 	public:
 		listener(
 			net::io_context& ioc,
+			ssl::context& ctx,
 			tcp::endpoint endpoint,
 			std::shared_ptr<std::string const> const& doc_root)
 			: ioc_(ioc)
+			, ctx_(ctx)
 			, acceptor_(net::make_strand(ioc))
 			, doc_root_(doc_root)
 		{
@@ -480,6 +518,7 @@ namespace ns_http_server_async_ssl {
 				// Create the session and run it
 				std::make_shared<session>(
 					std::move(socket),
+					ctx_,
 					doc_root_)->run();
 			}
 
@@ -510,9 +549,16 @@ namespace ns_http_server_async_ssl {
 		// The io_context is required for all I/O
 		net::io_context ioc{ threads };
 
+		// The SSL context is required, and holds certificates
+		ssl::context ctx{ ssl::context::tlsv12 };
+
+		// This holds the self-signed certificate used by the server
+		load_server_certificate(ctx);
+
 		// Create and launch a listening port
 		std::make_shared<listener>(
 			ioc,
+			ctx,
 			tcp::endpoint{ address, port },
 			doc_root)->run();
 
