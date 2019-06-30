@@ -26,5 +26,8 @@
     <ClInclude Include="root_certificates.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="root_certificates_new.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

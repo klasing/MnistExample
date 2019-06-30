@@ -26,5 +26,8 @@
     <ClInclude Include="server_certificate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="server_certificate_new.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

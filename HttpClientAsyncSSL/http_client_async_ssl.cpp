@@ -1,7 +1,8 @@
 // http_client_async_ssl.cpp
 #define _WIN32_WINNT 0x0601
 
-#include "root_certificates.hpp"
+//#include "root_certificates.hpp"
+#include "root_certificates_new.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
