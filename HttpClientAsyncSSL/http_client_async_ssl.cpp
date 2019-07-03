@@ -223,7 +223,11 @@ namespace ns_http_client_async_ssl {
 		ctx.set_verify_mode(ssl::verify_peer);
 
 		// Launch the asynchronous operation
-		std::make_shared<session>(ioc, ctx)->run(host, port, target, version);
+		std::make_shared<session>(ioc, ctx)->run(
+			host,
+			port,
+			target,
+			version);
 
 		// Run the I/O service. The call will return when
 		// the get operation is complete.

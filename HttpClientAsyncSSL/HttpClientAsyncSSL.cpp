@@ -51,6 +51,53 @@ string get_input_from_user(
 
 	return input_from_user.length() > 0 ? input_from_user : val;
 }
+
+//****************************************************************************
+//*                     get_connect_params_from_user
+//****************************************************************************
+void get_connect_params_from_user(
+	string& ip_address,
+	string& port_number,
+	string& http_version)
+{
+	const string HDR_IP_ADDRESS   = "IP Address";
+	const string HDR_PORT_NUMBER  = "Port";
+	const string HDR_HTTP_VERSION = "Http Version";
+
+	//int width_header = HDR_HTTP_VERSION.length() + 3;
+	int width_header = HDR_IP_ADDRESS.length();
+	if (width_header < HDR_PORT_NUMBER.length())
+		width_header = HDR_PORT_NUMBER.length();
+	if (width_header < HDR_HTTP_VERSION.length())
+		width_header = HDR_HTTP_VERSION.length();
+	width_header += 3;
+	//int width_value = ip_address.length();
+	int width_value = ip_address.length();
+	if (width_value < port_number.length())
+		width_value = port_number.length();
+	if (width_value < http_version.length())
+		width_value = http_version.length();
+
+	ip_address = get_input_from_user(
+		HDR_IP_ADDRESS,
+		width_header,
+		ip_address,
+		width_value
+	);
+	port_number = get_input_from_user(
+		HDR_PORT_NUMBER,
+		width_header,
+		port_number,
+		width_value
+	);
+	http_version = get_input_from_user(
+		HDR_HTTP_VERSION,
+		width_header,
+		http_version,
+		width_value
+	);
+}
+
 //****************************************************************************
 //*                     get_user_access_params
 //****************************************************************************
@@ -123,10 +170,10 @@ void show_request_example(
 //****************************************************************************
 //*                     user_access_to_server
 //****************************************************************************
-void user_access_to_server() {
-	string user_email_address = "guest@example.com";
-	string user_password = "anonymous";
-
+void user_access_to_server(
+	string& user_email_address,
+	string& user_password)
+{
 	bool bProceed = true;
 	int iChar = -1;
 
@@ -180,58 +227,66 @@ void user_access_to_server() {
 //*                     main
 //****************************************************************************
 int main() {
-	user_access_to_server();
+	const string IP_ADDRESS = "192.168.178.14";
+	const string PORT_NUMBER = "8080";
+	const string HTTP_VERSION = "1.0";
+	const string USER_EMAIL_ADDRESS = "guest@example.com";
+	const string USER_PASSWORD = "anonymous";
+
+	string ip_address = IP_ADDRESS;
+	string port_number = PORT_NUMBER;
+	string http_version = HTTP_VERSION;
+	string user_email_address = USER_EMAIL_ADDRESS;
+	string user_password = USER_PASSWORD;
+
+	bool bProceed = true;
+	int iChar;
+
+	while (bProceed) {
+		cout << "Asynchronous HTTP Client SSL" << endl;
+		cout << "============================" << endl;
+		cout << " 1) Connect" << endl;
+		cout << " 2) Access" << endl;
+		cout << " 3) Download" << endl;
+		cout << " 4) Upload" << endl;
+		cout << "Enter the number of a subject, or enter a zero to quit: ";
+
+		cin >> iChar;
+		// get rid of the new line character, to ensure the buffer sanity
+		cin.get();
+
+		switch (iChar) {
+		case 1:
+			get_connect_params_from_user(
+				ip_address,
+				port_number,
+				http_version
+			);
+			break;
+		case 2:
+			user_access_to_server(
+				user_email_address,
+				user_password
+			);
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			cout << "The entered number is not recognized, please try again." << endl;
+			break;
+		} // eof switch
+	}
+
 	return 0;
 }
 
-//// HttpClientAsyncSSL.cpp
-//#include <iostream>
-//#include <conio.h>
-//#include <string>
-//
-//using namespace std;
-//int main() {
-//	string user_email_address = "";
-//	string user_password = "";
-//	string input_from_user = "";
-//	char ch = '\0';
-//
-//	cout << "Email......: ";
-//	getline(cin, input_from_user, '\n');
-//	user_email_address = input_from_user;
-//
-//	input_from_user = "";
-//	cout << "Password...: ";
-//	while ((ch = _getch()) != 13) {
-//		cout << '*';
-//		input_from_user += ch;
-//	}
-//	cout << endl;
-//	user_password = input_from_user;
-//
-//	cout << "Email address: " << user_email_address << ", Password: " << user_password << endl;
-//
-//	string post_request_urlencoded_string = "";
-//	post_request_urlencoded_string =
-//		"email=" +
-//		user_email_address +
-//		"&password=" +
-//		user_password;
-//	cout << post_request_urlencoded_string << endl;
-//
-//	string post_request = "";
-//	post_request =
-//		string("POST /login HTTP/1.0\r\n") +
-//		"Host: 192.168.178.14\r\n" +
-//		"User-Agent: Boost.Beast/248\r\n" +
-//		"Content-Type: application/x-www-form-urlencoded\r\n" +
-//		"Content-Length: " + to_string(post_request_urlencoded_string.length()) + "\r\n" +
-//		"\r\n" +
-//		post_request_urlencoded_string +
-//		"\r\n" +
-//		"\r\n";
-//	cout << post_request;
-//}
 //// HttpClientAsyncSSL.cpp
 //#include <iostream>
 //
