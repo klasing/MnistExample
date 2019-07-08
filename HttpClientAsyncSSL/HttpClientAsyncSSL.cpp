@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <string>
 
+#include "http_client_async_ssl.cpp"
+
 using namespace std;
 //****************************************************************************
 //*                     get_string_from_user
@@ -99,11 +101,39 @@ void get_connect_params_from_user(
 }
 
 //****************************************************************************
+//*                     show_request_example
+//****************************************************************************
+void show_request_example(
+	const string& access_mode,
+	// the access_payload
+	const string& post_request_urlencoded_string)
+{
+	string post_request = "";
+	post_request =
+		string("POST") +
+		" " +
+		access_mode +
+		" " +
+		"HTTP/1.0\r\n" +
+		"Host: 192.168.178.14\r\n" +
+		"User-Agent: " + BOOST_BEAST_VERSION_STRING + "\r\n" +
+		"Content-Type: application/x-www-form-urlencoded\r\n" +
+		"Content-Length: " + to_string(post_request_urlencoded_string.length()) + "\r\n" +
+		"\r\n" +
+		post_request_urlencoded_string + "\r\n" +
+		"\r\n" +
+		"\r\n";
+	cout << post_request;
+}
+
+//****************************************************************************
 //*                     get_user_access_params
 //****************************************************************************
 void get_user_access_params(
+	const string& target,
 	string& user_email_address,
-	string& user_password)
+	string& user_password,
+	string& access_payload)
 {
 	const string HDR_USER_EMAIL_ADDRESS = "Email";
 	const string HDR_USER_PASSWORD = "Password";
@@ -132,47 +162,25 @@ void get_user_access_params(
 		width_value,
 		false
 	);
-}
 
-//****************************************************************************
-//*                     get_user_access_params
-//****************************************************************************
-void show_request_example(
-	const string& access_mode,
-	const string& user_email_address,
-	const string& user_password)
-{
-	string post_request_urlencoded_string = "";
-	post_request_urlencoded_string =
+	access_payload =
 		"email=" +
 		user_email_address +
 		"&password=" +
 		user_password;
-	//cout << post_request_urlencoded_string << endl;
-
-	string post_request = "";
-	post_request =
-		string("POST /") +
-		access_mode +
-		" " +
-		"HTTP/1.0\r\n" +
-		"Host: 192.168.178.14\r\n" +
-		"User-Agent: Boost.Beast/248\r\n" +
-		"Content-Type: application/x-www-form-urlencoded\r\n" +
-		"Content-Length: " + to_string(post_request_urlencoded_string.length()) + "\r\n" +
-		"\r\n" +
-		post_request_urlencoded_string + "\r\n" +
-		"\r\n" +
-		"\r\n";
-	cout << post_request;
+	//show_request_example(
+	//	target,
+	//	access_payload);
 }
 
 //****************************************************************************
-//*                     user_access_to_server
+//*                     get_access_params_from_user
 //****************************************************************************
-void user_access_to_server(
+void get_access_params_from_user(
+	string& target,
 	string& user_email_address,
-	string& user_password)
+	string& user_password,
+	string& access_payload)
 {
 	bool bProceed = true;
 	int iChar = -1;
@@ -191,25 +199,31 @@ void user_access_to_server(
 
 		switch (iChar) {
 		case 1:
-			get_user_access_params(user_email_address, user_password);
-			show_request_example(
-				"login", 
-				user_email_address, 
-				user_password);
+			target = "/login";
+			get_user_access_params(
+				target,
+				user_email_address,
+				user_password,
+				access_payload);
+			bProceed = false;
 			break;
 		case 2:
-			get_user_access_params(user_email_address, user_password);
-			show_request_example(
-				"register",
+			target = "/register";
+			get_user_access_params(
+				target,
 				user_email_address,
-				user_password);
+				user_password,
+				access_payload);
+			bProceed = false;
 			break;
 		case 3:
-			get_user_access_params(user_email_address, user_password);
-			show_request_example(
-				"reset_password",
+			target = "/reset_password";
+			get_user_access_params(
+				target,
 				user_email_address,
-				user_password);
+				user_password,
+				access_payload);
+			bProceed = false;
 			break;
 		case 0:
 			// the user wants to terminate
@@ -224,20 +238,51 @@ void user_access_to_server(
 }
 
 //****************************************************************************
+//*                     do_request
+//****************************************************************************
+
+// TODO signature http_client_async_ssl must carry optional access_payload
+
+void do_request(
+	const string& request_mode,
+	const string& access_payload,
+	const string& ip_address,
+	const string& port_number,
+	const string& target_,
+	const string& version_)
+{
+	char cmd[] = "http-client-async-ssl";
+	char* mode = const_cast<char*>(request_mode.c_str());
+	char* payload = const_cast<char*>(access_payload.c_str());
+	char* host = const_cast<char*>(ip_address.c_str());
+	char* port = const_cast<char*>(port_number.c_str());
+	char* target = const_cast<char*>(target_.c_str());
+	char* version = const_cast<char*>(version_.c_str());;
+
+	int argc = 6;
+	char* argv[] = { cmd, mode, payload, host, port, target, version };
+	ns_http_client_async_ssl::http_client_async_ssl(argc, argv);
+}
+
+//****************************************************************************
 //*                     main
 //****************************************************************************
 int main() {
 	const string IP_ADDRESS = "192.168.178.14";
 	const string PORT_NUMBER = "8080";
+	const string TARGET = "login";
 	const string HTTP_VERSION = "1.0";
 	const string USER_EMAIL_ADDRESS = "guest@example.com";
 	const string USER_PASSWORD = "anonymous";
 
 	string ip_address = IP_ADDRESS;
 	string port_number = PORT_NUMBER;
+	string target = TARGET;
 	string http_version = HTTP_VERSION;
 	string user_email_address = USER_EMAIL_ADDRESS;
 	string user_password = USER_PASSWORD;
+	string request_mode = "access";
+	string access_payload = "";
 
 	bool bProceed = true;
 	int iChar;
@@ -264,10 +309,20 @@ int main() {
 			);
 			break;
 		case 2:
-			user_access_to_server(
+			get_access_params_from_user(
+				target,
 				user_email_address,
-				user_password
+				user_password,
+				access_payload
 			);
+			request_mode = "access";
+			do_request(
+				request_mode,
+				access_payload,
+				ip_address, 
+				port_number, 
+				target, 
+				http_version);
 			break;
 		case 3:
 			break;
@@ -305,7 +360,4 @@ int main() {
 //	char* argv[] = { cmd, host , port, target, version };
 //	int argc = 5;
 //	ns_http_client_async_ssl::http_client_async_ssl(argc, argv);
-//
-//	int iChar;
-//	std::cin >> iChar;
 //}

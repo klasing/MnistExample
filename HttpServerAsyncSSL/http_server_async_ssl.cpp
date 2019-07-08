@@ -157,7 +157,8 @@ namespace ns_http_server_async_ssl {
 		};
 
 		// Make sure we can handle the method
-		if (req.method() != http::verb::get &&
+		if (req.method() != http::verb::post && 
+			req.method() != http::verb::get &&
 			req.method() != http::verb::put &&
 			req.method() != http::verb::head)
 			return send(bad_request("Unknown HTTP-method"));
@@ -167,6 +168,48 @@ namespace ns_http_server_async_ssl {
 			req.target()[0] != '/' ||
 			req.target().find("..") != beast::string_view::npos)
 			return send(bad_request("Illegal request-target"));
+
+		// Respond to a POST request
+		if (req.method() == http::verb::post) {
+			std::cout << "-> POST message received" << std::endl;
+			std::string payload = req.body();
+
+			// filter user_email_address
+			size_t sBegin, sEnd, sLength, sTemp;
+			sTemp = 0;
+			sBegin = payload.find_first_of("=", sTemp);
+			sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+				(payload.find("&", sBegin) - 1) :
+				payload.length() - 1;
+			sLength = sEnd - sBegin;
+			sBegin++;
+			std::string user_email_address = payload.substr(sBegin, sLength);
+			// filter user_password
+			sTemp = sEnd;
+			sBegin = payload.find_first_of("=", sTemp);
+			sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+				(payload.find("&", sBegin) - 1) :
+				payload.length() - 1;
+			sLength = sEnd - sBegin;
+			sBegin++;
+			std::string user_password = payload.substr(sBegin, sLength);
+
+			//std::cout << user_email_address << " " << user_password << std::endl;
+
+			std::string response_payload = 
+				static_cast<std::string>(req.target());
+			response_payload.erase(0, 1);
+			response_payload += " succeeded";
+
+			http::response<http::string_body> res{
+				http::status::ok, req.version() };
+			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+			res.set(http::field::content_type, "text/html");
+			res.body() = response_payload;
+			res.prepare_payload();
+			res.keep_alive(req.keep_alive());
+			return send(std::move(res));
+		}
 
 		if (req.method() == http::verb::get ||
 			req.method() == http::verb::head) {
