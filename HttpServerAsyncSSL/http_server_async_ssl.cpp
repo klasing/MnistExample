@@ -7,6 +7,7 @@
 
 //#include "server_certificate.hpp"
 #include "server_certificate_new.hpp"
+#include "handle_user_access.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -169,37 +170,42 @@ namespace ns_http_server_async_ssl {
 			req.target().find("..") != beast::string_view::npos)
 			return send(bad_request("Illegal request-target"));
 
+//////////////////////////////////////////////////////////////////////////////
 		// Respond to a POST request
 		if (req.method() == http::verb::post) {
-			std::cout << "-> POST message received" << std::endl;
-			std::string payload = req.body();
+			std:string response_payload =
+			 ns_handle_user_access::handle_user_access(
+				 static_cast<std::string>(req.target()),
+				 req.body());
+			//std::cout << "-> POST message received" << std::endl;
+			//std::string payload = req.body();
 
-			// filter user_email_address
-			size_t sBegin, sEnd, sLength, sTemp;
-			sTemp = 0;
-			sBegin = payload.find_first_of("=", sTemp);
-			sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-				(payload.find("&", sBegin) - 1) :
-				payload.length() - 1;
-			sLength = sEnd - sBegin;
-			sBegin++;
-			std::string user_email_address = payload.substr(sBegin, sLength);
-			// filter user_password
-			sTemp = sEnd;
-			sBegin = payload.find_first_of("=", sTemp);
-			sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-				(payload.find("&", sBegin) - 1) :
-				payload.length() - 1;
-			sLength = sEnd - sBegin;
-			sBegin++;
-			std::string user_password = payload.substr(sBegin, sLength);
+			//// filter user_email_address
+			//size_t sBegin, sEnd, sLength, sTemp;
+			//sTemp = 0;
+			//sBegin = payload.find_first_of("=", sTemp);
+			//sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+			//	(payload.find("&", sBegin) - 1) :
+			//	payload.length() - 1;
+			//sLength = sEnd - sBegin;
+			//sBegin++;
+			//std::string user_email_address = payload.substr(sBegin, sLength);
+			//// filter user_password
+			//sTemp = sEnd;
+			//sBegin = payload.find_first_of("=", sTemp);
+			//sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+			//	(payload.find("&", sBegin) - 1) :
+			//	payload.length() - 1;
+			//sLength = sEnd - sBegin;
+			//sBegin++;
+			//std::string user_password = payload.substr(sBegin, sLength);
 
-			//std::cout << user_email_address << " " << user_password << std::endl;
+			////std::cout << user_email_address << " " << user_password << std::endl;
 
-			std::string response_payload = 
-				static_cast<std::string>(req.target());
-			response_payload.erase(0, 1);
-			response_payload += " succeeded";
+			//std::string response_payload = 
+			//	static_cast<std::string>(req.target());
+			//response_payload.erase(0, 1);
+			//response_payload += " succeeded";
 
 			http::response<http::string_body> res{
 				http::status::ok, req.version() };
@@ -210,6 +216,7 @@ namespace ns_http_server_async_ssl {
 			res.keep_alive(req.keep_alive());
 			return send(std::move(res));
 		}
+//////////////////////////////////////////////////////////////////////////////
 
 		if (req.method() == http::verb::get ||
 			req.method() == http::verb::head) {

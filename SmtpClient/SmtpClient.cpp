@@ -1,11 +1,12 @@
 // whois smtp.gmail.com -> 74.125.142.109
 // port 587
-#define _WINSOCK_DEPRECATED_NO_WARNINGS 0
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #pragma comment(lib, "Ws2_32.lib")
 
 #include <iostream>
 #include <string>
+#include <memory>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <openssl/err.h>
@@ -184,7 +185,7 @@ int main() {
 		"klasingsmtp@gmail.com",
 		"klasing1159@gmail.com",
 		"no subject",
-		"This message concerns a 'no subject' matter.\r\nIt is realy of no importance or what so ever.");
+		"This message concerns a 'no subject' matter.\r\nIt is really of no importance or what so ever.");
 
 	return EXIT_SUCCESS;
 }
