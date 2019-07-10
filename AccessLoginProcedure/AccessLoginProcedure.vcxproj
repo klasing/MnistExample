@@ -152,9 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AccessLoginProcedure.cpp" />
+    <ClCompile Include="Connect2SQLite.cpp" />
+    <ClCompile Include="CppSQLite3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Connect2SQLite.hpp" />
+    <ClInclude Include="CppSQLite3.h" />
     <ClInclude Include="handle_user_access.hpp" />
+    <ClInclude Include="sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
