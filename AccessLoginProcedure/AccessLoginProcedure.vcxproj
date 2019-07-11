@@ -91,10 +91,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\openssl\include;C:\openssl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -152,13 +155,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AccessLoginProcedure.cpp" />
-    <ClCompile Include="Connect2SQLite.cpp" />
     <ClCompile Include="CppSQLite3.cpp" />
+    <ClCompile Include="SmtpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connect2SQLite.hpp" />
     <ClInclude Include="CppSQLite3.h" />
-    <ClInclude Include="handle_user_access.hpp" />
+    <ClInclude Include="HandlerForRegister.hpp" />
     <ClInclude Include="sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
