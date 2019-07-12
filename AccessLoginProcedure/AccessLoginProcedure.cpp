@@ -134,7 +134,7 @@ void get_access_params_from_user(
 		cin.get();
 
 		switch (iChar) {
-		case 1:
+		case 1: {
 			target = "/login";
 			get_user_access_params(
 				user_email_address,
@@ -147,6 +147,7 @@ void get_access_params_from_user(
 				cout << "login succeeded" << endl;
 			bProceed = false;
 			break;
+		} // case 1
 		case 2: {
 			target = "/register";
 			get_user_access_params(
@@ -161,7 +162,7 @@ void get_access_params_from_user(
 			bProceed = false;
 			break;
 		} // case 2
-		case 3:
+		case 3: {
 			target = "/reset_password";
 			get_user_access_params(
 				user_email_address,
@@ -174,6 +175,7 @@ void get_access_params_from_user(
 			);
 			bProceed = false;
 			break;
+		} // case 3
 		case 0:
 			// the user wants to terminate
 			bProceed = false;
@@ -190,6 +192,7 @@ void get_access_params_from_user(
 //*                     main
 //****************************************************************************
 // testing for login
+// testing register user
 // testing for reset password
 int main() {
 	Connect2SQLite oSqlite;

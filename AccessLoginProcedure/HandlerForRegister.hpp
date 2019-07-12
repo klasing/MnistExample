@@ -7,12 +7,20 @@ using namespace std;
 inline string generate_random_string();
 class Connect2SQLite;
 class HandlerForRegister {
+	int rc = -1;
 public:
 	int handle_register(
 		const string& user_email_address,
 		const string& user_password,
 		Connect2SQLite& oSqlite
 	) {
+		// check for registered user_email_address
+		if (rc = oSqlite.selectFromTable(
+			"user_email_address",
+			user_email_address) == 0) {
+			cout << "Email address is already registered, try a different email address." << endl;
+			return rc;
+		}
 		// generate random string
 		string generated_code = generate_random_string();
 		string message_with_code = "code " + generated_code;
