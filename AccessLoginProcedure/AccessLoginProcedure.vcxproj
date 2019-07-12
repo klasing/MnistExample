@@ -161,7 +161,9 @@
   <ItemGroup>
     <ClInclude Include="Connect2SQLite.hpp" />
     <ClInclude Include="CppSQLite3.h" />
+    <ClInclude Include="HandlerForLogin.hpp" />
     <ClInclude Include="HandlerForRegister.hpp" />
+    <ClInclude Include="HandlerForResetPassword.hpp" />
     <ClInclude Include="sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

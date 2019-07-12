@@ -6,9 +6,9 @@ using namespace std;
 //****************************************************************************
 inline string generate_random_string();
 class Connect2SQLite;
-class HandlerForRegister {
+class HandlerForResetPassword {
 public:
-	int handle_register(
+	int handle_reset_password(
 		const string& user_email_address,
 		const string& user_password,
 		Connect2SQLite& oSqlite
@@ -33,11 +33,12 @@ public:
 
 		// verify code given by user with generated string
 		if (code_received_from_user == generated_code)
-			oSqlite.insertRegisterUser(
+			oSqlite.updateUserPassword(
 				user_email_address,
 				user_password
 			);
 
 		return 0;
 	}
+
 };
