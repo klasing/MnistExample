@@ -154,11 +154,11 @@ void get_access_params_from_user(
 				user_email_address,
 				user_password);
 			HandlerForRegister handlerForRegister;
-			handlerForRegister.handle_register(
+			if (handlerForRegister.handle_register(
 				user_email_address,
 				user_password,
-				oSqlite
-			);
+				oSqlite) == 0)
+				cout << "register successfull" << endl;
 			bProceed = false;
 			break;
 		} // case 2
@@ -167,12 +167,17 @@ void get_access_params_from_user(
 			get_user_access_params(
 				user_email_address,
 				user_password);
+			// a user can't reset the password of the default user
+			if (user_email_address == "guest@example.com") {
+				cout << "You can not reset the password from the default user" << endl;
+				return;
+			}
 			HandlerForResetPassword handlerForResetPassword;
-			handlerForResetPassword.handle_reset_password(
+			if (handlerForResetPassword.handle_reset_password(
 				user_email_address,
 				user_password,
-				oSqlite
-			);
+				oSqlite) == 0)
+				cout << "reset password succeeded" << endl;
 			bProceed = false;
 			break;
 		} // case 3

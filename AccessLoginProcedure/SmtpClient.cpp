@@ -27,7 +27,7 @@ inline void read_socket(SOCKET& sock) {
 		total_size += size_recv;
 		strcat_s(recvbuf, BUFSIZ, chunk);
 	}
-	std::cout << recvbuf;
+	//std::cout << recvbuf;
 }
 
 //****************************************************************************
@@ -46,7 +46,7 @@ inline void read_socket_ssl(SSL* ssl) {
 		total_size += size_recv;
 		chunk[total_size] = '\0';
 		strcat_s(recvbuf, BUFSIZ, chunk);
-		std::cout << recvbuf;
+		//std::cout << recvbuf;
 	}
 }
 
@@ -58,7 +58,7 @@ inline void write_socket(SOCKET& sock, const std::string& str) {
 	int sended = 0;
 	int all = strlen(buf);
 
-	std::cout << str;
+	//std::cout << str;
 	while (all > 0) {
 		sended = send(sock, buf, all, 0);
 		*buf += sended;
@@ -73,7 +73,7 @@ inline void write_socket_ssl(SSL* ssl, const std::string& str) {
 	char* buf = const_cast<char*>(str.c_str());
 	int sended = 0;
 
-	std::cout << str;
+	//std::cout << str;
 	sended = SSL_write(ssl, buf, strlen(buf));
 }
 
@@ -96,7 +96,7 @@ inline int
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
-		std::cout << "WSAStartup failed: %d" << std::endl;
+		//std::cout << "WSAStartup failed: %d" << std::endl;
 		return iResult;
 	}
 
@@ -108,7 +108,7 @@ inline int
 	// Initialize socket
 	sock = socket(iFamily, iType, iProtocol);
 	if (sock == INVALID_SOCKET) {
-		std::cout << "socket function failed with error = %d" << std::endl;
+		//std::cout << "socket function failed with error = %d" << std::endl;
 		return sock; // an INVALID_SOCKET value is returned
 	}
 
@@ -121,7 +121,7 @@ inline int
 	server.sin_port = htons(587);
 	if (connect(sock, (struct sockaddr*) & server, sizeof server) == -1)
 	{
-		std::cout << "Can't connect to server" << std::endl;
+		//std::cout << "Can't connect to server" << std::endl;
 		return -1;
 	}
 

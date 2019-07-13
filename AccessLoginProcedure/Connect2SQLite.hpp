@@ -33,7 +33,7 @@ public:
 			return EXIT_FAILURE;
 		}
 		else
-			cout << "Database opened successfully." << endl;
+			;// cout << "Database opened successfully." << endl;
 
 		return EXIT_SUCCESS;
 	}
@@ -45,7 +45,7 @@ public:
 			return EXIT_FAILURE;
 		}
 		else
-			cout << "Table closed successfully." << endl;
+			;// cout << "Table closed successfully." << endl;
 
 		// clean up
 		delete[] data;
@@ -85,7 +85,7 @@ public:
 		strcpy_s(data, DATA_MAX, "select from table");
 		rc = execute(sql, &vector_user_data);
 		if (vector_user_data.size() == 0) {
-			cout << "no data found in database" << endl;
+			//cout << "no data found in database" << endl;
 			rc = -1;
 		}
 		else
@@ -111,11 +111,11 @@ public:
 		strcpy_s(data, DATA_MAX, "select from table");
 		rc = execute(sql, &vector_user_data);
 		if (vector_user_data.size() == 0) {
-			cout << "no data found in database" << endl;
+			//cout << "no data found in database" << endl;
 			rc = -1;
 		}
 		else
-			show_data_in_vector();
+			;// show_data_in_vector();
 
 		return rc;
 	}
@@ -127,9 +127,11 @@ public:
 		sql = "SELECT max(ID) FROM user_access_login_data;";
 		strcpy_s(data, DATA_MAX, "find max(ID)");
 		// no data will be returned from this SQL execution
+		// set the ariable that hold the highest key
+		// for the callback
 		rc = execute(sql, pHighestKeyValue);
 		string key = to_string(++(*pHighestKeyValue));
-		cout << "max(ID): " << key << endl;
+		//cout << "max(ID): " << key << endl;
 
 		// insert into table
 		sql = string("INSERT INTO user_access_login_data(")
@@ -188,7 +190,7 @@ public:
 		}
 		else
 			// a description of the performed SQL execution
-			cout << get_data() << endl;
+			;// cout << get_data() << endl;
 
 		return rc;
 	}
