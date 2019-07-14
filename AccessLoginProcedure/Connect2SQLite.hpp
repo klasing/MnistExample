@@ -89,7 +89,7 @@ public:
 			rc = -1;
 		}
 		else
-			show_data_in_vector();
+			//show_data_in_vector();
 
 		return rc;
 	}
