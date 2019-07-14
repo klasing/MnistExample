@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 // handle_user_access.hpp
 // 1) login
 //    1.1) login is ok, if
@@ -26,71 +26,70 @@
 //    a confirmation code will be send via email
 //    the password reset can be completed,
 //    when the user has correctly entered the confirmation code
-
-#include <iostream>
-#include <tuple>
-#include <time.h>
-#include <random>
-
-using namespace std;
-namespace ns_handle_user_access {
-	inline void 
-		generate_random_string()
-	{
-		string random_string = "";
-		mt19937 eng(static_cast<unsigned long>(time(nullptr)));
-		uniform_int_distribution<int> dist(65, 90);
-		for (int i = 0; i < 32; i++)
-			random_string += dist(eng);
-		cout << random_string << endl;
-	}
-
-	inline string 
-		handle_user_access(
-			const string& target,
-			const string& payload)
-	{
-		cout << "handle_user_access()" << endl;
-		cout << "-> POST message received" << endl;
-
-		// filter user_email_address
-		size_t sBegin, sEnd, sLength, sTemp;
-		sTemp = 0;
-		sBegin = payload.find_first_of("=", sTemp);
-		sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-			(payload.find("&", sBegin) - 1) :
-			payload.length() - 1;
-		sLength = sEnd - sBegin;
-		sBegin++;
-		std::string user_email_address = payload.substr(sBegin, sLength);
-		// filter user_password
-		sTemp = sEnd;
-		sBegin = payload.find_first_of("=", sTemp);
-		sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-			(payload.find("&", sBegin) - 1) :
-			payload.length() - 1;
-		sLength = sEnd - sBegin;
-		sBegin++;
-		std::string user_password = payload.substr(sBegin, sLength);
-
-		std::cout << user_email_address << " " << user_password << std::endl;
-		typedef tuple<string, string> tuple_user_data;
-		tuple_user_data user_data_on_file(
-			user_email_address,
-			user_password);
-
-		// see what kind of access is requested
-		if (target == "/login")
-			;
-		if (target == "/register")
-			generate_random_string();
-		if (target == "/reset_password")
-			;
-
-		std::string response_payload = target;
-		response_payload.erase(0, 1);
-		response_payload += " succeeded";
-
-		return response_payload;
-	}
-}
+//#include <iostream>
+//#include <tuple>
+//#include <time.h>
+//#include <random>
+//
+//using namespace std;
+//namespace ns_handle_user_access {
+//	inline void 
+//		generate_random_string()
+//	{
+//		string random_string = "";
+//		mt19937 eng(static_cast<unsigned long>(time(nullptr)));
+//		uniform_int_distribution<int> dist(65, 90);
+//		for (int i = 0; i < 32; i++)
+//			random_string += dist(eng);
+//		cout << random_string << endl;
+//	}
+//
+//	inline string 
+//		handle_user_access(
+//			const string& target,
+//			const string& payload)
+//	{
+//		cout << "handle_user_access()" << endl;
+//		cout << "-> POST message received" << endl;
+//
+//		// filter user_email_address
+//		size_t sBegin, sEnd, sLength, sTemp;
+//		sTemp = 0;
+//		sBegin = payload.find_first_of("=", sTemp);
+//		sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+//			(payload.find("&", sBegin) - 1) :
+//			payload.length() - 1;
+//		sLength = sEnd - sBegin;
+//		sBegin++;
+//		std::string user_email_address = payload.substr(sBegin, sLength);
+//		// filter user_password
+//		sTemp = sEnd;
+//		sBegin = payload.find_first_of("=", sTemp);
+//		sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+//			(payload.find("&", sBegin) - 1) :
+//			payload.length() - 1;
+//		sLength = sEnd - sBegin;
+//		sBegin++;
+//		std::string user_password = payload.substr(sBegin, sLength);
+//
+//		std::cout << user_email_address << " " << user_password << std::endl;
+//		typedef tuple<string, string> tuple_user_data;
+//		tuple_user_data user_data_on_file(
+//			user_email_address,
+//			user_password);
+//
+//		// see what kind of access is requested
+//		if (target == "/login")
+//			;
+//		if (target == "/register")
+//			generate_random_string();
+//		if (target == "/reset_password")
+//			;
+//
+//		std::string response_payload = target;
+//		response_payload.erase(0, 1);
+//		response_payload += " succeeded";
+//
+//		return response_payload;
+//	}
+//}
