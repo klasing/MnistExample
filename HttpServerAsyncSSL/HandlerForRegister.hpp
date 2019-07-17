@@ -7,6 +7,10 @@
 inline std::string generate_random_string();
 
 class HandlerForRegister {
+	// this is a dangerous variable
+	// it can be changed between the calls handle_register and
+	// handle_register_confirm, by another client
+	// every client has to have its own HandlerForRegister instance!
 	std::string generated_code = "";
 public:
 	void handle_register(

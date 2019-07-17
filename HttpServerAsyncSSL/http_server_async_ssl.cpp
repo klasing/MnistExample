@@ -171,6 +171,7 @@ namespace ns_http_server_async_ssl {
 		handle_request(
 			beast::string_view doc_root,
 			std::shared_ptr<Connect2SQLite> pSqlite,
+			std::shared_ptr<HandlerForRegister> pHandlerForRegister,
 			http::request<Body, http::basic_fields<Allocator>>&& req,
 			Send&& send)
 	{
@@ -260,16 +261,16 @@ namespace ns_http_server_async_ssl {
 					response_payload);
 			}
 			if (target == "/register") {
-				HandlerForRegister handlerForRegister;
-				handlerForRegister.handle_register(
+				//HandlerForRegister handlerForRegister;
+				pHandlerForRegister->handle_register(
 					user_email_address,
 					user_password,
 					pSqlite,
 					response_payload);
 			}
 			if (target == "/register_confirm") {
-				HandlerForRegister handlerForRegister;
-				handlerForRegister.handle_register_confirm(
+				//HandlerForRegister handlerForRegister;
+				pHandlerForRegister->handle_register_confirm(
 					user_email_address,
 					user_password,
 					user_code,
@@ -423,7 +424,7 @@ namespace ns_http_server_async_ssl {
 		beast::flat_buffer buffer_;
 		std::shared_ptr<std::string const> doc_root_;
 		std::shared_ptr<Connect2SQLite> pSqlite_;
-		std::shared_ptr<HandlerForRegister> pHandlerForRegister;
+		std::shared_ptr<HandlerForRegister> pHandlerForRegister_;
 		http::request<http::string_body> req_;
 		std::shared_ptr<void> res_;
 		send_lambda lambda_;
@@ -435,10 +436,12 @@ namespace ns_http_server_async_ssl {
 			tcp::socket&& socket,
 			ssl::context& ctx,
 			std::shared_ptr<std::string const> const& doc_root,
-			std::shared_ptr<Connect2SQLite> const& pSqlite)
+			std::shared_ptr<Connect2SQLite> const& pSqlite,
+			std::shared_ptr<HandlerForRegister> const& pHandlerForRegister)
 			: stream_(std::move(socket), ctx)
 			, doc_root_(doc_root)
 			, pSqlite_(pSqlite)
+			, pHandlerForRegister_(pHandlerForRegister)
 			, lambda_(*this)
 		{
 			std::cout << "<<constructor>> session()" << std::endl;
@@ -504,7 +507,11 @@ namespace ns_http_server_async_ssl {
 				return fail(ec, "read");
 
 			// Send the response
-			handle_request(*doc_root_, pSqlite_, std::move(req_), lambda_);
+			handle_request(*doc_root_ 
+				, pSqlite_
+				, pHandlerForRegister_
+				, std::move(req_) 
+				, lambda_);
 		}
 
 		void
@@ -568,6 +575,7 @@ namespace ns_http_server_async_ssl {
 		tcp::acceptor acceptor_;
 		std::shared_ptr<std::string const> doc_root_;
 		std::shared_ptr<Connect2SQLite> pSqlite_;
+		std::shared_ptr<HandlerForRegister> pHandlerForRegister_;
 
 	public:
 		listener(
@@ -583,6 +591,10 @@ namespace ns_http_server_async_ssl {
 			, pSqlite_(pSqlite)
 		{
 			std::cout << "<<constructor>> listener()" << std::endl;
+			HandlerForRegister oHandlerForRegister;
+			pHandlerForRegister_ =
+				std::make_shared<HandlerForRegister>(oHandlerForRegister);
+
 			beast::error_code ec;
 
 			// Open the acceptor
@@ -655,7 +667,8 @@ namespace ns_http_server_async_ssl {
 					std::move(socket),
 					ctx_,
 					doc_root_,
-					pSqlite_)->run();
+					pSqlite_,
+					pHandlerForRegister_)->run();
 			}
 
 			// Accept another connection
