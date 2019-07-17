@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_70_0;C:\openssl\include;C:\openssl\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -97,7 +97,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_70_0\libs;C:\Program Files\boost\boost_1_70_0\stage\lib;C:\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,10 +157,13 @@
     <ClCompile Include="CppSQLite3.cpp" />
     <ClCompile Include="HttpServerAsyncSSL.cpp" />
     <ClCompile Include="http_server_async_ssl.cpp" />
+    <ClCompile Include="SmtpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connect2SQLite.hpp" />
     <ClInclude Include="CppSQLite3.h" />
+    <ClInclude Include="HandlerForRegister.hpp" />
+    <ClInclude Include="HandlerForLogin.hpp" />
     <ClInclude Include="handle_user_access.hpp" />
     <ClInclude Include="server_certificate.hpp" />
     <ClInclude Include="server_certificate_new.hpp" />

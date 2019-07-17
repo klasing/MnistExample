@@ -24,6 +24,9 @@
     <ClCompile Include="CppSQLite3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SmtpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="server_certificate.hpp">
@@ -42,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sqlite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForLogin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForRegister.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

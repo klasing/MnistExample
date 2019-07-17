@@ -8,6 +8,22 @@
 
 using namespace std;
 //****************************************************************************
+//*                     accessdata
+//****************************************************************************
+struct accessdata {
+	string ip_address = "";
+	string port_number = "";
+	string http_version = "";
+	string user_email_address = "";
+	string user_password = "";
+};
+
+//****************************************************************************
+//*                     global
+//****************************************************************************
+accessdata access_data;
+
+//****************************************************************************
 //*                     get_string_from_user
 //****************************************************************************
 void get_string_from_user(
@@ -60,7 +76,8 @@ string get_input_from_user(
 void get_connect_params_from_user(
 	string& ip_address,
 	string& port_number,
-	string& http_version)
+	string& http_version,
+	accessdata& access_data)
 {
 	const string HDR_IP_ADDRESS   = "IP Address";
 	const string HDR_PORT_NUMBER  = "Port";
@@ -98,6 +115,10 @@ void get_connect_params_from_user(
 		http_version,
 		width_value
 	);
+
+	access_data.ip_address = ip_address;
+	access_data.port_number = port_number;
+	access_data.http_version = http_version;
 }
 
 //****************************************************************************
@@ -133,7 +154,8 @@ void get_user_access_params(
 	const string& target,
 	string& user_email_address,
 	string& user_password,
-	string& access_payload)
+	string& access_payload,
+	accessdata& access_data)
 {
 	const string HDR_USER_EMAIL_ADDRESS = "Email";
 	const string HDR_USER_PASSWORD = "Password";
@@ -171,6 +193,11 @@ void get_user_access_params(
 	//show_request_example(
 	//	target,
 	//	access_payload);
+
+	// place user_email_address and user_password
+	// in a struct, so this data can be used elsewhere
+	access_data.user_email_address = user_email_address;
+	access_data.user_password = user_password;
 }
 
 //****************************************************************************
@@ -180,7 +207,8 @@ void get_access_params_from_user(
 	string& target,
 	string& user_email_address,
 	string& user_password,
-	string& access_payload)
+	string& access_payload,
+	accessdata& access_data)
 {
 	bool bProceed = true;
 	int iChar = -1;
@@ -204,7 +232,8 @@ void get_access_params_from_user(
 				target,
 				user_email_address,
 				user_password,
-				access_payload);
+				access_payload,
+				access_data);
 			bProceed = false;
 			break;
 		case 2:
@@ -213,7 +242,8 @@ void get_access_params_from_user(
 				target,
 				user_email_address,
 				user_password,
-				access_payload);
+				access_payload,
+				access_data);
 			bProceed = false;
 			break;
 		case 3:
@@ -222,7 +252,8 @@ void get_access_params_from_user(
 				target,
 				user_email_address,
 				user_password,
-				access_payload);
+				access_payload,
+				access_data);
 			bProceed = false;
 			break;
 		case 0:
@@ -240,28 +271,56 @@ void get_access_params_from_user(
 //****************************************************************************
 //*                     do_request
 //****************************************************************************
-
-// TODO signature http_client_async_ssl must carry optional access_payload
-
 void do_request(
 	const string& request_mode,
 	const string& access_payload,
 	const string& ip_address,
 	const string& port_number,
-	const string& target_,
-	const string& version_)
+	const string& target,
+	const string& version)
 {
 	char cmd[] = "http-client-async-ssl";
 	char* mode = const_cast<char*>(request_mode.c_str());
 	char* payload = const_cast<char*>(access_payload.c_str());
 	char* host = const_cast<char*>(ip_address.c_str());
 	char* port = const_cast<char*>(port_number.c_str());
-	char* target = const_cast<char*>(target_.c_str());
-	char* version = const_cast<char*>(version_.c_str());;
+	char* target_ = const_cast<char*>(target.c_str());
+	char* version_ = const_cast<char*>(version.c_str());;
 
 	int argc = 6;
-	char* argv[] = { cmd, mode, payload, host, port, target, version };
+	char* argv[] = { cmd, mode, payload, host, port, target_, version_ };
 	ns_http_client_async_ssl::http_client_async_ssl(argc, argv);
+}
+
+//****************************************************************************
+//*                     get_confirmation_code
+//****************************************************************************
+void get_confirmation_code() {
+	string confirmation_code;
+
+	cout << "Enter the code received by email: ";
+	cin >> confirmation_code;
+
+	string request_mode = "access";
+	string access_payload = 
+		"email=" +
+		access_data.user_email_address +
+		"&password=" +
+		access_data.user_password +
+		"&code=" +
+		confirmation_code;
+	string ip_address = access_data.ip_address;		// "192.168.178.14";
+	string port_number = access_data.port_number;	// "8080";
+	string target = "/register_confirm";
+	string http_version = access_data.http_version;	// "1.0";
+
+	do_request(
+		request_mode,
+		access_payload,
+		ip_address,
+		port_number,
+		target,
+		http_version);
 }
 
 //****************************************************************************
@@ -284,6 +343,11 @@ int main() {
 	string request_mode = "access";
 	string access_payload = "";
 
+	// it's messy, but has to be for now
+	access_data.ip_address = ip_address;
+	access_data.port_number = port_number;
+	access_data.http_version = http_version;
+
 	bool bProceed = true;
 	int iChar;
 
@@ -305,7 +369,8 @@ int main() {
 			get_connect_params_from_user(
 				ip_address,
 				port_number,
-				http_version
+				http_version,
+				access_data
 			);
 			break;
 		case 2:
@@ -313,7 +378,8 @@ int main() {
 				target,
 				user_email_address,
 				user_password,
-				access_payload
+				access_payload,
+				access_data
 			);
 			request_mode = "access";
 			do_request(

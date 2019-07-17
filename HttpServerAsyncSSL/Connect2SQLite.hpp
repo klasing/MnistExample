@@ -1,11 +1,11 @@
+// avoid Connect2SQLite: class type redefinition
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <tuple>
 #include <vector>
 #include <memory>
-
-// avoid Connect2SQLite: class type redefinition
-#pragma once
 
 #include "CppSQLite3.h"
 
@@ -96,6 +96,21 @@ public:
 
 		return rc;
 	}
+	int selectFromTable_(const string& colName, const string& value) {
+		// select from table
+		sql = string("SELECT * FROM user_access_login_data ")
+			+ "WHERE "
+			+ colName
+			+ " = "
+			+ "'" + value + "'"
+			+ ";";
+		strcpy_s(data, DATA_MAX, "select from table");
+		rc = execute(sql, &vector_user_data);
+		if (vector_user_data.size() == 0)
+			//cout << "no data found in database" << endl;
+			return -1;
+		return rc;
+	}
 	int selectFromTable(
 		const string& user_email_address, const string& user_email_address_value,
 		const string& user_password, const string& user_password_value)
@@ -122,6 +137,28 @@ public:
 
 		return rc;
 	}
+	int selectFromTable_(
+		const string& user_email_address, const string& user_email_address_value,
+		const string& user_password, const string& user_password_value)
+	{
+		// select from table
+		sql = string("SELECT * FROM user_access_login_data ")
+			+ "WHERE "
+			+ user_email_address
+			+ " = "
+			+ "'" + user_email_address_value + "'"
+			+ " AND "
+			+ user_password
+			+ " = "
+			+ "'" + user_password_value + "'"
+			+ ";";
+		strcpy_s(data, DATA_MAX, "select from table");
+		rc = execute(sql, &vector_user_data);
+		if (vector_user_data.size() == 0)
+			//cout << "no data found in database" << endl;
+			return -1;
+		return rc;
+	}
 	int insertRegisterUser(
 		const string& user_email_address,
 		const string& user_password
@@ -130,7 +167,7 @@ public:
 		sql = "SELECT max(ID) FROM user_access_login_data;";
 		strcpy_s(data, DATA_MAX, "find max(ID)");
 		// no data will be returned from this SQL execution
-		// set the ariable that hold the highest key
+		// set the variable that holds the highest key
 		// for the callback
 		rc = execute(sql, pHighestKeyValue);
 		string key = to_string(++(*pHighestKeyValue));

@@ -21,10 +21,16 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 namespace ssl = boost::asio::ssl;       // from <boost/asio/ssl.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
+//****************************************************************************
+//*                     prototype
+//****************************************************************************
+void get_confirmation_code();
+
 namespace ns_http_client_async_ssl {
-	//***************************************************************************
+	const int SECONDS_BEFORE_EXPIRING = 300;
+	//************************************************************************
 	//*                 fail
-	//***************************************************************************
+	//************************************************************************
 	// Report a failure
 	inline void
 		fail(beast::error_code ec, char const* what)
@@ -32,9 +38,9 @@ namespace ns_http_client_async_ssl {
 		std::cerr << what << ": " << ec.message() << "\n";
 	}
 
-	//***************************************************************************
+	//************************************************************************
 	//*                 session
-	//***************************************************************************
+	//************************************************************************
 	// Performs an HTTP GET and prints the response
 	class session : public std::enable_shared_from_this<session>
 	{
@@ -118,7 +124,9 @@ namespace ns_http_client_async_ssl {
 				return fail(ec, "resolve");
 
 			// Set a timeout on the operation
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
 			// Make the connection on the IP address we get from a lookup
 			beast::get_lowest_layer(stream_).async_connect(
@@ -149,7 +157,9 @@ namespace ns_http_client_async_ssl {
 				return fail(ec, "handshake");
 
 			// Set a timeout on the operation
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
 			// Send the HTTP request to the remote host
 			if (mode_ == "access") {
@@ -193,9 +203,14 @@ namespace ns_http_client_async_ssl {
 
 			// Write the message to standard out
 			std::cout << res_ << std::endl;
+			std::string response_body = res_.body();
+			if (response_body == "register: enter the code received by email.")
+				get_confirmation_code();
 
 			// Set a timeout on the operation
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
 			// Gracefully close the stream
 			stream_.async_shutdown(
@@ -220,9 +235,9 @@ namespace ns_http_client_async_ssl {
 		}
 	};
 
-	//***************************************************************************
+	//************************************************************************
 	//*                 http_client_async_ssl
-	//***************************************************************************
+	//************************************************************************
 	inline int http_client_async_ssl(int argc, char* argv[]) {
 		// Check command line arguments.
 		if (argc != 6 && argc != 7)

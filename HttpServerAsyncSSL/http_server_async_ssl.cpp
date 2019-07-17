@@ -7,8 +7,6 @@
 
 //#include "server_certificate.hpp"
 #include "server_certificate_new.hpp"
-#include "Connect2SQLite.hpp"
-//#include "handle_user_access.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -27,7 +25,11 @@
 #include <string>
 #include <thread>
 #include <vector>
+
+#include "SmtpClient.cpp"
 #include "Connect2SQLite.hpp"
+#include "HandlerForLogin.hpp"
+#include "HandlerForRegister.hpp"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -35,6 +37,7 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 namespace ssl = boost::asio::ssl;		// from <boost/asio/ssl.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 namespace ns_http_server_async_ssl {
+	const int SECONDS_BEFORE_EXPIRING = 300;
 	//***************************************************************************
 	//*                    mime_type
 	//***************************************************************************
@@ -105,13 +108,22 @@ namespace ns_http_server_async_ssl {
 	}
 
 	//***************************************************************************
-	//*                    filter_email_and_password
+	//*                    filter_target_email_and_password_and_code
 	//***************************************************************************
-	inline void filter_email_and_password(
-		const std::string payload,
-		std::string& user_email_address,
-		std::string& user_password)
+	template<
+		class Body, class Allocator>
+		inline void 
+			filter_target_email_and_password_and_code(
+				http::request<Body, http::basic_fields<Allocator>> req,
+				std::string& target,
+				std::string& user_email_address,
+				std::string& user_password,
+				std::string& user_code)
 	{
+		// filter target
+		target = static_cast<std::string>(req.target());
+
+		std::string payload = req.body();
 		// filter user_email_address
 		size_t sBegin = 0, sEnd = 0, sLength = 0, sTemp;
 		sTemp = 0;
@@ -131,8 +143,20 @@ namespace ns_http_server_async_ssl {
 		sLength = sEnd - sBegin;
 		sBegin++;
 		user_password = payload.substr(sBegin, sLength);
+		// filter user_code
+		sTemp = sEnd;
+		sBegin = payload.find_first_of("=", sTemp);
+		if (sBegin == std::string::npos)
+			// no user code available
+			return;
+		sEnd = (payload.find("&", sBegin) != std::string::npos) ?
+			(payload.find("&", sBegin) - 1) :
+			payload.length() - 1;
+		sLength = sEnd - sBegin;
+		sBegin++;
+		user_code = payload.substr(sBegin, sLength);
 	}
-
+	
 	//***************************************************************************
 	//*                    handle_request
 	//***************************************************************************
@@ -146,6 +170,7 @@ namespace ns_http_server_async_ssl {
 		void
 		handle_request(
 			beast::string_view doc_root,
+			std::shared_ptr<Connect2SQLite> pSqlite,
 			http::request<Body, http::basic_fields<Allocator>>&& req,
 			Send&& send)
 	{
@@ -204,62 +229,63 @@ namespace ns_http_server_async_ssl {
 //////////////////////////////////////////////////////////////////////////////
 		// Respond to a POST request
 		if (req.method() == http::verb::post) {
-			// handle_user_access.hpp is abolished
-			//std:string response_payload =
-			// ns_handle_user_access::handle_user_access(
-			//	 static_cast<std::string>(req.target()),
-			//	 req.body());
-			/*
-			//std::cout << "-> POST message received" << std::endl;
-			//std::string payload = req.body();
-
-			// turned into a function: filter_email_and_password()
-			//// filter user_email_address
-			//size_t sBegin, sEnd, sLength, sTemp;
-			//sTemp = 0;
-			//sBegin = payload.find_first_of("=", sTemp);
-			//sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-			//	(payload.find("&", sBegin) - 1) :
-			//	payload.length() - 1;
-			//sLength = sEnd - sBegin;
-			//sBegin++;
-			//std::string user_email_address = payload.substr(sBegin, sLength);
-			//// filter user_password
-			//sTemp = sEnd;
-			//sBegin = payload.find_first_of("=", sTemp);
-			//sEnd = (payload.find("&", sBegin) != std::string::npos) ?
-			//	(payload.find("&", sBegin) - 1) :
-			//	payload.length() - 1;
-			//sLength = sEnd - sBegin;
-			//sBegin++;
-			//std::string user_password = payload.substr(sBegin, sLength);
-
-			////std::cout << user_email_address << " " << user_password << std::endl;
-			*/
-
-			//std::string response_payload = 
-			//	static_cast<std::string>(req.target());
-			//response_payload.erase(0, 1);
-			//response_payload += " succeeded";
-
-			// this part has to be readdressed
-			//http::response<http::string_body> res{
-			//	http::status::ok, req.version() };
-			//res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-			//res.set(http::field::content_type, "text/html");
-			//res.body() = response_payload;
-			//res.prepare_payload();
-			//res.keep_alive(req.keep_alive());
-			//return send(std::move(res));
 			std::cout << "-> POST message received" << std::endl;
-			std::string payload = req.body();
+			//std::string payload = req.body();
+			std::string target = "";
 			std::string user_email_address = "";
 			std::string user_password = "";
-			filter_email_and_password(
-				payload,
+			std::string user_code = "";
+			filter_target_email_and_password_and_code(
+				req,
+				target,
 				user_email_address,
-				user_password);
-			std::cout << user_email_address << " " << user_password << std::endl;
+				user_password,
+				user_code);
+			std::cout 
+				<< target << " " 
+				<< user_email_address << " " 
+				<< user_password << " "
+				<< user_code
+				<< std::endl;
+
+			std::string response_payload = target + ": ";
+			response_payload.erase(0, 1);
+
+			if (target == "/login") {
+				HandlerForLogin handlerForlogin;
+				handlerForlogin.handle_login(
+					user_email_address,
+					user_password,
+					pSqlite,
+					response_payload);
+			}
+			if (target == "/register") {
+				HandlerForRegister handlerForRegister;
+				handlerForRegister.handle_register(
+					user_email_address,
+					user_password,
+					pSqlite,
+					response_payload);
+			}
+			if (target == "/register_confirm") {
+				HandlerForRegister handlerForRegister;
+				handlerForRegister.handle_register_confirm(
+					user_email_address,
+					user_password,
+					user_code,
+					pSqlite,
+					response_payload);
+			}
+
+			http::response<http::string_body> res{
+				http::status::ok, req.version() };
+			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+			res.set(http::field::content_type, "text/html");
+			res.body() = response_payload;
+			res.prepare_payload();
+			res.keep_alive(req.keep_alive());
+
+			return send(std::move(res));
 		}
 //////////////////////////////////////////////////////////////////////////////
 
@@ -396,6 +422,8 @@ namespace ns_http_server_async_ssl {
 		beast::ssl_stream<beast::tcp_stream> stream_;
 		beast::flat_buffer buffer_;
 		std::shared_ptr<std::string const> doc_root_;
+		std::shared_ptr<Connect2SQLite> pSqlite_;
+		std::shared_ptr<HandlerForRegister> pHandlerForRegister;
 		http::request<http::string_body> req_;
 		std::shared_ptr<void> res_;
 		send_lambda lambda_;
@@ -406,9 +434,11 @@ namespace ns_http_server_async_ssl {
 		session(
 			tcp::socket&& socket,
 			ssl::context& ctx,
-			std::shared_ptr<std::string const> const& doc_root)
+			std::shared_ptr<std::string const> const& doc_root,
+			std::shared_ptr<Connect2SQLite> const& pSqlite)
 			: stream_(std::move(socket), ctx)
 			, doc_root_(doc_root)
+			, pSqlite_(pSqlite)
 			, lambda_(*this)
 		{
 			std::cout << "<<constructor>> session()" << std::endl;
@@ -419,7 +449,9 @@ namespace ns_http_server_async_ssl {
 			run()
 		{
 			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
 			// Perform the SSL handshake
 			stream_.async_handshake(
@@ -446,7 +478,9 @@ namespace ns_http_server_async_ssl {
 			req_ = {};
 
 			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
 			// Read a request
 			http::async_read(stream_, buffer_, req_,
@@ -470,7 +504,7 @@ namespace ns_http_server_async_ssl {
 				return fail(ec, "read");
 
 			// Send the response
-			handle_request(*doc_root_, std::move(req_), lambda_);
+			handle_request(*doc_root_, pSqlite_, std::move(req_), lambda_);
 		}
 
 		void
@@ -502,9 +536,11 @@ namespace ns_http_server_async_ssl {
 			do_close()
 		{
 			// Set the timeout.
-			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			//beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+			beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(
+				SECONDS_BEFORE_EXPIRING));
 
-			// Perform the SSL shotdown
+			// Perform the SSL shutdown
 			stream_.async_shutdown(
 				beast::bind_front_handler(
 					&session::on_shutdown,
@@ -531,17 +567,20 @@ namespace ns_http_server_async_ssl {
 		ssl::context& ctx_;
 		tcp::acceptor acceptor_;
 		std::shared_ptr<std::string const> doc_root_;
+		std::shared_ptr<Connect2SQLite> pSqlite_;
 
 	public:
 		listener(
 			net::io_context& ioc,
 			ssl::context& ctx,
 			tcp::endpoint endpoint,
-			std::shared_ptr<std::string const> const& doc_root)
+			std::shared_ptr<std::string const> const& doc_root,
+			std::shared_ptr<Connect2SQLite> const& pSqlite)
 			: ioc_(ioc)
 			, ctx_(ctx)
 			, acceptor_(net::make_strand(ioc))
 			, doc_root_(doc_root)
+			, pSqlite_(pSqlite)
 		{
 			std::cout << "<<constructor>> listener()" << std::endl;
 			beast::error_code ec;
@@ -615,7 +654,8 @@ namespace ns_http_server_async_ssl {
 				std::make_shared<session>(
 					std::move(socket),
 					ctx_,
-					doc_root_)->run();
+					doc_root_,
+					pSqlite_)->run();
 			}
 
 			// Accept another connection
@@ -647,6 +687,14 @@ namespace ns_http_server_async_ssl {
 		Connect2SQLite oSqlite;
 		// open database
 		oSqlite.openDb();
+		oSqlite.createTable();
+		// will create an error message when the default user already exists
+		// SQL error: UNIQUE constraint failed: 
+		// user_access_login_data.user_email_address
+		oSqlite.insertDefaultUser();
+		// create pointer to the Connect2SQLite instance
+		auto const pSqlite =
+			 std::make_shared<Connect2SQLite>(oSqlite);
 
 		// The io_context is required for all I/O
 		net::io_context ioc{ threads };
@@ -662,7 +710,8 @@ namespace ns_http_server_async_ssl {
 			ioc,
 			ctx,
 			tcp::endpoint{ address, port },
-			doc_root)->run();
+			doc_root,
+			pSqlite)->run();
 
 		// Run the I/O service on the requested number of threads
 		std::vector<std::thread> v;
