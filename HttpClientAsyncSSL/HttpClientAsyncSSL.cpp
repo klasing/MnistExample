@@ -13,6 +13,7 @@ using namespace std;
 struct accessdata {
 	string ip_address = "";
 	string port_number = "";
+	string target = "";
 	string http_version = "";
 	string user_email_address = "";
 	string user_password = "";
@@ -194,8 +195,9 @@ void get_user_access_params(
 	//	target,
 	//	access_payload);
 
-	// place user_email_address and user_password
+	// place target, user_email_address, and user_password
 	// in a struct, so this data can be used elsewhere
+	access_data.target = target;
 	access_data.user_email_address = user_email_address;
 	access_data.user_password = user_password;
 }
@@ -311,7 +313,7 @@ void get_confirmation_code() {
 		confirmation_code;
 	string ip_address = access_data.ip_address;		// "192.168.178.14";
 	string port_number = access_data.port_number;	// "8080";
-	string target = "/register_confirm";
+	string target = access_data.target + "_confirm";// "/register_confirm";
 	string http_version = access_data.http_version;	// "1.0";
 
 	do_request(
@@ -381,6 +383,12 @@ int main() {
 				access_payload,
 				access_data
 			);
+			// a user can't reset the password of the default user
+			if (target == "/reset_password" &&
+				user_email_address == "guest@example.com") {
+				cout << "You can not reset the password from the default user." << endl;
+				break;
+			}
 			request_mode = "access";
 			do_request(
 				request_mode,

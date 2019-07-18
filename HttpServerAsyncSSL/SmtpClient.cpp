@@ -4,6 +4,9 @@
 //#define _WINSOCK_DEPRECATED_NO_WARNINGS
 //#pragma comment(lib, "Ws2_32.lib")
 
+// its unusual, ugly, and messy; but it works
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <memory>
@@ -83,14 +86,13 @@ inline void write_socket_ssl(SSL* ssl, const std::string& str) {
 //*                     smtp_client
 //****************************************************************************
 inline int
-smtp_client(
-	const string& mail_from,
-	const string& rcpt_to,
-	const string from,
-	const string& to,
-	const string& subject,
-	const string& data
-)
+	smtp_client(
+		const string& mail_from,
+		const string& rcpt_to,
+		const string& from,
+		const string& to,
+		const string& subject,
+		const string& data)
 {
 	WSADATA wsaData = { 0 };
 	int iResult = 0;

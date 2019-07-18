@@ -204,7 +204,8 @@ namespace ns_http_client_async_ssl {
 			// Write the message to standard out
 			std::cout << res_ << std::endl;
 			std::string response_body = res_.body();
-			if (response_body == "register: enter the code received by email.")
+			if (response_body == "register: enter the code received by email." ||
+				response_body == "reset_password: enter the code received by email.")
 				get_confirmation_code();
 
 			// Set a timeout on the operation

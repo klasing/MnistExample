@@ -35,9 +35,6 @@
     <ClInclude Include="server_certificate_new.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="handle_user_access.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Connect2SQLite.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HandlerForRegister.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForResetPassword.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

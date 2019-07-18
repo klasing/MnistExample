@@ -164,7 +164,7 @@
     <ClInclude Include="CppSQLite3.h" />
     <ClInclude Include="HandlerForRegister.hpp" />
     <ClInclude Include="HandlerForLogin.hpp" />
-    <ClInclude Include="handle_user_access.hpp" />
+    <ClInclude Include="HandlerForResetPassword.hpp" />
     <ClInclude Include="server_certificate.hpp" />
     <ClInclude Include="server_certificate_new.hpp" />
     <ClInclude Include="sqlite3.h" />

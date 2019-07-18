@@ -30,6 +30,7 @@
 #include "Connect2SQLite.hpp"
 #include "HandlerForLogin.hpp"
 #include "HandlerForRegister.hpp"
+#include "HandlerForResetPassword.hpp"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -172,6 +173,7 @@ namespace ns_http_server_async_ssl {
 			beast::string_view doc_root,
 			std::shared_ptr<Connect2SQLite> pSqlite,
 			std::shared_ptr<HandlerForRegister> pHandlerForRegister,
+			std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword,
 			http::request<Body, http::basic_fields<Allocator>>&& req,
 			Send&& send)
 	{
@@ -260,23 +262,32 @@ namespace ns_http_server_async_ssl {
 					pSqlite,
 					response_payload);
 			}
-			if (target == "/register") {
-				//HandlerForRegister handlerForRegister;
+			if (target == "/register")
 				pHandlerForRegister->handle_register(
 					user_email_address,
 					user_password,
 					pSqlite,
 					response_payload);
-			}
-			if (target == "/register_confirm") {
-				//HandlerForRegister handlerForRegister;
+			if (target == "/register_confirm")
 				pHandlerForRegister->handle_register_confirm(
 					user_email_address,
 					user_password,
 					user_code,
 					pSqlite,
 					response_payload);
-			}
+			if (target == "/reset_password")
+				pHandlerForResetPassword->handle_reset_password(
+					user_email_address,
+					user_password,
+					pSqlite,
+					response_payload);
+			if (target == "/reset_password_confirm")
+				pHandlerForResetPassword->handle_reset_password_confirm(
+					user_email_address,
+					user_password,
+					user_code,
+					pSqlite,
+					response_payload);
 
 			http::response<http::string_body> res{
 				http::status::ok, req.version() };
@@ -425,6 +436,7 @@ namespace ns_http_server_async_ssl {
 		std::shared_ptr<std::string const> doc_root_;
 		std::shared_ptr<Connect2SQLite> pSqlite_;
 		std::shared_ptr<HandlerForRegister> pHandlerForRegister_;
+		std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword_;
 		http::request<http::string_body> req_;
 		std::shared_ptr<void> res_;
 		send_lambda lambda_;
@@ -432,16 +444,18 @@ namespace ns_http_server_async_ssl {
 	public:
 		// Take ownership of the stream
 		explicit
-		session(
-			tcp::socket&& socket,
-			ssl::context& ctx,
-			std::shared_ptr<std::string const> const& doc_root,
-			std::shared_ptr<Connect2SQLite> const& pSqlite,
-			std::shared_ptr<HandlerForRegister> const& pHandlerForRegister)
+		session(tcp::socket&& socket
+			, ssl::context& ctx
+			, std::shared_ptr<std::string const> const& doc_root
+			, std::shared_ptr<Connect2SQLite> const& pSqlite
+			, std::shared_ptr<HandlerForRegister> const& pHandlerForRegister
+			, std::shared_ptr<HandlerForResetPassword> const& pHandlerForResetPassword
+		)
 			: stream_(std::move(socket), ctx)
 			, doc_root_(doc_root)
 			, pSqlite_(pSqlite)
 			, pHandlerForRegister_(pHandlerForRegister)
+			, pHandlerForResetPassword_(pHandlerForResetPassword)
 			, lambda_(*this)
 		{
 			std::cout << "<<constructor>> session()" << std::endl;
@@ -510,6 +524,7 @@ namespace ns_http_server_async_ssl {
 			handle_request(*doc_root_ 
 				, pSqlite_
 				, pHandlerForRegister_
+				, pHandlerForResetPassword_
 				, std::move(req_) 
 				, lambda_);
 		}
@@ -576,6 +591,7 @@ namespace ns_http_server_async_ssl {
 		std::shared_ptr<std::string const> doc_root_;
 		std::shared_ptr<Connect2SQLite> pSqlite_;
 		std::shared_ptr<HandlerForRegister> pHandlerForRegister_;
+		std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword_;
 
 	public:
 		listener(
@@ -591,9 +607,12 @@ namespace ns_http_server_async_ssl {
 			, pSqlite_(pSqlite)
 		{
 			std::cout << "<<constructor>> listener()" << std::endl;
-			HandlerForRegister oHandlerForRegister;
+			HandlerForRegister handlerForRegister;
 			pHandlerForRegister_ =
-				std::make_shared<HandlerForRegister>(oHandlerForRegister);
+				std::make_shared<HandlerForRegister>(handlerForRegister);
+			HandlerForResetPassword handlerForResetPassword;
+			pHandlerForResetPassword_ =
+				std::make_shared<HandlerForResetPassword>(handlerForResetPassword);
 
 			beast::error_code ec;
 
@@ -663,12 +682,13 @@ namespace ns_http_server_async_ssl {
 			else
 			{
 				// Create the session and run it
-				std::make_shared<session>(
-					std::move(socket),
-					ctx_,
-					doc_root_,
-					pSqlite_,
-					pHandlerForRegister_)->run();
+				std::make_shared<session>(std::move(socket)
+					, ctx_
+					, doc_root_
+					, pSqlite_
+					, pHandlerForRegister_
+					, pHandlerForResetPassword_
+					)->run();
 			}
 
 			// Accept another connection
