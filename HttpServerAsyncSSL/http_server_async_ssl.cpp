@@ -119,12 +119,21 @@ namespace ns_http_server_async_ssl {
 				std::string& target,
 				std::string& user_email_address,
 				std::string& user_password,
-				std::string& user_code)
+				std::string& user_code,
+				const std::string& user_agent)
 	{
+
 		// filter target
 		target = static_cast<std::string>(req.target());
 
 		std::string payload = req.body();
+		// if user_agent not equals Boost.Beast/248
+		// it is a browser request
+		//if (user_agent != "Boost.Beast/248");
+		// replace %40 for @ in user_email_address
+		size_t pos = payload.find("%40", 0);
+		if (pos != std::string::npos)
+			payload = payload.replace(pos, 3, "@");
 		// filter user_email_address
 		size_t sBegin = 0, sEnd = 0, sLength = 0, sTemp;
 		sTemp = 0;
@@ -234,16 +243,20 @@ namespace ns_http_server_async_ssl {
 		if (req.method() == http::verb::post) {
 			std::cout << "-> POST message received" << std::endl;
 			//std::string payload = req.body();
+
 			std::string target = "";
 			std::string user_email_address = "";
 			std::string user_password = "";
 			std::string user_code = "";
+			std::string user_agent =
+				static_cast<std::string>(req[http::field::user_agent]);
 			filter_target_email_and_password_and_code(
 				req,
 				target,
 				user_email_address,
 				user_password,
-				user_code);
+				user_code,
+				user_agent);
 			std::cout 
 				<< target << " " 
 				<< user_email_address << " " 
