@@ -147,6 +147,9 @@ void show_request_example(
 		"\r\n";
 	cout << post_request;
 }
+// how to: a sample get request
+// GET /index.html HTTP/1.0
+// Host: 127.0.0.1
 
 //****************************************************************************
 //*                     get_user_access_params

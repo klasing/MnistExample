@@ -111,8 +111,7 @@ namespace ns_http_server_async_ssl {
 	//***************************************************************************
 	//*                    filter_target_email_and_password_and_code
 	//***************************************************************************
-	template<
-		class Body, class Allocator>
+	template<class Body, class Allocator>
 		inline void 
 			filter_target_email_and_password_and_code(
 				http::request<Body, http::basic_fields<Allocator>> req,
@@ -232,12 +231,6 @@ namespace ns_http_server_async_ssl {
 			req.method() != http::verb::head)
 			return send(bad_request("Unknown HTTP-method"));
 
-		// Request path must be absolute and not contain "..".
-		if (req.target().empty() ||
-			req.target()[0] != '/' ||
-			req.target().find("..") != beast::string_view::npos)
-			return send(bad_request("Illegal request-target"));
-
 //////////////////////////////////////////////////////////////////////////////
 		// Respond to a POST request
 		if (req.method() == http::verb::post) {
@@ -313,6 +306,12 @@ namespace ns_http_server_async_ssl {
 			return send(std::move(res));
 		}
 //////////////////////////////////////////////////////////////////////////////
+
+		// Request path must be absolute and not contain "..".
+		if (req.target().empty() ||
+			req.target()[0] != '/' ||
+			req.target().find("..") != beast::string_view::npos)
+			return send(bad_request("Illegal request-target"));
 
 		if (req.method() == http::verb::get ||
 			req.method() == http::verb::head) {
