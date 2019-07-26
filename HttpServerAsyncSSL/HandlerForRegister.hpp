@@ -32,13 +32,13 @@ public:
 
 		// send generated string from klasingsmtp@gmail.com
 		// to user_email_address of register user
-		//smtp_client(
-		//	"klasingsmtp@gmail.com",
-		//	user_email_address,
-		//	"klasingsmtp@gmail.com",
-		//	user_email_address,
-		//	"no subject",
-		//	message_with_code);
+		smtp_client(
+			"klasingsmtp@gmail.com",
+			user_email_address,
+			"klasingsmtp@gmail.com",
+			user_email_address,
+			"no subject",
+			message_with_code);
 
 		response_payload += "enter the code received by email.";
 		return;

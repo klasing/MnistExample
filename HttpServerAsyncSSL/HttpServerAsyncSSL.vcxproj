@@ -169,6 +169,17 @@
     <ClInclude Include="server_certificate_new.hpp" />
     <ClInclude Include="sqlite3.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Debug\frame-bottom.html" />
+    <None Include="..\Debug\frame-center.html" />
+    <None Include="..\Debug\frame-top-left.html" />
+    <None Include="..\Debug\frame-top-right.html" />
+    <None Include="..\Debug\frame-top.html" />
+    <None Include="..\Debug\index2.html" />
+    <None Include="..\Debug\login.html" />
+    <None Include="..\Debug\register.html" />
+    <None Include="..\Debug\reset_password.html" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

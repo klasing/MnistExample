@@ -54,4 +54,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Debug\frame-bottom.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\frame-center.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\frame-top.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\frame-top-left.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\frame-top-right.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\index2.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\login.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\register.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Debug\reset_password.html">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
