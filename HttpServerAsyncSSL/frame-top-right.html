@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+/* the form is hidden by default */
+.login
+{
+  display: none;
+}
+</style>
+<script>
+function openRegister()
+{
+  window.open("register.html", "_blank", "width=400, height=400");
+}
+function openLogin()
+{
+  window.open("login.html", "_blank", "width=400, height=400");
+}
+</script>
+</head>
+<body>
+<input class="button" type="button" value="register" onclick="openRegister()">
+<input class="button" type="button" value="login" onclick="openLogin()">
+
+</body>
+</html>

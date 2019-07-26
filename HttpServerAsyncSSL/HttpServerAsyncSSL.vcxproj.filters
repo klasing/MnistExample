@@ -55,31 +55,34 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Debug\frame-bottom.html">
+    <None Include="frame-bottom.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\frame-center.html">
+    <None Include="frame-center.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\frame-top.html">
+    <None Include="frame-top.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\frame-top-left.html">
+    <None Include="frame-top-left.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\frame-top-right.html">
+    <None Include="frame-top-right.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\index2.html">
+    <None Include="index.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\login.html">
+    <None Include="index2.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\register.html">
+    <None Include="login.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Debug\reset_password.html">
+    <None Include="register.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="reset_password.html">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

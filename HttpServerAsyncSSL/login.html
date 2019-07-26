@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>login</title>
+<style>
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+.login_result
+{
+  color: #808080;
+  font-family: verdana;
+}
+</style>
+<!-- TEST -->
+<!--<script src="js/experimental.js">-->
+</script>
+<script>
+function doLogin()
+{
+  console.log("doLogin()");
+  // TEST: function doRequest() is stored in file: js/experimental.js
+  // TEST: doRequest();
+
+  // get the values from a form, to create the payload for a POST request
+  var user_email_address = document.getElementById("user_email_address").value;
+  var user_password = document.getElementById("user_password").value;
+  var payload_for_post = "user_email_address=" + user_email_address + "&" + "user_password=" + user_password;
+  console.log("payload_for_post: " + payload_for_post);
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function()
+  {
+    if (this.readyState == 4 && this.status == 200)
+    {
+      document.getElementById("login_result").innerHTML = this.responseText;
+    }
+  }
+  xhttp.open("POST", "https://www.localhost.com:8080/login", true);
+  xhttp.send(payload_for_post);
+
+  //document.getElementById("login_result").innerHTML = "email address unknown, please try again";
+}
+</script>
+</head>
+<body>
+<div class="login" id="login">
+<form>
+<label for="user_email_address">email address</label>
+<br>
+<input type="text" name="user_email_address" id="user_email_address" autocomplete="email" required>
+<br>
+<label for="user_password">password</label>
+<br>
+<input type="password" name="user_password" id="user_password" autocomplete="password" required>
+<br><br>
+<input class="button" type="button" value="submit" onclick="doLogin()">
+<br>
+<p class="login_result" id="login_result"></p>
+<!--<a href="reset_password.html">forgot password?</a>-->
+<a href="https://www.localhost.com:8080/reset_password.html">forgot password?</a>
+</form>
+</div>
+</body>
+</html>
