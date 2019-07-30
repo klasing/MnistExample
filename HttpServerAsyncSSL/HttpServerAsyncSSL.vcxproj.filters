@@ -58,9 +58,6 @@
     <None Include="frame-bottom.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="frame-center.html">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="frame-top.html">
       <Filter>Resource Files</Filter>
     </None>
@@ -83,6 +80,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="reset_password.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="frame-center.html">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

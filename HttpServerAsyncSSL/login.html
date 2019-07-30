@@ -23,15 +23,20 @@ label
   font-family: verdana;
 }
 </style>
-<!-- TEST -->
-<!--<script src="js/experimental.js">-->
 </script>
 <script>
+function setCookie(cname, cvalue, exdays)
+{
+  console.log("setCookie()");
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires=" + d.toGMTString();
+  document.cookie = cname + "=" + cvalue + ";" + expires;
+}
+
 function doLogin()
 {
   console.log("doLogin()");
-  // TEST: function doRequest() is stored in file: js/experimental.js
-  // TEST: doRequest();
 
   // get the values from a form, to create the payload for a POST request
   var user_email_address = document.getElementById("user_email_address").value;
@@ -45,12 +50,13 @@ function doLogin()
     if (this.readyState == 4 && this.status == 200)
     {
       document.getElementById("login_result").innerHTML = this.responseText;
+
+      // set cookie
+      setCookie("user_email_address", user_email_address, 30);
     }
   }
   xhttp.open("POST", "https://www.localhost.com:8080/login", true);
   xhttp.send(payload_for_post);
-
-  //document.getElementById("login_result").innerHTML = "email address unknown, please try again";
 }
 </script>
 </head>

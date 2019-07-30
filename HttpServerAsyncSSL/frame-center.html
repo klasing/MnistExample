@@ -3,14 +3,209 @@
 <head>
 <meta charset="utf-8">
 <style>
-h3
+p
 {
   color: #808080;
   font-family: verdana;
 }
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+.down_up_load
+{
+  display: none;
+}
 </style>
+<script>
+function getCookie(cname)
+{
+  console.log("getCookie()");
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++)
+  {
+    var c = ca[i];
+    while (c.charAt(0) == ' ')
+    {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0)
+    {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function checkCookie()
+{
+  console.log("checkCookie()");
+  var user_email_address_cookie = getCookie("user_email_address");
+  if (user_email_address_cookie == "")
+  {
+    document.getElementById("please_login_first").innerHTML = "please login first";
+    return false;
+  }
+  return true;
+}
+var mode = "";
+function doDownload()
+{
+  console.log("doDownload()");
+  if (checkCookie())
+  {
+    // clear message, eventually set on a prior try
+    document.getElementById("please_login_first").innerHTML = "";
+
+    mode = "download";
+    document.getElementById("hdr_file_name_on_target").innerHTML = "target (server)";
+    document.getElementById("hdr_file_name_on_destination").innerHTML = "destination (client)";
+    document.getElementById("down_up_load").style.display = "block";
+  }
+}
+function doUpload()
+{
+  console.log("doUpload()");
+  if (checkCookie())
+  {
+    // clear message, eventually set on a prior try
+    document.getElementById("please_login_first").innerHTML = "";
+
+    mode = "upload";
+    document.getElementById("hdr_file_name_on_target").innerHTML = "target (client)";
+    document.getElementById("hdr_file_name_on_destination").innerHTML = "destination (server)";
+    document.getElementById("down_up_load").style.display = "block";
+  }
+}
+function doTransfer()
+{
+  console.log("doTransfer()");
+
+  var file_name_on_target = document.getElementById("file_name_on_target").value;
+  var file_name_on_destination = document.getElementById("file_name_on_destination").value;
+
+  // check for incomplete input from user
+  if (file_name_on_target == "" || file_name_on_destination == "")
+  {
+    console.log("no target || no destination");
+    return;
+  }
+
+  const server_url = "https://www.localhost.com:8080/";
+  const file_path_on_client = "/";
+  if (mode == "download")
+  {
+    console.log("download");
+
+    var file_target = server_url + file_name_on_target;
+    var file_destination = file_path_on_client + file_name_on_destination;
+
+    console.log("target: " + file_target + "\n"
+      + "destination: " + file_destination);
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function()
+    {
+      if (this.readyState == 4 && this.status == 200)
+      {
+        console.log("download transfer done");
+
+        var payload_for_put_request = xhttp.responseText;
+
+        var xhr_file = new XMLHttpRequest();
+        xhr_file.onreadystatechange = function()
+        {
+          if (this.readyState == 4 && this.status == 200)
+          {
+            console.log("file writing done");
+          }
+        }
+        xhr_file.open("PUT", file_destination, true);
+        xhr_file.send(payload_for_put_request);
+      }
+    }
+    // read file from server
+    xhttp.open("GET", file_target, true);
+    xhttp.send();
+
+    return;
+  }
+
+  if (mode == "upload")
+  {
+    console.log("upload");
+
+    var file_target = file_path_on_client + file_name_on_target;
+    var file_destination = server_url + file_name_on_destination;
+
+    console.log("target: " + file_target + "\n"
+      + "destination: " + file_destination);
+
+    var xhr_file = new XMLHttpRequest();
+    xhr_file.onreadystatechange = function()
+    {
+      if (this.readyState == 4 && this.status == 200)
+      {
+        console.log("file reading done");
+
+        var payload_for_put_request = xhr_file.responseText;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function()
+        {
+          if (this.readyState == 4 && this.status == 200)
+          {
+            console.log("upload transfer done");
+          }
+        }
+        xhttp.open("PUT", file_destination, true);
+        xhttp.send(payload_for_put_request);
+      }
+    }
+    // read file from disk
+    xhr_file.open("GET", file_target, true);
+    xhr_file.send();
+
+    return;
+  }
+}
+</script>
 </head>
 <body>
-<h3>download | upload</h3>
+<input class="button" type="button" value="download" onclick="doDownload()">
+|
+<input class="button" type="button" value="upload" onclick="doUpload()">
+
+<p id="please_login_first"></p>
+
+<div class="down_up_load" id="down_up_load">
+<form>
+<br>
+<label for="file_name_on_target" id="hdr_file_name_on_target"></label>
+<br>
+<input type="text" name="file_name_on_target" id="file_name_on_target" autocomplete="file_name_on_target" required>
+<br>
+<label for="file_name_on_destination" id="hdr_file_name_on_destination"></label>
+<br>
+<input type="text" name="file_name_on_destination" id="file_name_on_destination" autocomplete="file_name_on_destination" required>
+<br><br>
+<input class="button" id="button_do_transfer" type="button" value="transfer" onclick="doTransfer()">
+</form>
+</div>
+
 </body>
 </html>
+<!--
+Access to XMLHttpRequest at 'https://www.localhost.com:8080/index.html'
+from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin'
+header is present on the requested resource.
+-->
