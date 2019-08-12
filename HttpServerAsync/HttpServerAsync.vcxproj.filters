@@ -21,5 +21,76 @@
     <ClCompile Include="http_server_async.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SmtpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Connect2SQLite.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForLogin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForRegister.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandlerForResetPassword.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSQLite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="server_space\download-and-upload.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-bottom.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-center.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-center-bottom.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-center-top.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-top.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-top-left.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\frame-top-right.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\index.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\more.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\popup-login.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\popup-register.html">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="server_space\popup-reset_password.html">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="server_space\favicon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="configure_project.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>login</title>
+<style>
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+.login_result
+{
+  color: #808080;
+  font-family: verdana;
+}
+</style>
+</script>
+<script>
+function setCookie(cname, cvalue, exdays)
+{
+  console.log("setCookie()");
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires=" + d.toGMTString();
+  document.cookie = cname + "=" + cvalue + ";" + expires;
+}
+function doLogin()
+{
+  console.log("doLogin()");
+  // get the values from a form, to create the payload for a POST request
+  var user_email_address = document.getElementById("user_email_address").value;
+  var user_password = document.getElementById("user_password").value;
+  var payload_for_post = "user_email_address=" + user_email_address + "&" + "user_password=" + user_password;
+  console.log("payload_for_post: " + payload_for_post);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function()
+  {
+    if (this.readyState == 4 && this.status == 200)
+    {
+      var login_result = this.responseText;
+      document.getElementById("login_result").innerHTML = login_result;
+
+      if (login_result == "login: succeeded.")
+      {
+        // set cookie
+        setCookie("user_email_address", user_email_address, 30);
+        // set login_user_email_address in parent window
+        window.opener.document.getElementById("login_user_email_address").innerHTML =
+          "logged in as: " + user_email_address;
+      }
+    }
+  }
+  xhttp.open("POST", "http://192.168.178.14:8080/login", true);
+  xhttp.send(payload_for_post);
+}
+</script>
+</head>
+<body>
+<div class="login" id="login">
+<form>
+<label for="user_email_address">email address</label>
+<br>
+<input type="text" name="user_email_address" id="user_email_address" autocomplete="email" required>
+<br>
+<label for="user_password">password</label>
+<br>
+<input type="password" name="user_password" id="user_password" autocomplete="password" required>
+<br><br>
+<input class="button" type="button" value="submit" onclick="doLogin()">
+<br>
+<p class="login_result" id="login_result"></p>
+<a href="https://www.localhost.com:8080/server_space/popup-reset_password.html">forgot password?</a>
+</form>
+</div>
+</body>
+</html>

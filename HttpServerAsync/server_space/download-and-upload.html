@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+input.button, button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+</style>
+<script>
+function set_href_and_activate()
+{
+  var input = document.getElementById("input").value;
+  if (input == "")
+  {
+    console.log("no input");
+    return;
+  }
+  var hyper_link = document.getElementById("hyper_link");
+  hyper_link.setAttribute("href", input);
+  hyper_link.click();
+}
+</script>
+</head>
+<body>
+<label for="input">download</label>
+<br>
+<input type="text" id="input">
+<input type="button" class="button "value="transfer" onclick="set_href_and_activate()">
+<a href="" download id="hyper_link" style="opacity: 0;"></a>
+
+<form id="form" method="post" enctype="multipart/form-data">
+<div>
+<label for="file">upload</label>
+<br>
+<input type="text" id="field" value="click header to select" readonly>
+<!-- default submit button is disabled -->
+<input type="submit" class="button" id="transfer" value="transfer" disabled>
+<input type="file" id="file" name="file">
+</div>
+</form>
+
+<script>
+  var file = document.querySelector('#file');
+
+  file.style.opacity = 0;
+  file.addEventListener('change', updateField);
+
+  function updateField()
+  {
+    document.getElementById("field").value = file.files[0].name;
+    // enable button
+    console.log("enable button");
+    document.getElementById("transfer").disabled = false;
+  }
+</script>
+
+</body>
+</html>

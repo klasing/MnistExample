@@ -1,34 +1,92 @@
-// HttpClientAsync.cpp
-#include <iostream>
 #include <iomanip>
-#include <string>
+#include <conio.h>
+#include <ctime>
+#include <sstream>
 
-// File client
 #include "http_client_async.cpp"
 
-using namespace std;
+//****************************************************************************
+//*                     global
+//****************************************************************************
+typedef struct STRUCT_ACCESSDATA
+{
+	std::string mode = "";
+	std::string user_email_address = "";
+	std::string user_password = "";
+	std::string payload = "";
+	std::string file_name_on_server = "";
+	std::string file_name_on_client = "";
+	std::string target = "";
+	std::string host = "";
+	std::string port = "";
+	std::string version = "";
+	bool logged_in = false;
+} ACCESSDATA, * PACCESSDATA;
+ACCESSDATA g_access_data;
+
+//****************************************************************************
+//*                     prototype
+//****************************************************************************
+void do_transfer(const ACCESSDATA&);
+
+//****************************************************************************
+//*                     get_string_from_user
+//****************************************************************************
+bool get_string_from_user(
+	std::string& input_from_user,
+	const bool& echo_character)
+{
+	char substitute_character = '*';
+	char ch = '\0';
+
+	while ((ch = _getch()) != 13) {
+		if (ch == 27) {
+			std::cout << std::endl;
+			// escape character entered
+			return true;
+		}
+
+		if (echo_character)
+			std::cout << ch;
+		else
+			std::cout << substitute_character;
+
+		input_from_user += ch;
+	}
+	std::cout << std::endl;
+	// no escape character entered
+	return false;
+}
+
 //****************************************************************************
 //*                     get_input_from_user
 //****************************************************************************
-string get_input_from_user(
-	const string& hdr,
+std::string get_input_from_user(
+	const std::string& hdr,
 	const int& width_header,
-	const string& val,
-	const int& width_value)
+	const std::string& val,
+	const int& width_value,
+	bool& escape_given,
+	const bool& echo_character = true)
 {
-	string input_from_user = "";
+	std::string substitute_for_user_password = "";
+	substitute_for_user_password.insert(0, val.length(), '*');
 
-	cout << setw(width_header)
-		<< setiosflags(ios_base::left)
-		<< setfill('.')
+	std::string input_from_user = "";
+
+	std::cout << std::setw(width_header)
+		<< std::setiosflags(std::ios_base::left)
+		<< std::setfill('.')
 		<< hdr
-		<< setw(width_value)
-		<< setiosflags(ios_base::right)
-		<< setfill('.')
-		<< val
+		<< std::setw(width_value)
+		<< std::setiosflags(std::ios_base::right)
+		<< std::setfill('.')
+		<< ((echo_character) ? val : substitute_for_user_password)
 		<< ": ";
-	cout.unsetf(ios::adjustfield);
-	getline(cin, input_from_user, '\n');
+	std::cout.unsetf(std::ios::adjustfield);
+
+	escape_given =
+		get_string_from_user(input_from_user, echo_character);
 
 	return input_from_user.length() > 0 ? input_from_user : val;
 }
@@ -36,177 +94,143 @@ string get_input_from_user(
 //****************************************************************************
 //*                     get_connect_params_from_user
 //****************************************************************************
-void get_connect_params_from_user(
-	string& ip_address,
-	string& port_number)
+bool get_connect_params_from_user(ACCESSDATA& access_data)
 {
-	const string HDR_IP_ADDRESS  = "IP Address";
-	const string HDR_PORT_NUMBER = "Port";
+	const std::string HDR_HOST = "Host";
+	const std::string HDR_PORT = "Port";
+	const std::string HDR_VERSION = "Version";
 
-	int width_header = HDR_IP_ADDRESS.length() + 3;
-	int width_value = ip_address.length();
+	int width_header = (HDR_HOST > HDR_PORT)
+		? HDR_HOST.length()
+		: (HDR_PORT > HDR_VERSION)
+		? HDR_PORT.length()
+		: HDR_VERSION.length();
+	width_header += 3;
 
-	ip_address = get_input_from_user(
-		HDR_IP_ADDRESS,
+	int width_value = (access_data.host.length() > access_data.port.length())
+		? access_data.host.length()
+		: (access_data.port.length() > access_data.version.length())
+		? access_data.port.length()
+		: access_data.version.length();
+
+	bool escape_given;
+	access_data.host = get_input_from_user(
+		HDR_HOST,
 		width_header,
-		ip_address,
-		width_value
+		access_data.host,
+		width_value,
+		escape_given
 	);
-	port_number = get_input_from_user(
-		HDR_PORT_NUMBER,
+	if (escape_given)
+		return false;
+
+	access_data.port = get_input_from_user(
+		HDR_PORT,
 		width_header,
-		port_number,
-		width_value
+		access_data.port,
+		width_value,
+		escape_given
 	);
+	if (escape_given)
+		return false;
+
+	access_data.version = get_input_from_user(
+		HDR_VERSION,
+		width_header,
+		access_data.version,
+		width_value,
+		escape_given
+	);
+	if (escape_given)
+		return false;
+
+	return true;
 }
 
 //****************************************************************************
-//*                     get_file_names_from_user
+//*                     get_access_params_from_user
 //****************************************************************************
-void get_file_names_from_user(
-	const string& transfer_mode,
-	string& file_name_on_target,
-	string& file_name_on_destination)
+bool get_access_params_from_user(ACCESSDATA& access_data)
 {
-	string HDR_FILE_NAME_ON_TARGET = "";
-	string HDR_FILE_NAME_ON_DESTINATION = "";
+	const std::string HDR_USER_EMAIL_ADDRESS = "Email";
+	const std::string HDR_USER_PASSWORD = "Password";
 
-	if (transfer_mode == "download") {
-		HDR_FILE_NAME_ON_TARGET = "Target (server)";
-		HDR_FILE_NAME_ON_DESTINATION = "Destination (client)";
-	}
-	else {
-		HDR_FILE_NAME_ON_TARGET = "Target (client)";
-		HDR_FILE_NAME_ON_DESTINATION = "Destination (server)";
-	}
+	int width_header =
+		(HDR_USER_EMAIL_ADDRESS.length() > HDR_USER_PASSWORD.length())
+		? HDR_USER_EMAIL_ADDRESS.length()
+		: HDR_USER_PASSWORD.length();
+	width_header += 3;
 
-	int width_header = HDR_FILE_NAME_ON_DESTINATION.length() + 3;
+	int width_value = (access_data.user_email_address.length() > access_data.user_password.length())
+		? access_data.user_email_address.length()
+		: access_data.user_password.length();
 
-	int width_value =
-		(file_name_on_target.length() > file_name_on_destination.length()) ?
-		file_name_on_target.length() :
-		file_name_on_destination.length();
-
-	file_name_on_target = get_input_from_user(
-		HDR_FILE_NAME_ON_TARGET,
+	bool escape_given;
+	access_data.user_email_address = get_input_from_user(
+		HDR_USER_EMAIL_ADDRESS,
 		width_header,
-		file_name_on_target,
-		width_value
+		access_data.user_email_address,
+		width_value,
+		escape_given
 	);
+	if (escape_given)
+		return false;
 
-	file_name_on_destination = get_input_from_user(
-		HDR_FILE_NAME_ON_DESTINATION,
+	access_data.user_password = get_input_from_user(
+		HDR_USER_PASSWORD,
 		width_header,
-		file_name_on_destination,
-		width_value
+		access_data.user_password,
+		width_value,
+		escape_given,
+		false // do not echo character
 	);
+	if (escape_given)
+		return false;
+
+	access_data.payload =
+		"user_email_address=" +
+		access_data.user_email_address +
+		"&user_password=" +
+		access_data.user_password;
+
+	return true;
 }
 
 //****************************************************************************
-//*                     do_transfer
+//*                     get_user_access_params
 //****************************************************************************
-void do_transfer(
-	const string& transfer_mode,
-	const string& file_name_on_target,
-	const string& file_name_on_destination,
-	const string& ip_address,
-	const string& port_number)
+bool get_user_access_params(ACCESSDATA& access_data)
 {
-	char cmd[] = "http-client-async";
-	char* mode = const_cast<char*>(transfer_mode.c_str());
-	char* file_target = const_cast<char*>(file_name_on_target.c_str());
-	char* file_destination = const_cast<char*>(file_name_on_destination.c_str());
-	char* host = const_cast<char*>(ip_address.c_str());
-	char* port = const_cast<char*>(port_number.c_str());
-	char target[] = "/";
-	char version[] = "1.0";
-
-	int argc = 8;
-	char* argv[] = { cmd, mode, file_target, file_destination,
-		host, port, target, version };
-	ns_http_client_async::http_client_async(argc, argv);
-}
-
-//****************************************************************************
-//                      main
-//****************************************************************************
-int main() {
-	const string IP_ADDRESS  = "192.168.178.14";
-	const string PORT_NUMBER = "8080";
-
-	string ip_address = IP_ADDRESS;
-	string port_number = PORT_NUMBER;
-
-	string transfer_mode = "download";
-
-	const string FILE_NAME_ON_SERVER_AT_DOWNLOAD = "index.html";
-	const string FILE_NAME_ON_CLIENT_AT_DOWNLOAD = "index_client.html";
-
-	string file_name_on_server_at_download = FILE_NAME_ON_SERVER_AT_DOWNLOAD;
-	string file_name_on_client_at_download = FILE_NAME_ON_CLIENT_AT_DOWNLOAD;
-
-	const string FILE_NAME_ON_CLIENT_AT_UPLOAD = "index_client.html";
-	const string FILE_NAME_ON_SERVER_AT_UPLOAD = "index_server.html";
-
-	string file_name_on_client_at_upload = FILE_NAME_ON_CLIENT_AT_UPLOAD;
-	string file_name_on_server_at_upload = FILE_NAME_ON_SERVER_AT_UPLOAD;
-
 	bool bProceed = true;
 	int iChar;
 
 	while (bProceed) {
-		cout << "Asynchronous HTTP Client" << endl;
-		cout << "========================" << endl;
-		cout << " 1) Connect" << endl;
-		cout << " 2) Download" << endl;
-		cout << " 3) Upload" << endl;
-		cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cout << "Access\n";
+		std::cout << "======\n";
+		std::cout << " 1) Login\n";
+		std::cout << " 2) Register\n";
+		std::cout << " 3) Forgot password\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
 
-		cin >> iChar;
+		std::cin >> iChar;
 		// get rid of the new line character, to ensure the buffer sanity
-		cin.get();
+		std::cin.get();
 
 		switch (iChar) {
 		case 1:
-			get_connect_params_from_user(
-				ip_address,
-				port_number
-			);
-			cerr << "IP Address: " << ip_address << ", Port: " << port_number << endl;
+			access_data.target = "/login";
+			if (get_access_params_from_user(g_access_data))
+				do_transfer(g_access_data);
 			break;
 		case 2:
-			transfer_mode = "download";
-			get_file_names_from_user(
-				transfer_mode,
-				file_name_on_server_at_download,
-				file_name_on_client_at_download
-			);
-			cerr << "Target (server): " << file_name_on_server_at_download << endl;
-			cerr << "Destination (client): " << file_name_on_client_at_download << endl;
-			do_transfer(
-				transfer_mode,
-				file_name_on_server_at_download,
-				file_name_on_client_at_download,
-				ip_address,
-				port_number
-			);
+			access_data.target = "/register";
+			if (get_access_params_from_user(g_access_data))
+				do_transfer(g_access_data);
 			break;
 		case 3:
-			transfer_mode = "upload";
-			get_file_names_from_user(
-				transfer_mode,
-				file_name_on_client_at_upload,
-				file_name_on_server_at_upload
-			);
-			cerr << "Target (client): " << file_name_on_client_at_upload << endl;
-			cerr << "Destination (server): " << file_name_on_server_at_upload << endl;
-			do_transfer(
-				transfer_mode,
-				file_name_on_client_at_upload,
-				file_name_on_server_at_upload,
-				ip_address,
-				port_number
-			);
+			access_data.target = "/reset_password";
+			if (get_access_params_from_user(g_access_data))
+				do_transfer(g_access_data);
 			break;
 		case 0:
 			// the user wants to terminate
@@ -214,154 +238,215 @@ int main() {
 			break;
 		default:
 			// the input, given by the user, is not an available option
-			cout << "The entered number is not recognized, please try again." << endl;
+			std::cout << "The entered number is not recognized, please try again.\n";
 			break;
 		} // eof switch
 	}
-
-	return 0;
+	return true;
 }
-//// HttpClientAsync.cpp
-//#include <iostream>
-//#include <string>
-//
-//// File client
-//#include "http_client_async.cpp"
-//
-//using namespace std;
-////****************************************************************************
-////*                     get_input_from_user
-////****************************************************************************
-//string get_input_from_user(const string& hdr, const string& val) {
-//	string input_from_user = "";
-//
-//	cout << hdr << val << " ";
-//	getline(cin, input_from_user, '\n');
-//
-//	return input_from_user.length() > 0 ? input_from_user : val;
-//}
-//
-////****************************************************************************
-////*                     get_connect_params_from_user
-////****************************************************************************
-//void get_connect_params_from_user(
-//	const string& IP_ADDRESS, string& ip_address,
-//	const string& PORT_NUMBER, string& port_number) {
-//
-//	const string HDR_IP_ADDRESS  = "IP Address...: ";
-//	const string HDR_PORT_NUMBER = "Port.........: ";
-//
-//	ip_address = get_input_from_user(HDR_IP_ADDRESS, IP_ADDRESS);
-//	port_number = get_input_from_user(HDR_PORT_NUMBER, PORT_NUMBER);
-//}
-//
-////****************************************************************************
-////*                     get_file_names_from_user
-////****************************************************************************
-//void get_file_names_from_user(
-//	const string& FILE_NAME_ON_SOURCE,
-//	string& file_name_on_source,
-//	const string& FILE_NAME_ON_TARGET,
-//	string& file_name_on_target) {
-//
-//	const string HDR_FILE_NAME_ON_SOURCE = "Source...: ";
-//	const string HDR_FILE_NAME_ON_TARGET = "Target...: ";
-//
-//	file_name_on_source = get_input_from_user(
-//		HDR_FILE_NAME_ON_SOURCE, FILE_NAME_ON_SOURCE);
-//	file_name_on_target = get_input_from_user(
-//		HDR_FILE_NAME_ON_TARGET, FILE_NAME_ON_TARGET);
-//}
-//
-////****************************************************************************
-////*                     do_transfer
-////****************************************************************************
-//void do_transfer(const string& ip_address, 
-//	const string& port_number, 
-//	string& file_name_on_server,
-//	const string& file_name_on_client,
-//	const string& transfer_mode) {
-//
-//	char cmd[] = "http-client-async";
-//	char* host = const_cast<char*>(ip_address.c_str());
-//	char* port = const_cast<char*>(port_number.c_str());
-//	file_name_on_server.insert(0, "/");
-//	char* target = const_cast<char*>(file_name_on_server.c_str());
-//	char* destination = const_cast<char*>(file_name_on_client.c_str());
-//	char* mode = const_cast<char*>(transfer_mode.c_str());
-//	char version[] = "1.0";
-//	char* argv[] = { cmd, host , port, target, destination, mode, version };
-//	ns_http_client_async::http_client_async(7, argv);
-//}
-//
-////****************************************************************************
-////*                     main
-////****************************************************************************
-//int main() {
-//	const string IP_ADDRESS = "192.168.178.14";
-//	const string PORT_NUMBER = "8080";
-//	const string FILE_NAME_ON_SERVER = "index.html";
-//	const string FILE_NAME_ON_CLIENT = "index_client.html";
-//
-//	string ip_address = IP_ADDRESS;
-//	string port_number = PORT_NUMBER;
-//	string file_name_on_server = "";
-//	string file_name_on_client = "";
-//	string transfer_mode = "download";
-//
-//	bool bProceed = true;
-//	int iChar;
-//
-//	while (bProceed) {
-//		cout << "Asynchronous HTTP Client" << endl;
-//		cout << "========================" << endl;
-//		cout << " 1) Connect" << endl;
-//		cout << " 2) Download" << endl;
-//		cout << " 3) Upload" << endl;
-//		cout << "Enter the number of a subject, or enter a zero to quit: ";
-//
-//		cin >> iChar;
-//		// get rid of the new line character, to ensure the buffer sanity
-//		cin.get();
-//
-//		switch (iChar) {
-//		case 1:
-//			get_connect_params_from_user(IP_ADDRESS, ip_address,
-//				PORT_NUMBER, port_number);
-//			cout << ip_address << ", " << port_number << endl;
-//			break;
-//		case 2: {
-//			get_file_names_from_user(FILE_NAME_ON_SERVER,
-//				file_name_on_server,
-//				FILE_NAME_ON_CLIENT,
-//				file_name_on_client);
-//			// do download
-//			transfer_mode = "download";
-//			do_transfer(ip_address, port_number, file_name_on_server,
-//				file_name_on_client, transfer_mode);
-//			}
-//			break;
-//		case 3: {
-//			get_file_names_from_user(FILE_NAME_ON_CLIENT,
-//				file_name_on_client,
-//				FILE_NAME_ON_SERVER,
-//				file_name_on_server);
-//			// do upload
-//			transfer_mode = "upload";
-//			do_transfer(ip_address, port_number, file_name_on_server,
-//				file_name_on_client, transfer_mode);
-//			}
-//			break;
-//		case 0:
-//			// the user wants to terminate
-//			bProceed = false;
-//			break;
-//		default:
-//			// the input, given by the user, is not an available option
-//			cout << "The entered number is not recognized, please try again." << endl;
-//		} // eof switch
-//	}
-//
-//	return 0;
-//}
-//
+
+//****************************************************************************
+//*                     get_file_names_from_user
+//****************************************************************************
+bool get_file_names_from_user(ACCESSDATA& access_data)
+{
+	std::string HDR_FILE_NAME_ON_SERVER = "";
+	std::string HDR_FILE_NAME_ON_CLIENT = "";
+
+	if (access_data.mode == "download") {
+		HDR_FILE_NAME_ON_SERVER = "Target (server)";
+		HDR_FILE_NAME_ON_CLIENT = "Destination (client)";
+	}
+	if (access_data.mode == "upload") {
+		HDR_FILE_NAME_ON_SERVER = "Destination (server)";
+		HDR_FILE_NAME_ON_CLIENT = "Target (client)";
+	}
+
+	int width_header = (HDR_FILE_NAME_ON_SERVER.length()
+		>= HDR_FILE_NAME_ON_CLIENT.length())
+		? HDR_FILE_NAME_ON_SERVER.length()
+		: HDR_FILE_NAME_ON_CLIENT.length();
+	width_header += 3;
+
+	int width_value = (access_data.file_name_on_server.length()
+		>= access_data.file_name_on_client.length())
+		? access_data.file_name_on_server.length()
+		: access_data.file_name_on_client.length();
+
+	bool escape_given;
+	access_data.file_name_on_server = get_input_from_user(
+		HDR_FILE_NAME_ON_SERVER,
+		width_header,
+		access_data.file_name_on_server,
+		width_value,
+		escape_given
+	);
+	if (escape_given)
+		return false;
+
+	access_data.file_name_on_client = get_input_from_user(
+		HDR_FILE_NAME_ON_CLIENT,
+		width_header,
+		access_data.file_name_on_client,
+		width_value,
+		escape_given
+	);
+	if (escape_given)
+		return false;
+
+	return true;
+}
+
+//****************************************************************************
+//*                     do_transfer
+//****************************************************************************
+void do_transfer(const ACCESSDATA& access_data)
+{
+	std::cout << "do_transfer()\n";
+
+	char cmd[] = "http-client-async";
+	char* mode = const_cast<char*>(access_data.mode.c_str());
+	char* user_email_address = const_cast<char*>(access_data.user_email_address.c_str());
+	char* user_password = const_cast<char*>(access_data.user_password.c_str());
+	char* payload = const_cast<char*>(access_data.payload.c_str());
+	char* file_name_on_server = const_cast<char*>(access_data.file_name_on_server.c_str());
+	char* file_name_on_client = const_cast<char*>(access_data.file_name_on_client.c_str());
+	char* target = const_cast<char*>(access_data.target.c_str());
+	char* host = const_cast<char*>(access_data.host.c_str());
+	char* port = const_cast<char*>(access_data.port.c_str());
+	char* version = const_cast<char*>(access_data.version.c_str());
+
+	int argc = 11;
+	char* argv[] = {
+		cmd,
+		mode,
+		user_email_address,
+		user_password,
+		payload,
+		file_name_on_server,
+		file_name_on_client,
+		target,
+		host,
+		port,
+		version
+	};
+	http_client_async(argc, argv);
+}
+
+//****************************************************************************
+//*                     set_loggd_in
+//****************************************************************************
+void set_logged_in(const bool& logged_in)
+{
+	g_access_data.logged_in = logged_in;
+}
+
+//****************************************************************************
+//*                     get_confirmation_code
+//****************************************************************************
+void get_confirmation_code()
+{
+	std::string confirmation_code;
+
+	std::cout << "Enter the code received by email: ";
+	std::cin >> confirmation_code;
+
+	g_access_data.mode = "access";
+	g_access_data.target += "_confirm";
+	g_access_data.payload =
+		"user_email_address=" +
+		g_access_data.user_email_address +
+		"&user_password=" +
+		g_access_data.user_password +
+		"&confirmation_code=" +
+		confirmation_code;
+
+	do_transfer(g_access_data);
+}
+
+//****************************************************************************
+//*                     main
+//****************************************************************************
+int main() {
+	const std::string MODE = "download";
+	const std::string USER_EMAIL_ADDRESS = "guest@example.com";
+	const std::string USER_PASSWORD = "anonymous";
+	const std::string PAYLOAD = "";
+	const std::string FILE_NAME_ON_SERVER = "";
+	const std::string FILE_NAME_ON_CLIENT = "index.html";
+	const std::string TARGET = "/";
+	const std::string HOST = "192.168.178.14";
+	const std::string PORT = "8080";
+	const std::string VERSION = "1.1";
+
+	g_access_data.mode = MODE;
+	g_access_data.user_email_address = USER_EMAIL_ADDRESS;
+	g_access_data.user_password = USER_PASSWORD;
+	g_access_data.payload = PAYLOAD;
+	g_access_data.file_name_on_server = FILE_NAME_ON_SERVER;
+	g_access_data.file_name_on_client = FILE_NAME_ON_CLIENT;
+	g_access_data.target = TARGET;
+	g_access_data.host = HOST;
+	g_access_data.port = PORT;
+	g_access_data.version = VERSION;
+
+	// testing for a connection, by sending a TRACE message
+	g_access_data.mode = "trace";
+	do_transfer(g_access_data);
+
+	bool bProceed = true;
+	int iChar;
+
+	while (bProceed) {
+		std::cout << "HTTP Client Async\n";
+		std::cout << "=================\n";
+		std::cout << " 1) Connect\n";
+		std::cout << " 2) Access\n";
+		std::cout << " 3) Download\n";
+		std::cout << " 4) Upload\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+
+		std::cin >> iChar;
+		// get rid of the new line character, to ensure the buffer sanity
+		std::cin.get();
+
+		switch (iChar) {
+		case 1:
+			get_connect_params_from_user(g_access_data);
+			break;
+		case 2:
+			g_access_data.mode = "access";
+			get_user_access_params(g_access_data);
+			// reset target
+			g_access_data.target = TARGET;
+			break;
+		case 3:
+			if (!g_access_data.logged_in) {
+				std::cout << "please login first\n";
+				break;
+			}
+			g_access_data.mode = "download";
+			if (get_file_names_from_user(g_access_data))
+				do_transfer(g_access_data);
+			break;
+		case 4:
+			if (!g_access_data.logged_in) {
+				std::cout << "please login first\n";
+				break;
+			}
+			g_access_data.mode = "upload";
+			if (get_file_names_from_user(g_access_data))
+				do_transfer(g_access_data);
+			break;
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+	return EXIT_SUCCESS;
+}

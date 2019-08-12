@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>http server async ssl</title>
+<meta charset="utf-8">
+<style>
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+h5
+{
+  color: #808080;
+  font-family: verdana;
+  font-weight: normal;
+}
+</style>
+<script>
+function getCookie(cname)
+{
+  console.log("getCookie()");
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++)
+  {
+    var c = ca[i];
+    while (c.charAt(0) == ' ')
+    {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0)
+    {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function checkCookie()
+{
+  console.log("checkCookie()");
+  var user_email_address_cookie = getCookie("user_email_address");
+  if (user_email_address_cookie != "")
+  {
+    document.getElementById("login_user_email_address").innerHTML =
+      "logged in as: " + user_email_address_cookie;
+  }
+}
+function settingsForSizeAndPosition(width, height)
+{
+  var x = window.screenLeft + (window.outerWidth / 2 - width / 2);
+  var y = window.screenTop + (window.outerHeight / 2 - height / 2);
+  var settings =
+    "width=" + width + "," +
+    "height=" + height + "," +
+    "left=" + x + "," +
+    "top=" + y;
+  return settings
+}
+function openRegister()
+{
+  window.open("popup-register.html", "_blank", settingsForSizeAndPosition(400, 400));
+}
+function openLogin()
+{
+  window.open("popup-login.html", "_blank", settingsForSizeAndPosition(400, 400));
+}
+</script>
+</head>
+<body onload="checkCookie()">
+<input class="button" type="button" value="register" onclick="openRegister()">
+<input class="button" type="button" value="login" onclick="openLogin()">
+<h5 id="login_user_email_address"></h5>
+</body>
+</html>

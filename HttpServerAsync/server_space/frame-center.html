@@ -1,0 +1,282 @@
+<!-- v0.02 turn frame-center.html into a frame -->
+<!--       inside the frame comes:             -->
+<!--       1) frame-center-top.html            -->
+<!--       2) frame-center-bottom.html         -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<title>http server async ssl</title>
+<meta charset="utf-8">
+</head>
+<frameset rows="10%, *">
+<frame src="frame-center-top.html" name="frame-center-top" frameborder="0" noresize="noresize">
+<frame src="frame-center-bottom.html" name="frame-center-bottom" frameborder="0" noresize="noresize">
+</frameset>
+</html>
+
+<!-- v0.01 functional version but with a horrible layout -->
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+input.button, button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+</style>
+<script>
+function set_href_and_activate()
+{
+  var input = document.getElementById("input").value;
+  if (input == "")
+  {
+    return;
+  }
+  var hyper_link = document.getElementById("hyper_link");
+  hyper_link.setAttribute("href", input);
+  hyper_link.click();
+}
+</script>
+</head>
+<body>
+<label for="input">download</label>
+<br>
+<input type="text" id="input">
+<input type="button" class="button "value="transfer" onclick="set_href_and_activate()">
+<a href="" download id="hyper_link" style="opacity: 0;"></a>
+
+<form id="form" method="post" enctype="multipart/form-data">
+<div>
+<label for="file">upload</label>
+<br>
+<input type="text" id="field" value="click header to select">
+<button>transfer</button>
+<input type="file" id="file" name="file">
+</div>
+</form>
+
+<script>
+  var file = document.querySelector('#file');
+
+  file.style.opacity = 0;
+  file.addEventListener('change', updateField);
+
+  function updateField()
+  {
+    document.getElementById("field").value = file.files[0].name;
+  }
+</script>
+
+</body>
+</html>
+-->
+
+<!-- the oldest version is the original (not functional) frame-center.html -->
+<!-- v0.00 the original concept with caused CORS blocking -->
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+<title>http server async ssl</title>
+<meta charset="utf-8">
+<style>
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+p
+{
+  color: #808080;
+  font-family: verdana;
+}
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+.down_up_load
+{
+  display: none;
+}
+</style>
+<script>
+function getCookie(cname)
+{
+  console.log("getCookie()");
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++)
+  {
+    var c = ca[i];
+    while (c.charAt(0) == ' ')
+    {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0)
+    {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function checkCookie()
+{
+  console.log("checkCookie()");
+  var user_email_address_cookie = getCookie("user_email_address");
+  if (user_email_address_cookie == "")
+  {
+    document.getElementById("please_login_first").innerHTML = "please login first";
+    return false;
+  }
+  return true;
+}
+var mode = "";
+function doDownload()
+{
+  console.log("doDownload()");
+  if (checkCookie())
+  {
+    // clear message, eventually set on a prior try
+    document.getElementById("please_login_first").innerHTML = "";
+    mode = "download";
+    // set header
+    document.getElementById("hdr_file_name_on_server").innerHTML = "target (server)";
+    document.getElementById("hdr_file_name_on_client").innerHTML = "destination (client)";
+    // display form
+    document.getElementById("down_up_load").style.display = "block";
+  }
+}
+function doUpload()
+{
+  console.log("doUpload()");
+  if (checkCookie())
+  {
+    // clear message, eventually set on a prior try
+    document.getElementById("please_login_first").innerHTML = "";
+    mode = "upload";
+    // set header
+    document.getElementById("hdr_file_name_on_server").innerHTML = "destination (server)";
+    document.getElementById("hdr_file_name_on_client").innerHTML = "target (client)";
+    // display form
+    document.getElementById("down_up_load").style.display = "block";
+  }
+}
+function doTransfer()
+{
+  var file_name_on_server = document.getElementById("file_name_on_server").value;
+  var file_name_on_client = document.getElementById("file_name_on_client").value;
+  // check for incomplete input from user
+  if (file_name_on_server == "" || file_name_on_client == "")
+  {
+    console.log("no target || no destination");
+    return;
+  }
+  // the url must point to the map where the frame-centel.html resides
+  // remind the server adds /server_space in front of the target
+  const server_url = "http://192.168.178.14:8080/";
+  const file_path_on_client = "file:///C:/Users/Klasing/MyProgramming/HTML/html2019/boost_beast/client_space_data/";
+  if (mode == "download")
+  {
+    console.log("download transfer");
+    var file_target = server_url + file_name_on_server;
+    var file_destination = file_path_on_client + file_name_on_client;
+    console.log("target: " + file_target + "\n"
+      + "destination: " + file_destination);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function()
+    {
+      if (this.readyState == 4 && this.status == 200)
+      {
+        var payload = xhttp.responseText;
+        console.log(payload);
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function()
+        {
+          if (this.readyState == 4 && this.status == 200)
+          {
+            console.log("file stored on client");
+          }
+        }
+        // DIT WORDT DOOR CORS POLICY GEBLOKKEERD ****************************
+        // client request
+        xhr.open("PUT", file_destination, true);
+        xhr.send(payload);
+      }
+    }
+    // server request
+    xhttp.open("GET", file_target, true);
+    xhttp.send();
+    return;
+  }
+  if (mode == "upload")
+  {
+    console.log("upload transfer");
+    var file_destination = server_url + file_name_on_server;
+    var file_target = file_path_on_client + file_name_on_client;
+    console.log("destination: " + file_destination + "\n"
+      + "target: " + file_target);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function()
+    {
+      if (this.readyState == 4 && this.status == 200)
+      {
+        var payload = xhr.responseText;
+        console.log(payload);
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function()
+        {
+          if (this.readyState == 4 && this.status == 200)
+          {
+            console.log("file stored on server");
+          }
+        }
+        // server request
+        xhttp.open("PUT", file_destination, true);
+        xhr.send(payload);
+      }
+    }
+    // DIT WORDT DOOR CORS POLICY GEBLOKKEERD ********************************
+    // client request
+    xhr.open("GET", file_target, true);
+    xhr.send();
+    return;
+  }
+}
+</script>
+</head>
+<body>
+<input class="button" type="button" value="download" onclick="doDownload()">
+|
+<input class="button" type="button" value="upload" onclick="doUpload()">
+<p id="please_login_first"></p>
+<div class="down_up_load" id="down_up_load">
+<form>
+<label for="file_name_on_server" id="hdr_file_name_on_server"></label>
+<br>
+<input type="text" name="file_name_on_server" id="file_name_on_server" autocomplete="file_name_on_server" required>
+<br>
+<label for="file_name_on_client" id="hdr_file_name_on_client"></label>
+<br>
+<input type="text" name="file_name_on_client" id="file_name_on_client" autocomplete="file_name_on_client" required>
+<br>
+<br>
+<input class="button" id="button_do_transfer" type="button" value="transfer" onclick="doTransfer()">
+</form>
+</div>
+</body>
+</html>
+-->

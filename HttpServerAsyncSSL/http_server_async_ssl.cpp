@@ -112,7 +112,7 @@ namespace ns_http_server_async_ssl {
 	//*                    filter_target_email_and_password_and_code
 	//***************************************************************************
 	template<class Body, class Allocator>
-		inline void 
+		inline void
 			filter_target_email_and_password_and_code(
 				http::request<Body, http::basic_fields<Allocator>> req,
 				std::string& target,
@@ -165,7 +165,7 @@ namespace ns_http_server_async_ssl {
 		sBegin++;
 		user_code = payload.substr(sBegin, sLength);
 	}
-	
+
 	//***************************************************************************
 	//*                    handle_request
 	//***************************************************************************
@@ -225,7 +225,7 @@ namespace ns_http_server_async_ssl {
 		};
 
 		// Make sure we can handle the method
-		if (req.method() != http::verb::post && 
+		if (req.method() != http::verb::post &&
 			req.method() != http::verb::get &&
 			req.method() != http::verb::put &&
 			req.method() != http::verb::head)
@@ -250,9 +250,9 @@ namespace ns_http_server_async_ssl {
 				user_password,
 				user_code,
 				user_agent);
-			std::cout 
-				<< target << " " 
-				<< user_email_address << " " 
+			std::cout
+				<< target << " "
+				<< user_email_address << " "
 				<< user_password << " "
 				<< user_code
 				<< std::endl;
@@ -318,7 +318,7 @@ namespace ns_http_server_async_ssl {
 			// Build the path to the requested file
 			std::string path = path_cat(doc_root, req.target());
 			if (req.target().back() == '/')
-				// the default file for download when no file name 
+				// the default file for download when no file name
 				// is given from the client
 				path.append("index.html");
 
@@ -533,11 +533,11 @@ namespace ns_http_server_async_ssl {
 				return fail(ec, "read");
 
 			// Send the response
-			handle_request(*doc_root_ 
+			handle_request(*doc_root_
 				, pSqlite_
 				, pHandlerForRegister_
 				, pHandlerForResetPassword_
-				, std::move(req_) 
+				, std::move(req_)
 				, lambda_);
 		}
 
@@ -611,7 +611,8 @@ namespace ns_http_server_async_ssl {
 			ssl::context& ctx,
 			tcp::endpoint endpoint,
 			std::shared_ptr<std::string const> const& doc_root,
-			std::shared_ptr<Connect2SQLite> const& pSqlite)
+			std::shared_ptr<Connect2SQLite> const& pSqlite
+		)
 			: ioc_(ioc)
 			, ctx_(ctx)
 			, acceptor_(net::make_strand(ioc))
@@ -734,7 +735,7 @@ namespace ns_http_server_async_ssl {
 		oSqlite.openDb();
 		oSqlite.createTable();
 		// will create an error message when the default user already exists
-		// SQL error: UNIQUE constraint failed: 
+		// SQL error: UNIQUE constraint failed:
 		// user_access_login_data.user_email_address
 		oSqlite.insertDefaultUser();
 		// create pointer to the Connect2SQLite instance

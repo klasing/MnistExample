@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>register</title>
+<style>
+label
+{
+  color: #808080;
+  font-family: verdana;
+}
+.button
+{
+  color: #808080;
+  font-family: verdana;
+  border: none;
+  background-color: #FFFFFF;
+}
+.register_result, .register_confirm_result
+{
+  color: #808080;
+  font-family: verdana;
+}
+.register_confirm
+{
+  display: none;
+}
+</style>
+<script>
+var user_email_address = "";
+var user_password = "";
+function doRegister()
+{
+  console.log("doRegister()");
+  // get the values from a form, to create the payload for a POST request
+  user_email_address = document.getElementById("user_email_address").value;
+  user_password = document.getElementById("user_password").value;
+  var payload_for_post = "user_email_address=" + user_email_address + "&" + "user_password=" + user_password;
+  console.log("payload_for_post: " + payload_for_post);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function()
+  {
+    if (this.readyState == 4 && this.status == 200)
+    {
+      document.getElementById("register_result").innerHTML = this.responseText;
+      if (this.responseText == "register: enter the code received by email.")
+      {
+        // hide the fist 'submit' button
+        document.getElementById("button_register").style.display = "none";
+        // show the 'register_confirm' form
+        document.getElementById("register_confirm").style.display = "block";
+      }
+    }
+  }
+  xhttp.open("POST", "http://192.168.178.14:8080/register", true);
+  xhttp.send(payload_for_post);
+}
+function doConfirm()
+{
+  console.log("doConfirm()");
+  // get the value from the 'code_confirm' field, to create the payload for a POST request
+  var code_confirm = document.getElementById("code_confirm").value;
+  //var payload_for_post = "code_confirm=" + code_confirm;
+  var payload_for_post = "user_email_address=" + user_email_address + "&" + "user_password=" + user_password + "&" + "code_confirm=" + code_confirm;
+  console.log("payload_for_post: " + payload_for_post);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function()
+  {
+    if (this.readyState == 4 && this.status == 200)
+    {
+      document.getElementById("register_confirm_result").innerHTML = this.responseText;
+    }
+  }
+  xhttp.open("POST", "http://192.168.178.14:8080/register_confirm", true);
+  xhttp.send(payload_for_post);
+  // hide the second 'submit' button
+  document.getElementById("button_register_confirm").style.display = "none";
+}
+</script>
+</head>
+<body>
+<div class="register" id="register">
+<form>
+<label for="user_email_address">email address</label>
+<br>
+<input type="text" name="user_email_address" id="user_email_address" autocomplete="email" required>
+<br>
+<label for="user_password">password</label>
+<br>
+<input type="password" name="user_password" id="user_password" autocomplete="password" required>
+<br><br>
+<input class="button" id="button_register" type="button" value="submit" onclick="doRegister()">
+<br>
+<p class="register_result" id="register_result"></p>
+</form>
+</div>
+<div class="register_confirm" id="register_confirm">
+<form>
+<label for="code_confirm">enter the code received by email</label>
+<br>
+<input type="text" name="code_confirm" id="code_confirm" autocomplete="code" required>
+<br><br>
+<input class="button" id="button_register_confirm" type="button" value="submit" onclick="doConfirm()">
+<br>
+<p class="register_confirm_result" id="register_confirm_result"></p>
+</form>
+</div>
+</body>
+</html>
