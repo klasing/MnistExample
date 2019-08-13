@@ -23,7 +23,6 @@ label
   font-family: verdana;
 }
 </style>
-</script>
 <script>
 function setCookie(cname, cvalue, exdays)
 {
@@ -59,7 +58,7 @@ function doLogin()
       }
     }
   }
-  xhttp.open("POST", "http://192.168.178.14:8080/login", true);
+  xhttp.open("POST", "http://" + window.location.hostname + ":8080/login", true);
   xhttp.send(payload_for_post);
 }
 </script>

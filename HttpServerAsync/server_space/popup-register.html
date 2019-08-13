@@ -53,7 +53,7 @@ function doRegister()
       }
     }
   }
-  xhttp.open("POST", "http://192.168.178.14:8080/register", true);
+  xhttp.open("POST", "http://" + window.location.hostname + ":8080/login", true);
   xhttp.send(payload_for_post);
 }
 function doConfirm()
@@ -72,7 +72,7 @@ function doConfirm()
       document.getElementById("register_confirm_result").innerHTML = this.responseText;
     }
   }
-  xhttp.open("POST", "http://192.168.178.14:8080/register_confirm", true);
+  xhttp.open("POST", "http://" + window.location.hostname + ":8080/login", true);
   xhttp.send(payload_for_post);
   // hide the second 'submit' button
   document.getElementById("button_register_confirm").style.display = "none";
