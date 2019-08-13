@@ -333,50 +333,157 @@ template<
 	};
 
 	// Make sure we can handle the method
-	if (req.method() != http::verb::trace &&
+	if (req.method() != http::verb::connect &&
+		req.method() != http::verb::delete_ &&
+		req.method() != http::verb::get &&
+		req.method() != http::verb::head &&
 		req.method() != http::verb::options &&
 		req.method() != http::verb::post &&
-		req.method() != http::verb::get &&
 		req.method() != http::verb::put &&
-		req.method() != http::verb::head)
+		req.method() != http::verb::trace)
 		return send(bad_request("Unknown HTTP-method"));
 
-	// Respond to a TRACE request
-	if (req.method() == http::verb::trace) {
-		std::cout << "-> TRACE message received\n";
+	// Google Chrome browser user_agent:
+	const std::string chrome_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36";
+	// Microsoft Edge browser user_agent:
+	const std::string edge_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362";
 
-		// turn the request message into a string and
-		// place it into the payload of the response
-		auto buff = beast::flat_buffer();
-		write_message_to_string(req, buff);
-		http::string_body::value_type body;
-		body = std::string("server is alive\n")
-			+ beast::buffers_to_string(buff.data());
+	// turn the request message into a string
+	auto buff = beast::flat_buffer();
+	write_message_to_string(req, buff);
+	std::string req_message = beast::buffers_to_string(buff.data());
 
-		auto const size = body.size();
-
-		http::response<http::string_body> res{ http::status::ok, req.version() };
-		res.set(http::field::date, beast::string_view(date_for_http_response()));
-		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-		res.set(http::field::content_type, beast::string_view("message/http"));
-		res.content_length(size);
-		res.keep_alive(false);
-		res.body() = std::move(body);
-		res.prepare_payload();
-		return send(std::move(res));
+	// Respond to a CONNECT request
+	if (req.method() == http::verb::connect) {
+		std::cout << "-> CONNECT message received\n";
+		std::cout << req_message;
+		// not implemented yet
 	}
 
-	//// Respond to a OPTIONS request
-	//if (req.method() == http::verb::options) {
-	//	std::cout << "-> OPTIONS message received\n";
-	//}
+	// Respond to a DELETE request
+	if (req.method() == http::verb::delete_) {
+		std::cout << "-> DELETE message received\n";
+		std::cout << req_message;
+		// not implemented yet
+	}
+
+	// Respond to a GET/HEAD request
+	if (req.method() == http::verb::get ||
+		req.method() == http::verb::head) {
+		if (req.method() == http::verb::get)
+			std::cout << "-> GET message received\n";
+		if (req.method() == http::verb::head)
+			std::cout << "-> HEAD message received\n";
+		std::cout << req_message;
+		// a GET/HEAD request can mean three things
+		// 1) a download request from an app. for a file from the user space
+		// 2) a request from a browser for a that renders its layout
+		// 3) a download request from a browser for a file from the user space
+		std::string file_name_on_server = "";
+		std::string path = "";
+		std::string user_agent =
+			static_cast<std::string>(req[http::field::user_agent]);
+		if (user_agent == "Boost.Beast/248")
+		{
+			// its a request from an app.
+			file_name_on_server = std::string("/user_space") +
+				static_cast<std::string>(req.target());
+		}
+		//if (user_agent != "Boost.Beast/248")
+		if (user_agent == chrome_value_user_agent ||
+			user_agent == edge_value_user_agent)
+		{
+			// assume its a request from a browser
+			std::string target = static_cast<std::string>(req.target());
+			if (target == "/download-and-upload.html" ||
+				target == "/favicon.ico" ||
+				target == "/frame-bottom.html" ||
+				target == "/frame-center.html" ||
+				target == "/frame-center-bottom.html" ||
+				target == "/frame-center-top.html" ||
+				target == "/frame-top.html" ||
+				target == "/frame-top-left.html" ||
+				target == "/frame-top-right.html" ||
+				target == "/index.html" ||
+				target == "/mk_logo_09-08-2019.png" ||
+				target == "/more.html" ||
+				target == "/popup-login.html" ||
+				target == "/popup-register.html" ||
+				target == "/popup-reset_password.html")
+			{
+				// it's one off the browser layout files
+				file_name_on_server = std::string("/server_space") +
+					static_cast<std::string>(req.target());
+			}
+			else
+			{
+				// its a download request for a file from the user space
+				file_name_on_server = std::string("/user_space") +
+					static_cast<std::string>(req.target());
+			}
+		}
+		path = path_cat(doc_root, file_name_on_server);
+		// Request path must be absolute and not contain "..".
+		if (req.target().empty() ||
+			req.target()[0] != '/' ||
+			req.target().find("..") != beast::string_view::npos)
+			return send(bad_request("Illegal request-target"));
+		if (req.target().back() == '/')
+			path.append("index.html");
+		std::cout << "-> path: " << path << std::endl;
+		// Attempt to open the file
+		beast::error_code ec;
+		http::file_body::value_type body;
+		body.open(path.c_str(), beast::file_mode::scan, ec);
+		// Handle the case where the file doesn't exist
+		if (ec == beast::errc::no_such_file_or_directory)
+			return send(not_found(req.target()));
+		// Handle an unknown error
+		if (ec)
+			return send(server_error(ec.message()));
+		// Cache the size since we need it after the move
+		auto const size = body.size();
+		// if its a GET request send a response with a payload
+		if (req.method() == http::verb::get)
+		{
+			http::response<http::file_body> res{
+				std::piecewise_construct,
+				std::make_tuple(std::move(body)),
+				std::make_tuple(http::status::ok, req.version()) };
+			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+			res.set(http::field::content_type, mime_type(path));
+			res.content_length(size);
+			res.keep_alive(req.keep_alive());
+			return send(std::move(res));
+		}
+		// if its a HEAD request send a response without a payload
+		if (req.method() == http::verb::head)
+		{
+			http::response<http::empty_body> res{ http::status::ok, req.version() };
+			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+			res.set(http::field::content_type, mime_type(path));
+			res.content_length(size);
+			res.keep_alive(req.keep_alive());
+			return send(std::move(res));
+		}
+	}
+
+	// Respond to an OPTIONS request
+	if (req.method() == http::verb::options) {
+		std::cout << "-> OPTIONS message received\n";
+		std::cout << req_message;
+		// not implemented yet
+	}
 
 	// Respond to a POST request
 	if (req.method() == http::verb::post) {
-		// defines app. or browser
+		// a POST request can mean two things
+		// 1) an access request from an app. or browser
+		// 2) a file upload from a browser into the user space
+		std::cout << "-> POST message received\n";
+		std::cout << req_message;
 		std::string user_agent =
 			static_cast<std::string>(req[http::field::user_agent]);
-		// filter target
 		std::string target =
 			static_cast<std::string>(req.target());
 		// check if POST message is concerning a login
@@ -386,22 +493,19 @@ template<
 			target == "/reset_password_confirm"
 			)
 		{
-			std::cout << "-> POST message received (login for app.)" << std::endl;
 			std::string response_payload = "";
 			std::string user_email_address = "";
 			std::string user_password = "";
 			std::string user_code = "";
-
 			filter_email_password_code(
 				req,
 				user_email_address,
 				user_password,
 				user_code,
 				user_agent);
-
 			response_payload = target + ": ";
+			// remove forward slash
 			response_payload.erase(0, 1);
-
 			if (target == "/login")
 			{
 				HandlerForLogin handlerForlogin;
@@ -445,19 +549,21 @@ template<
 					pSqlite,
 					response_payload);
 			}
-			http::response<http::string_body> res{
-				http::status::ok, req.version() };
+			// prepare a response message
+			http::response<http::string_body> res{ http::status::ok, req.version() };
 			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
 			res.set(http::field::content_type, "text/html");
+			res.keep_alive(req.keep_alive());
+			res.content_length(response_payload.length());
 			res.body() = response_payload;
 			res.prepare_payload();
-			res.keep_alive(req.keep_alive());
 			return send(std::move(res));
 		}
-		if (user_agent != "Boost.Beast/248")
+		//if (user_agent != "Boost.Beast/248")
+		if (user_agent == chrome_value_user_agent ||
+			user_agent == edge_value_user_agent)
 		{
-			std::cout << "-> POST message received (upload from browser)" << std::endl;
-			// assume upload from a browser
+			// assume its a request from a browser
 			std::string file_name = "";
 			std::string payload = "";
 			filter_filename_payload_from_form_submit(
@@ -466,7 +572,7 @@ template<
 				payload
 			);
 			save_to_disk(file_name, payload);
-
+			// prepare a response message
 			http::response<http::string_body> res{
 				// no_content = 204, this is necessary to stop the
 				// frame-center.html from disappearing in the browser
@@ -477,127 +583,41 @@ template<
 		}
 	}
 
-	// Request path must be absolute and not contain "..".
-	if (req.target().empty() ||
-		req.target()[0] != '/' ||
-		req.target().find("..") != beast::string_view::npos)
-		return send(bad_request("Illegal request-target"));
-
-	// Respond to a GET request || HEAD request
-	if (req.method() == http::verb::get ||
-		req.method() == http::verb::head) {
-
-		std::string file_name_on_server = "";
-		std::string path = "";
-		std::string user_agent =
-			static_cast<std::string>(req[http::field::user_agent]);
-		if (user_agent == "Boost.Beast/248")
-		{
-			// Build the path to the requested file
-			file_name_on_server =
-				std::string("/user_space") +
-				static_cast<std::string>(req.target());
-			path = path_cat(doc_root, file_name_on_server);
-		}
-		else
-		{
-			// assume it's a request from a browser
-			std::cout << "-> GET message received (layout for browser)\n";
-			std::string target = static_cast<std::string>(req.target());
-			if (target == "/download-and-upload.html" ||
-				target == "/favicon.ico" ||
-				target == "/frame-bottom.html" ||
-				target == "/frame-center.html" ||
-				target == "/frame-center-bottom.html" ||
-				target == "/frame-center-top.html" ||
-				target == "/frame-top.html" ||
-				target == "/frame-top-left.html" ||
-				target == "/frame-top-right.html" ||
-				target == "/index.html" ||
-				target == "/more.html" ||
-				target == "/popup-login.html" ||
-				target == "/popup-register.html" ||
-				target == "/popup-reset_password.html")
-			{
-				// it's one off the browser layout files
-				// Build the path to the requested file
-				file_name_on_server =
-					std::string("/server_space") +
-					static_cast<std::string>(req.target());
-				path = path_cat(doc_root, file_name_on_server);
-			}
-			else
-			{
-				std::cout << "-> GET message received (download from browser)\n";
-				// it's a user request for a file download
-				// Build the path to the requested file
-				file_name_on_server =
-					std::string("/user_space") +
-					static_cast<std::string>(req.target());
-				path = path_cat(doc_root, file_name_on_server);
-			}
-		}
-
-		if (req.target().back() == '/')
-			path.append("index.html");
-
-		std::cout << path << std::endl;
-
-		// Attempt to open the file
-		beast::error_code ec;
-		http::file_body::value_type body;
-		body.open(path.c_str(), beast::file_mode::scan, ec);
-
-		// Handle the case where the file doesn't exist
-		if (ec == beast::errc::no_such_file_or_directory)
-			return send(not_found(req.target()));
-
-		// Handle an unknown error
-		if (ec)
-			return send(server_error(ec.message()));
-
-		// Cache the size since we need it after the move
-		auto const size = body.size();
-
-		// Respond to HEAD request
-		if (req.method() == http::verb::head)
-		{
-			http::response<http::empty_body> res{ http::status::ok, req.version() };
-			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-			res.set(http::field::content_type, mime_type(path));
-			res.content_length(size);
-			res.keep_alive(req.keep_alive());
-			return send(std::move(res));
-		}
-
-		// Respond to GET request
-		http::response<http::file_body> res{
-			std::piecewise_construct,
-			std::make_tuple(std::move(body)),
-			std::make_tuple(http::status::ok, req.version()) };
-		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-		res.set(http::field::content_type, mime_type(path));
-		//// try to defeat CORS
-		//res.set(http::field::access_control_allow_origin, "*");
-		res.content_length(size);
-		res.keep_alive(req.keep_alive());
-		return send(std::move(res));
-	}
-
 	// Respond to a PUT request
 	if (req.method() == http::verb::put) {
 		std::cout << "-> PUT message received\n";
-
+		std::cout << req_message;
 		// remove all the \r-characters (return) from the req.body()
 		boost::erase_all(req.body(), "\r");
 		std::string file_name = static_cast<std::string>(req.target());
-		std::string payload = req.body();
-		save_to_disk(file_name, payload);
-
+		std::string request_payload = req.body();
+		save_to_disk(file_name, request_payload);
+		// prepare a response message
 		http::response<http::string_body> res{
 			http::status::ok, req.version() };
 		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
 		res.keep_alive(req.keep_alive());
+		return send(std::move(res));
+	}
+
+	// Respond to a TRACE request
+	if (req.method() == http::verb::trace) {
+		std::cout << "-> TRACE message received\n";
+		std::cout << req_message;
+		// place the request message, along a non-standard
+		// message, into the payload of the response message
+		http::string_body::value_type body;
+		body = std::string("server is alive\n") + req_message;
+		// prepare a response message
+		http::response<http::string_body> res{ http::status::ok, req.version() };
+		res.set(http::field::date, beast::string_view(date_for_http_response()));
+		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+		res.set(http::field::content_type, beast::string_view("message/http"));
+		res.keep_alive(false);
+		res.content_length(body.size());
+		res.body() = std::move(body);
+		res.prepare_payload();
+		// send the response message
 		return send(std::move(res));
 	}
 }
