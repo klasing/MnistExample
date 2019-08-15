@@ -109,4 +109,8 @@ int main()
 		serverConfig.key_,
 		serverConfig.dh_,
 		serverConfig.certPass_);
+
+	std::cout << "Enter Ctrl+Z to quit\n";
+	int iChar;
+	std::cin >> iChar;
 }
