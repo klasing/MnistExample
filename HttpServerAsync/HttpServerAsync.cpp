@@ -5,6 +5,32 @@
 #include "http_server_async.cpp"
 
 //****************************************************************************
+//*                     date_for_http_response
+//****************************************************************************
+inline std::string
+date_for_http_response()
+{
+	std::string dow[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+	std::string month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+	time_t tt;
+	time(&tt);
+	tm t;
+	localtime_s(&t, &tt);
+	struct tm gmt;
+	gmtime_s(&gmt, &tt);
+	std::ostringstream oss;
+	oss << dow[gmt.tm_wday] << ", "
+		<< std::setw(2) << std::setfill('0') << gmt.tm_mday << " "
+		<< month[gmt.tm_mon] << " "
+		<< gmt.tm_year + 1900 << " "
+		<< std::setw(2) << std::setfill('0') << gmt.tm_hour << ":"
+		<< std::setw(2) << std::setfill('0') << gmt.tm_min << ":"
+		<< std::setw(2) << std::setfill('0') << gmt.tm_sec << " "
+		<< "GMT";
+	return oss.str();
+}
+
+//****************************************************************************
 //*                     generate_random_string
 //****************************************************************************
 inline std::string

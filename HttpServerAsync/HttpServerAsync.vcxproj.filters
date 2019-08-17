@@ -24,6 +24,9 @@
     <ClCompile Include="SmtpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ServerLogging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connect2SQLite.hpp">

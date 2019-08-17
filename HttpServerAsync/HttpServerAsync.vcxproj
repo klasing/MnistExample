@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="HttpServerAsync.cpp" />
     <ClCompile Include="http_server_async.cpp" />
+    <ClCompile Include="ServerLogging.cpp" />
     <ClCompile Include="SmtpClient.cpp" />
   </ItemGroup>
   <ItemGroup>

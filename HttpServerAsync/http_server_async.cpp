@@ -1,15 +1,14 @@
 #define _WIN32_WINNT 0x0601
 
+#include <boost/algorithm/string.hpp>
+#include <boost/asio/buffer.hpp>
+#include <boost/asio/strand.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
-#include <boost/asio/strand.hpp>
 #include <boost/config.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/asio/buffer.hpp>
+#include <boost/lexical_cast.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -21,6 +20,7 @@
 #include <thread>
 #include <vector>
 
+#include "ServerLogging.cpp"
 #include "SmtpClient.cpp"
 #include "Connect2SQLite.hpp"
 #include "HandlerForLogin.hpp"
@@ -32,32 +32,41 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
+//****************************************************************************
+//*                     global
+//****************************************************************************
 const int SECONDS_BEFORE_EXPIRING = 300;
+
+//****************************************************************************
+//*                     prototype
+//****************************************************************************
+std::string date_for_http_response();
+
 //****************************************************************************
 //*                     date_for_http_response
 //****************************************************************************
-inline std::string
-date_for_http_response()
-{
-	std::string dow[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-	std::string month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-	time_t tt;
-	time(&tt);
-	tm t;
-	localtime_s(&t, &tt);
-	struct tm gmt;
-	gmtime_s(&gmt, &tt);
-	std::ostringstream oss;
-	oss << dow[gmt.tm_wday] << ", "
-		<< std::setw(2) << std::setfill('0') << gmt.tm_mday << " "
-		<< month[gmt.tm_mon] << " "
-		<< gmt.tm_year + 1900 << " "
-		<< std::setw(2) << std::setfill('0') << gmt.tm_hour << ":"
-		<< std::setw(2) << std::setfill('0') << gmt.tm_min << ":"
-		<< std::setw(2) << std::setfill('0') << gmt.tm_sec << " "
-		<< "GMT";
-	return oss.str();
-}
+//inline std::string
+//date_for_http_response()
+//{
+//	std::string dow[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+//	std::string month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+//	time_t tt;
+//	time(&tt);
+//	tm t;
+//	localtime_s(&t, &tt);
+//	struct tm gmt;
+//	gmtime_s(&gmt, &tt);
+//	std::ostringstream oss;
+//	oss << dow[gmt.tm_wday] << ", "
+//		<< std::setw(2) << std::setfill('0') << gmt.tm_mday << " "
+//		<< month[gmt.tm_mon] << " "
+//		<< gmt.tm_year + 1900 << " "
+//		<< std::setw(2) << std::setfill('0') << gmt.tm_hour << ":"
+//		<< std::setw(2) << std::setfill('0') << gmt.tm_min << ":"
+//		<< std::setw(2) << std::setfill('0') << gmt.tm_sec << " "
+//		<< "GMT";
+//	return oss.str();
+//}
 
 //****************************************************************************
 //*                     mime_type
@@ -879,6 +888,7 @@ private:
 	{
 		std::string remote_endpoint = boost::lexical_cast<std::string>(socket.remote_endpoint());
 		std::cout << "remote endpoint " << remote_endpoint.c_str() << std::endl;
+
 		if (ec)
 		{
 			fail(ec, "accept");
