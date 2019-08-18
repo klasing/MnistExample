@@ -928,8 +928,10 @@ inline int http_server_async(int argc, char* argv[])
 	auto const doc_root = std::make_shared<std::string>(argv[3]);
 	auto const threads = std::max<int>(1, std::atoi(argv[4]));
 
+	// create ServerLogging instance
+	ServerLogging server_logging;
 	// create a database object for the entire duration of the
-// server instance
+	// server instance
 	Connect2SQLite oSqlite;
 	// open database
 	oSqlite.openDb();

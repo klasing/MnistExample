@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="file_with_main.cpp" />
     <ClCompile Include="ServerLogging.cpp" />
   </ItemGroup>
   <ItemGroup>

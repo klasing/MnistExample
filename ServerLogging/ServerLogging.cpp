@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+
 //****************************************************************************
 //*                     global
 //****************************************************************************
@@ -14,6 +15,7 @@ typedef std::string td_current_gmt, td_remote_endpoint,
 td_request, td_response, td_elapsed_time;
 typedef boost::tuples::tuple<td_current_gmt, td_remote_endpoint,
 	td_request, td_response, td_elapsed_time> tuple_logging;
+
 //****************************************************************************
 //*                     date_for_http_response
 //****************************************************************************
@@ -39,10 +41,11 @@ date_for_http_response()
 		<< "GMT";
 	return oss.str();
 }
+
 //****************************************************************************
 //*                     write_logfile
 //****************************************************************************
-void
+inline void
 write_logfile(
 	boost::filesystem::ofstream& ofs,
 	const boost::filesystem::path& p,
@@ -54,10 +57,11 @@ write_logfile(
 	ofs << boost::tuples::set_delimiter('#') << tl << '\n';
 	ofs.close();
 }
+
 //****************************************************************************
 //*                     parse_logfile
 //****************************************************************************
-void parse_logfile(
+inline void parse_logfile(
 	boost::filesystem::ifstream& ifs,
 	const boost::filesystem::path& p,
 	std::vector<tuple_logging>& vector_with_tuples
@@ -118,10 +122,11 @@ void parse_logfile(
 	// close log file
 	ifs.close();
 }
+
 //****************************************************************************
 //*                     show_vector_with_tuples
 //****************************************************************************
-void show_vector_with_tuples(
+inline void show_vector_with_tuples(
 	const std::vector<tuple_logging>& vector_with_tuples
 )
 {
@@ -139,10 +144,11 @@ void show_vector_with_tuples(
 		std::cout << "elapsed...........: " << tlin.get<4>() << " (ms)" << std::endl;
 	}
 }
+
 //****************************************************************************
 //*                     get_filesize_logfile
 //****************************************************************************
-void get_filesize_logfile(
+inline void get_filesize_logfile(
 	const boost::filesystem::path& p
 )
 {
@@ -156,10 +162,11 @@ void get_filesize_logfile(
 	else
 		std::cout << ec << '\n';
 }
+
 //****************************************************************************
 //*                     clear_logfile_if_too_big
 //****************************************************************************
-void clear_logfile_if_too_big(
+inline void clear_logfile_if_too_big(
 	boost::filesystem::ofstream& ofs,
 	const boost::filesystem::path& p,
 	const boost::uintmax_t& LOGGING_BYTES_MAX
@@ -182,56 +189,108 @@ void clear_logfile_if_too_big(
 	else
 		std::cout << ec << '\n';
 }
+
 //****************************************************************************
 //*                     main
 //****************************************************************************
-int main()
-{
-	//typedef std::string one_line_from_logging;
+//int main()
+//{
+//	//typedef std::string one_line_from_logging;
+//	const boost::uintmax_t LOGGING_BYTES_MAX = 1024;
+//	const std::string LOGGING_FILE_NAME = "logging";
+//	const boost::filesystem::path p{ LOGGING_FILE_NAME };
+//	boost::filesystem::ofstream ofs;
+//	boost::filesystem::ifstream ifs;
+//	std::vector<tuple_logging> vector_with_tuples;
+//
+//	std::cout << "Server Logging\n";
+//	std::cout << "==============\n";
+//
+//	// start timing
+//	boost::timer::cpu_timer timer;
+//
+//	// get current gmt
+//	std::string current_gmt = date_for_http_response();
+//	// get remote endpoint
+//	std::string remote_endpoint = "192.168.178.14:52832";
+//	// request
+//	std::string request = "TRACE / HTTP/1.1";
+//	// response
+//	std::string response = "HTTP/1.1 200 OK";
+//
+//	// stop timer
+//	timer.stop();
+//	// elapsed time
+//	boost::timer::cpu_times times = timer.elapsed();
+//	std::string elapsed_time = std::to_string(times.wall / (double)1e6);
+//
+//	// store in tuple
+//	tuple_logging tl{ current_gmt, remote_endpoint,
+//		request, response, elapsed_time };
+//
+//	// write tuple to file
+//	write_logfile(ofs, p, tl);
+//	ofs.close();
+//
+//	parse_logfile(ifs, p, vector_with_tuples);
+//
+//	// show data, stored in vector
+//	show_vector_with_tuples(vector_with_tuples);
+//
+//	// log file size in bytes
+//	get_filesize_logfile(p);
+//
+//	// clear file if too big
+//	clear_logfile_if_too_big(ofs, p, LOGGING_BYTES_MAX);
+//
+//	return EXIT_SUCCESS;
+//}
+
+//****************************************************************************
+//*                     ServerLogging
+//****************************************************************************
+class ServerLogging {
+public:
+	ServerLogging() {
+		std::cout << "<<constructor>> ServerLogging()\n";
+	}
+	void store_log(
+		const std::string& remote_endpoint,
+		const std::string& request,
+		const std::string& response,
+		boost::timer::cpu_times timer_elapsed
+	)
+	{
+		// get current gmt
+		std::string current_gmt = date_for_http_response();
+		std::string elapsed_time = std::to_string(
+			timer_elapsed.wall / (double)1e6);
+		// store in tuple
+		tuple_logging tl{ current_gmt, remote_endpoint,
+			request, response, elapsed_time };
+		// write tuple to file
+		write_logfile(ofs, p, tl);
+
+		// clear file if too big
+		clear_logfile_if_too_big(ofs, p, LOGGING_BYTES_MAX);
+	}
+	void show_log()
+	{
+		parse_logfile(ifs, p, vector_with_tuples);
+
+		// show data, stored in vector
+		show_vector_with_tuples(vector_with_tuples);
+	}
+	void show_filesize_logfile()
+	{
+		// log file size in bytes
+		get_filesize_logfile(p);
+	}
+private:
 	const boost::uintmax_t LOGGING_BYTES_MAX = 1024;
 	const std::string LOGGING_FILE_NAME = "logging";
 	const boost::filesystem::path p{ LOGGING_FILE_NAME };
 	boost::filesystem::ofstream ofs;
 	boost::filesystem::ifstream ifs;
 	std::vector<tuple_logging> vector_with_tuples;
-
-	std::cout << "Server Logging\n";
-	std::cout << "==============\n";
-
-	// start timing
-	boost::timer::cpu_timer timer;
-
-	// get current gmt
-	std::string current_gmt = date_for_http_response();
-	// get remote endpoint
-	std::string remote_endpoint = "192.168.178.14:52832";
-	// request
-	std::string request = "TRACE / HTTP/1.1";
-	// response
-	std::string response = "HTTP/1.1 200 OK";
-
-	// stop timer
-	timer.stop();
-	// elapsed time
-	boost::timer::cpu_times times = timer.elapsed();
-	std::string elapsed_time = std::to_string(times.wall / (double)1e6);
-
-	// store in tuple
-	tuple_logging tl{ current_gmt, remote_endpoint,
-		request, response, elapsed_time };
-
-	// write tuple to file
-	write_logfile(ofs, p, tl);
-	ofs.close();
-
-	parse_logfile(ifs, p, vector_with_tuples);
-
-	// show data, stored in vector
-	show_vector_with_tuples(vector_with_tuples);
-
-	// log file size in bytes
-	get_filesize_logfile(p);
-
-	// clear file if too big
-	clear_logfile_if_too_big(ofs, p, LOGGING_BYTES_MAX);
-}
+};
