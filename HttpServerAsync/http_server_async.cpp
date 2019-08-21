@@ -317,8 +317,8 @@ template<
 		, Send&& send)
 {
 	// Returns a bad request response
-	auto const bad_request =
-		[&req](beast::string_view why)
+	auto const bad_request = 
+		[&req, &pTimer, &pRemoteEndpoint](beast::string_view why)
 	{
 		http::response<http::string_body> res{ http::status::bad_request, req.version() };
 		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -326,12 +326,24 @@ template<
 		res.keep_alive(req.keep_alive());
 		res.body() = std::string(why);
 		res.prepare_payload();
+
+		// turn the request message into a string
+		auto buff = beast::flat_buffer();
+		write_message_to_string(req, buff);
+		std::string req_message = beast::buffers_to_string(buff.data());
+		std::string requestLogmsg = filter_start_line(req_message);
+		store_new_log(pRemoteEndpoint
+			, pTimer
+			, requestLogmsg
+			, res
+		);
+
 		return res;
 	};
 
 	// Returns a not found response
 	auto const not_found =
-		[&req](beast::string_view target)
+		[&req, &pTimer, &pRemoteEndpoint](beast::string_view target)
 	{
 		http::response<http::string_body> res{ http::status::not_found, req.version() };
 		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -339,12 +351,24 @@ template<
 		res.keep_alive(req.keep_alive());
 		res.body() = "The resource '" + std::string(target) + "' was not found.";
 		res.prepare_payload();
+
+		// turn the request message into a string
+		auto buff = beast::flat_buffer();
+		write_message_to_string(req, buff);
+		std::string req_message = beast::buffers_to_string(buff.data());
+		std::string requestLogmsg = filter_start_line(req_message);
+		store_new_log(pRemoteEndpoint
+			, pTimer
+			, requestLogmsg
+			, res
+		);
+
 		return res;
 	};
 
 	// Returns a server error response
 	auto const server_error =
-		[&req](beast::string_view what)
+		[&req, &pTimer, &pRemoteEndpoint](beast::string_view what)
 	{
 		http::response<http::string_body> res{ http::status::internal_server_error, req.version() };
 		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -352,6 +376,18 @@ template<
 		res.keep_alive(req.keep_alive());
 		res.body() = "An error occurred: '" + std::string(what) + "'";
 		res.prepare_payload();
+
+		// turn the request message into a string
+		auto buff = beast::flat_buffer();
+		write_message_to_string(req, buff);
+		std::string req_message = beast::buffers_to_string(buff.data());
+		std::string requestLogmsg = filter_start_line(req_message);
+		store_new_log(pRemoteEndpoint
+			, pTimer
+			, requestLogmsg
+			, res
+		);
+
 		return res;
 	};
 
@@ -478,7 +514,9 @@ template<
 			res.set(http::field::content_type, mime_type(path));
 			res.content_length(size);
 			res.keep_alive(req.keep_alive());
-			// this is a DUMMY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			// this is not very nice, nor elegant
+			// this is a DUMMY, that comes in place of the 
+			// <http::file_body> response
 			http::response<http::empty_body> res_{ http::status::ok, req.version() };
 			store_new_log(pRemoteEndpoint
 				, pTimer
