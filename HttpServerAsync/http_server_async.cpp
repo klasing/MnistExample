@@ -9,6 +9,7 @@
 #include <boost/config.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/timer/timer.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -20,7 +21,6 @@
 #include <thread>
 #include <vector>
 
-#include "ServerLogging.cpp"
 #include "SmtpClient.cpp"
 #include "Connect2SQLite.hpp"
 #include "HandlerForLogin.hpp"
@@ -41,32 +41,11 @@ const int SECONDS_BEFORE_EXPIRING = 300;
 //*                     prototype
 //****************************************************************************
 std::string date_for_http_response();
-
-//****************************************************************************
-//*                     date_for_http_response
-//****************************************************************************
-//inline std::string
-//date_for_http_response()
-//{
-//	std::string dow[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-//	std::string month[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-//	time_t tt;
-//	time(&tt);
-//	tm t;
-//	localtime_s(&t, &tt);
-//	struct tm gmt;
-//	gmtime_s(&gmt, &tt);
-//	std::ostringstream oss;
-//	oss << dow[gmt.tm_wday] << ", "
-//		<< std::setw(2) << std::setfill('0') << gmt.tm_mday << " "
-//		<< month[gmt.tm_mon] << " "
-//		<< gmt.tm_year + 1900 << " "
-//		<< std::setw(2) << std::setfill('0') << gmt.tm_hour << ":"
-//		<< std::setw(2) << std::setfill('0') << gmt.tm_min << ":"
-//		<< std::setw(2) << std::setfill('0') << gmt.tm_sec << " "
-//		<< "GMT";
-//	return oss.str();
-//}
+void store_log(const std::string&
+	, const std::string&
+	, const std::string&
+	, const boost::timer::cpu_times&);
+void show_vector_with_tuples();
 
 //****************************************************************************
 //*                     mime_type
@@ -284,6 +263,40 @@ save_to_disk(
 }
 
 //****************************************************************************
+//*                     filter_start_line
+//****************************************************************************
+inline std::string filter_start_line(const std::string& req_message)
+{
+	// return first line of a request message
+	return req_message.substr(0, req_message.find('\r'));
+}
+
+//****************************************************************************
+//*                     store_new_log
+//****************************************************************************
+template <class T>
+inline void store_new_log(std::shared_ptr<std::string> pRemoteEndpoint
+	, std::shared_ptr<boost::timer::cpu_timer> pTimer
+	, std::string requestLogmsg
+	, T res//http::response<http::string_body> res
+)
+{
+	// turn the response message into a string
+	auto buff_res = beast::flat_buffer();
+	write_message_to_string(res, buff_res);
+	std::string responseLogmsg = filter_start_line(
+		beast::buffers_to_string(buff_res.data()));
+
+	// stop timer
+	pTimer->stop();
+	store_log(*pRemoteEndpoint
+		, requestLogmsg
+		, responseLogmsg
+		, pTimer->elapsed()
+	);
+}
+
+//****************************************************************************
 //*                     handle_request
 //****************************************************************************
 // This function produces an HTTP response for the given
@@ -294,13 +307,14 @@ template<
 	class Body, class Allocator,
 	class Send>
 	void
-	handle_request(
-		beast::string_view doc_root,
-		std::shared_ptr<Connect2SQLite> pSqlite,
-		std::shared_ptr<HandlerForRegister> pHandlerForRegister,
-		std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword,
-		http::request<Body, http::basic_fields<Allocator>>&& req,
-		Send&& send)
+	handle_request(beast::string_view doc_root
+		, std::shared_ptr<Connect2SQLite> pSqlite
+		, std::shared_ptr<HandlerForRegister> pHandlerForRegister
+		, std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword
+		, std::shared_ptr<std::string> pRemoteEndpoint
+		, std::shared_ptr<boost::timer::cpu_timer> pTimer
+		, http::request<Body, http::basic_fields<Allocator>>&& req
+		, Send&& send)
 {
 	// Returns a bad request response
 	auto const bad_request =
@@ -341,6 +355,17 @@ template<
 		return res;
 	};
 
+	// Google Chrome browser user_agent:
+	const std::string chrome_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36";
+	// Microsoft Edge browser user_agent:
+	const std::string edge_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362";
+
+	// turn the request message into a string
+	auto buff = beast::flat_buffer();
+	write_message_to_string(req, buff);
+	std::string req_message = beast::buffers_to_string(buff.data());
+	std::string requestLogmsg = filter_start_line(req_message);
+
 	// Make sure we can handle the method
 	if (req.method() != http::verb::connect &&
 		req.method() != http::verb::delete_ &&
@@ -351,16 +376,6 @@ template<
 		req.method() != http::verb::put &&
 		req.method() != http::verb::trace)
 		return send(bad_request("Unknown HTTP-method"));
-
-	// Google Chrome browser user_agent:
-	const std::string chrome_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36";
-	// Microsoft Edge browser user_agent:
-	const std::string edge_value_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362";
-
-	// turn the request message into a string
-	auto buff = beast::flat_buffer();
-	write_message_to_string(req, buff);
-	std::string req_message = beast::buffers_to_string(buff.data());
 
 	// Respond to a CONNECT request
 	if (req.method() == http::verb::connect) {
@@ -463,6 +478,13 @@ template<
 			res.set(http::field::content_type, mime_type(path));
 			res.content_length(size);
 			res.keep_alive(req.keep_alive());
+			// this is a DUMMY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			http::response<http::empty_body> res_{ http::status::ok, req.version() };
+			store_new_log(pRemoteEndpoint
+				, pTimer
+				, requestLogmsg
+				, res_
+			);
 			return send(std::move(res));
 		}
 		// if its a HEAD request send a response without a payload
@@ -473,6 +495,11 @@ template<
 			res.set(http::field::content_type, mime_type(path));
 			res.content_length(size);
 			res.keep_alive(req.keep_alive());
+			store_new_log(pRemoteEndpoint
+				, pTimer
+				, requestLogmsg
+				, res
+			);
 			return send(std::move(res));
 		}
 	}
@@ -566,6 +593,11 @@ template<
 			res.content_length(response_payload.length());
 			res.body() = response_payload;
 			res.prepare_payload();
+			store_new_log(pRemoteEndpoint
+				, pTimer
+				, requestLogmsg
+				, res
+			);
 			return send(std::move(res));
 		}
 		//if (user_agent != "Boost.Beast/248")
@@ -588,6 +620,11 @@ template<
 				http::status::no_content, req.version() };
 			res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
 			res.keep_alive(req.keep_alive());
+			store_new_log(pRemoteEndpoint
+				, pTimer
+				, requestLogmsg
+				, res
+			);
 			return send(std::move(res));
 		}
 	}
@@ -606,6 +643,11 @@ template<
 			http::status::ok, req.version() };
 		res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
 		res.keep_alive(req.keep_alive());
+		store_new_log(pRemoteEndpoint
+			, pTimer
+			, requestLogmsg
+			, res
+		);
 		return send(std::move(res));
 	}
 
@@ -613,7 +655,7 @@ template<
 	if (req.method() == http::verb::trace) {
 		std::cout << "-> TRACE message received\n";
 		std::cout << req_message;
-		// place the request message, along a non-standard
+		// place the request message, along with a non-standard
 		// message, into the payload of the response message
 		http::string_body::value_type body;
 		body = std::string("server is alive\n") + req_message;
@@ -626,8 +668,14 @@ template<
 		res.content_length(body.size());
 		res.body() = std::move(body);
 		res.prepare_payload();
+		store_new_log(pRemoteEndpoint
+			, pTimer
+			, requestLogmsg
+			, res
+		);
 		// send the response message
 		return send(std::move(res));
+
 	}
 }
 
@@ -690,6 +738,8 @@ class session : public std::enable_shared_from_this<session>
 	std::shared_ptr<Connect2SQLite> pSqlite_;
 	std::shared_ptr<HandlerForRegister> pHandlerForRegister_;
 	std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword_;
+	std::shared_ptr<std::string> remote_endpoint_;
+	std::shared_ptr<boost::timer::cpu_timer> timer_;
 	http::request<http::string_body> req_;
 	std::shared_ptr<void> res_;
 	send_lambda lambda_;
@@ -701,12 +751,16 @@ public:
 		, std::shared_ptr<Connect2SQLite> const& pSqlite
 		, std::shared_ptr<HandlerForRegister> const& pHandlerForRegister
 		, std::shared_ptr<HandlerForResetPassword> const& pHandlerForResetPassword
+		, std::shared_ptr<std::string> const& remote_endpoint
+		, std::shared_ptr<boost::timer::cpu_timer> const& timer
 	)
 		: stream_(std::move(socket))
 		, doc_root_(doc_root)
 		, pSqlite_(pSqlite)
 		, pHandlerForRegister_(pHandlerForRegister)
 		, pHandlerForResetPassword_(pHandlerForResetPassword)
+		, remote_endpoint_(remote_endpoint)
+		, timer_(timer)
 		, lambda_(*this)
 	{
 		std::cout << "<<constructor>> session()\n";
@@ -755,6 +809,8 @@ public:
 			, pSqlite_
 			, pHandlerForRegister_
 			, pHandlerForResetPassword_
+			, remote_endpoint_
+			, timer_
 			, std::move(req_)
 			, lambda_);
 	}
@@ -809,11 +865,10 @@ class listener : public std::enable_shared_from_this<listener>
 	std::shared_ptr<HandlerForResetPassword> pHandlerForResetPassword_;
 
 public:
-	listener(
-		net::io_context& ioc,
-		tcp::endpoint endpoint,
-		std::shared_ptr<std::string const> const& doc_root,
-		std::shared_ptr<Connect2SQLite> const& pSqlite
+	listener(net::io_context& ioc
+		, tcp::endpoint endpoint
+		, std::shared_ptr<std::string const> const& doc_root
+		, std::shared_ptr<Connect2SQLite> const& pSqlite
 	)
 		: ioc_(ioc)
 		, acceptor_(net::make_strand(ioc))
@@ -895,12 +950,22 @@ private:
 		}
 		else
 		{
+			// start timing
+			boost::timer::cpu_timer timer;
+
+			std::shared_ptr<std::string> remote_endpoint_ =
+				std::make_shared<std::string>(remote_endpoint);
+			std::shared_ptr<boost::timer::cpu_timer> timer_ =
+				std::make_shared<boost::timer::cpu_timer>(timer);
+
 			// Create the session and run it
 			std::make_shared<session>(std::move(socket)
 				, doc_root_
 				, pSqlite_
 				, pHandlerForRegister_
 				, pHandlerForResetPassword_
+				, remote_endpoint_
+				, timer_
 				)->run();
 		}
 
@@ -928,8 +993,8 @@ inline int http_server_async(int argc, char* argv[])
 	auto const doc_root = std::make_shared<std::string>(argv[3]);
 	auto const threads = std::max<int>(1, std::atoi(argv[4]));
 
-	// create ServerLogging instance
-	ServerLogging server_logging;
+	// start timing
+	boost::timer::cpu_timer timer;
 	// create a database object for the entire duration of the
 	// server instance
 	Connect2SQLite oSqlite;
@@ -943,6 +1008,13 @@ inline int http_server_async(int argc, char* argv[])
 	// create pointer to the Connect2SQLite instance
 	auto const pSqlite =
 		std::make_shared<Connect2SQLite>(oSqlite);
+	// stop timer
+	timer.stop();
+	store_log("0.0.0.0"	
+		, "sqlite3 db startup"
+		, "sqlite3 db started"
+		, timer.elapsed()
+	);
 
 	// The io_context is required for all I/O
 	net::io_context ioc{ threads };
