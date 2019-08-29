@@ -296,6 +296,25 @@ inline void store_new_log(std::shared_ptr<std::string> pRemoteEndpoint
 	);
 }
 
+// overloading
+// a boost::beast::http::response<file_body> type response can't be
+// templated like in the first store_new_log() function, it will
+// become a deleted function, according to the compiler
+inline void store_new_log(std::shared_ptr<std::string> pRemoteEndpoint
+	, std::shared_ptr<boost::timer::cpu_timer> pTimer
+	, std::string requestLogmsg
+	, std::string responseLogmsg
+)
+{
+	// stop timer
+	pTimer->stop();
+	store_log(*pRemoteEndpoint
+		, requestLogmsg
+		, responseLogmsg
+		, pTimer->elapsed()
+	);
+}
+
 //****************************************************************************
 //*                     handle_request
 //****************************************************************************
@@ -514,15 +533,29 @@ template<
 			res.set(http::field::content_type, mime_type(path));
 			res.content_length(size);
 			res.keep_alive(req.keep_alive());
-			// this is not very nice, nor elegant
+			// this is not very nice, nor very elegant
 			// this is a DUMMY, that comes in place of the 
 			// <http::file_body> response
-			http::response<http::empty_body> res_{ http::status::ok, req.version() };
+			// it has to be like this, thanks to a design flaw 
+			// according to Vinnie Falco's email
+			//http::response<http::empty_body> res_{ http::status::ok, req.version() };
+			//store_new_log(pRemoteEndpoint
+			//	, pTimer
+			//	, requestLogmsg
+			//	, res_
+			//);
+			// turn the response message into a string
+			auto buff_res = beast::flat_buffer();
+			write_message_to_string(res, buff_res);
+			std::string responseLogmsg = filter_start_line(
+				beast::buffers_to_string(buff_res.data()));
+
 			store_new_log(pRemoteEndpoint
 				, pTimer
 				, requestLogmsg
-				, res_
+				, responseLogmsg
 			);
+
 			return send(std::move(res));
 		}
 		// if its a HEAD request send a response without a payload
