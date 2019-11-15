@@ -24,7 +24,7 @@ Configure project in Visual Studio
    sqlite3-64.dll
    sqlite3-64.lib
    to the solution, so the map comes on the same level as the project
-7) to run the .exe copy the following maps to the debug directory
+7) to run the .exe, copy the following maps to the debug directory
    sqlite3.dll
    server_space (a map)
    user_space (a map)

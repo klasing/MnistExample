@@ -23,7 +23,7 @@ boost::filesystem::ifstream ifs;
 
 // typedef tuple
 typedef std::string td_current_gmt, td_remote_endpoint,
-td_request, td_response, td_elapsed_time;
+	td_request, td_response, td_elapsed_time;
 typedef boost::tuples::tuple<td_current_gmt, td_remote_endpoint,
 	td_request, td_response, td_elapsed_time> tuple_logging;
 
