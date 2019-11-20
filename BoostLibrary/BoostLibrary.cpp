@@ -1,44 +1,756 @@
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics.hpp>
-#include <boost/algorithm/minmax.hpp>
-#include <boost/algorithm/minmax_element.hpp>
-#include <boost/cast.hpp>
-#include <boost/coroutine/all.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/exception/all.hpp>
-#include <boost/foreach.hpp>
-#include <boost/fusion/adapted.hpp>
-#include <boost/fusion/algorithm.hpp>
-#include <boost/fusion/container.hpp>
-#include <boost/fusion/sequence.hpp>
-#include <boost/fusion/iterator.hpp>
-#include <boost/fusion/tuple.hpp>
-#include <boost/fusion/view.hpp>
-#include <boost/math/constants/constants.hpp>
-#include <boost/mpl/arg.hpp>
-#include <boost/mpl/int.hpp>
-#include <boost/mpl/placeholders.hpp>
-#include <boost/parameter.hpp>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
-#include <boost/system/error_code.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <algorithm>
-#include <array>
-#include <cstddef>
-#include <cstdint>
+#define BOOST_THREAD_PROVIDES_FUTURE
+#include <boost/atomic.hpp>
+//#include <boost/accumulators/accumulators.hpp>
+//#include <boost/accumulators/statistics.hpp>
+//#include <boost/algorithm/minmax.hpp>
+//#include <boost/algorithm/minmax_element.hpp>
+//#include <boost/cast.hpp>
+#include <boost/chrono.hpp>
+//#include <boost/core/null_deleter.hpp>
+//#include <boost/coroutine/all.hpp>
+//#include <boost/cstdint.hpp>
+//#include <boost/exception/all.hpp>
+//#include <boost/foreach.hpp>
+//#include <boost/fusion/adapted.hpp>
+//#include <boost/fusion/algorithm.hpp>
+//#include <boost/fusion/container.hpp>
+//#include <boost/fusion/sequence.hpp>
+//#include <boost/fusion/iterator.hpp>
+//#include <boost/fusion/tuple.hpp>
+//#include <boost/fusion/view.hpp>
+#include <boost/lockfree/policies.hpp>
+#include <boost/lockfree/spsc_queue.hpp>
+#include <boost/lockfree/queue.hpp>
+//#include <boost/log/attributes.hpp>
+//#include <boost/log/attributes/clock.hpp>
+//#include <boost/log/attributes/counter.hpp>
+//#include <boost/log/common.hpp>
+//#include <boost/log/exceptions.hpp>
+//#include <boost/log/expressions.hpp>
+//#include <boost/log/sinks.hpp>
+//#include <boost/log/sources/channel_logger.hpp>
+//#include <boost/log/sources/logger.hpp>
+//#include <boost/log/sources/severity_logger.hpp>
+//#include <boost/log/support/date_time.hpp>
+//#include <boost/log/utility/exception_handler.hpp>
+//#include <boost/log/utility/string_literal.hpp>
+//#include <boost/math/constants/constants.hpp>
+//#include <boost/mpl/arg.hpp>
+//#include <boost/mpl/int.hpp>
+//#include <boost/mpl/placeholders.hpp>
+//#include <boost/numeric/conversion/cast.hpp>
+//#include <boost/parameter.hpp>
+//#include <boost/random.hpp>
+//#include <boost/random/random_device.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/system/error_code.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/future.hpp>
+#include <boost/thread/scoped_thread.hpp>
+//#include <boost/tuple/tuple.hpp>
+//#include <boost/type_traits.hpp>
+//#include <boost/utility/enable_if.hpp>
+//#include <algorithm>
+//#include <array>
+#include <atomic>
+#include <cstdlib>
+//#include <cstddef>
+//#include <cstdint>
 #include <ctime>
-#include <exception>
+//#include <exception>
+#include <functional>
 #include <iostream>
-#include <limits>
-#include <new>
-#include <stdexcept>
-#include <string>
-#include <tuple>
-#include <typeinfo>
-#include <utility>
+//#include <limits>
+//#include <new>
+//#include <stdexcept>
+//#include <string>
+#include <thread>
+//#include <tuple>
+//#include <typeinfo>
+//#include <utility>
+#include <vector>
+//****************************************************************************
+//*                     chapter_44
+//****************************************************************************
+//void wait(int seconds)
+//{
+//	boost::this_thread::sleep_for(boost::chrono::seconds{ seconds });
+//}
+//void thread()
+//{
+//	std::cout << "thread is waiting\n";
+//	for (int i = 0; i < 5; ++i)
+//	{
+//		wait(1);
+//		std::cout << i << '\n';
+//	}
+//	std::cout << "thread has finished\n";
+//}
+//void thread3()
+//{
+//	std::cout << "thread is waiting\n";
+//	try
+//	{
+//		for (int i = 0; i < 5; ++i)
+//		{
+//			wait(1);
+//			std::cout << i << '\n';
+//		}
+//		std::cout << "thread has finished\n";
+//	}
+//	catch (boost::thread_interrupted&)
+//	{
+//		std::cout << "thread interrupted\n";
+//	}
+//}
+//void thread4()
+//{
+//	boost::this_thread::disable_interruption no_interruption;
+//	std::cout << "thread is waiting\n";
+//	try
+//	{
+//		for (int i = 0; i < 5; ++i)
+//		{
+//			wait(1);
+//			std::cout << i << '\n';
+//		}
+//		std::cout << "thread has finished\n";
+//	}
+//	catch (boost::thread_interrupted&)
+//	{
+//		std::cout << "thread interrupted\n";
+//	}
+//}
+//boost::mutex mutex;
+//void thread7()
+//{
+//	using boost::this_thread::get_id;
+//	for (int i = 0; i < 5; ++i)
+//	{
+//		wait(1);
+//		mutex.lock();
+//		std::cout << "Thread " << get_id() << ": " << i << std::endl;
+//		mutex.unlock();
+//	}
+//}
+//void thread8()
+//{
+//	using boost::this_thread::get_id;
+//	for (int i = 0; i < 5; ++i)
+//	{
+//		wait(1);
+//		boost::lock_guard<boost::mutex> lock{ mutex };
+//		std::cout << "Thread " << get_id() << ": " << i << std::endl;
+//	}
+//}
+//boost::timed_mutex tmd_mutex;
+//void thread19()
+//{
+//	using boost::this_thread::get_id;
+//	for (int i = 0; i < 5; ++i)
+//	{
+//		wait(1);
+//		boost::unique_lock<boost::timed_mutex> lock{ tmd_mutex };
+//		std::cout << "Thread " << get_id() << ": " << i << std::endl;
+//		boost::timed_mutex* m = lock.release();
+//		m->unlock();
+//	}
+//}
+//void thread29()
+//{
+//	using boost::this_thread::get_id;
+//	for (int i = 0; i < 5; ++i)
+//	{
+//		wait(1);
+//		boost::unique_lock<boost::timed_mutex> lock{ tmd_mutex
+//			, boost::try_to_lock
+//		};
+//		if (lock.owns_lock() || lock.try_lock_for(boost::chrono::seconds{1}))
+//			std::cout << "Thread " << get_id() << ": " << i << std::endl;
+//	}
+//}
+//boost::shared_mutex shrd_mutex;
+//std::vector<int> random_numbers;
+//void fill()
+//{
+//	std::srand(static_cast<unsigned int>(std::time(0)));
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		boost::unique_lock<boost::shared_mutex> lock{ shrd_mutex };
+//		random_numbers.push_back(std::rand());
+//		lock.unlock();
+//		wait(1);
+//	}
+//}
+//void print()
+//{
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		wait(1);
+//		boost::shared_lock<boost::shared_mutex> lock{ shrd_mutex };
+//		std::cout << random_numbers.back() << '\n';
+//	}
+//}
+//int sum = 0;
+//void count()
+//{
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		wait(1);
+//		boost::shared_lock<boost::shared_mutex> lock{ shrd_mutex };
+//		sum += random_numbers.back();
+//	}
+//}
+//boost::condition_variable_any cond;
+//void fill11()
+//{
+//	std::srand(static_cast<unsigned int>(std::time(0)));
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		boost::unique_lock<boost::mutex> lock{ mutex };
+//		random_numbers.push_back(std::rand());
+//		cond.notify_all();
+//		cond.wait(mutex);
+//	}
+//}
+//void print11()
+//{
+//	std::size_t next_size = 1;
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		boost::unique_lock<boost::mutex> lock{ mutex };
+//		while (random_numbers.size() != next_size)
+//			cond.wait(mutex);
+//		std::cout << "random_number: " << random_numbers.back() << '\n';
+//		++next_size;
+//		cond.notify_all();
+//	}
+//}
+//void init()
+//{
+//	static bool done = false;
+//	boost::lock_guard<boost::mutex> lock{ mutex };
+//	if (!done)
+//	{
+//		done = true;
+//		std::cout << "done" << '\n';
+//	}
+//}
+//void thread12()
+//{
+//	init();
+//	init();
+//}
+//void init13()
+//{
+//	static boost::thread_specific_ptr<bool> tls;
+//	if (!tls.get())
+//	{
+//		tls.reset(new bool{ true });
+//		boost::lock_guard<boost::mutex> lock{ mutex };
+//		std::cout << "done" << '\n';
+//	}
+//}
+//void thread13()
+//{
+//	init();
+//	init();
+//}
+//void accumulate(boost::promise<int>& p)
+//{
+//	int sum = 0;
+//	for (int i = 0; i < 5; ++i)
+//		sum += i;
+//	p.set_value(sum);
+//}
+//int accumulate15()
+//{
+//	int sum = 0;
+//	for (int i = 0; i < 5; ++i)
+//		sum += i;
+//	return sum;
+//}
+//auto
+//chapter_44() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 44. Boost.Thread\n";
+//		std::cout << "========================\n";
+//		std::cout << "    Creating and Managing Threads\n";
+//		std::cout << " 1) Example 1: Using boost::thread\n";
+//		std::cout << " 2) Example 2: Waiting for a thread with boost::scoped_thread\n";
+//		std::cout << " 3) Example 3: An interruption point with boost::this_thread_sleep_for()\n";
+//		std::cout << " 4) Example 4: Disabling interruption points with disable_interruption\n";
+//		std::cout << " 5) Example 5: Setting thread attributes with boost::thread::attributes\n";
+//		std::cout << " 6) Example 6: Detecting the thread ID and number of available processors\n";
+//		std::cout << " .) Exercise 1: Use two threads to calculate a sum\n";
+//		std::cout << " .) Exercise 2: Use as many threads as there are CPU Cores to calculate a sum\n";
+//		std::cout << "    Synchronizing Threads\n";
+//		std::cout << " 7) Example 7: Exclusive access with boost::mutex\n";
+//		std::cout << " 8) Example 8: boost::lock::guard with guaranteed mutex release\n";
+//		std::cout << " 9) Example 9: The versatile lock boost::unique_lock\n";
+//		std::cout << "10) Example 10: Shared locks with boost::shared_lock\n";
+//		std::cout << "11) Example 11: Condition variables with boost::condition_variable_any\n";
+//		std::cout << "    Thread Local Storage\n";
+//		std::cout << "12) Example 12: Synchronizing multiple threads with static variables\n";
+//		std::cout << "13) Example 13: Synchronizing multiple threads with TLS\n";
+//		std::cout << "    Futures and Promises\n";
+//		std::cout << "14) Example 14: Using boost::future and boost::promise\n";
+//		std::cout << "15) Example 15: Using boost::packaged_task\n";
+//		std::cout << "16) Example 16: Using boost::async()\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			boost::thread t{ thread };
+//			t.join();
+//			std::cout << "main thread passed join()\n";
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			boost::scoped_thread<> t{ boost::thread{thread} };
+//			std::cout << "main thread passed thread execution\n";
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			boost::thread t{ thread3 };
+//			wait(3);
+//			t.interrupt();
+//			t.join();
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			boost::thread t{ thread4 };
+//			wait(3);
+//			t.interrupt();
+//			t.join();
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			boost::thread::attributes attrs;
+//			attrs.set_stack_size(1024);
+//			boost::thread t{ attrs, thread };
+//			t.join();
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::cout << "thread ID.............: " << boost::this_thread::get_id() << '\n';
+//			std::cout << "number of CPU Cores...: " << boost::thread::hardware_concurrency() << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			boost::thread t1{ thread7 };
+//			boost::thread t2{ thread7 };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			boost::thread t1{ thread8 };
+//			boost::thread t2{ thread8 };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			boost::thread t1{ thread19 };
+//			boost::thread t2{ thread29 };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 9
+//		case 10:
+//		{
+//			boost::thread t1{ fill }, t2{ print }, t3{ count };
+//			t1.join();
+//			t2.join();
+//			t3.join();
+//			std::cout << "Sum: " << sum << '\n';
+//			break;
+//		} // eof case 10
+//		case 11:
+//		{
+//			boost::thread t1{ fill11 };
+//			boost::thread t2{ print11 };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 11
+//		case 12:
+//		{
+//			boost::thread t[3];
+//			for (int i = 0; i < 3; ++i)
+//				t[i] = boost::thread{ thread12 };
+//			for (int i = 0; i < 3; ++i)
+//				t[i].join();
+//			break;
+//		} // eof case 12
+//		case 13:
+//		{
+//			boost::thread t[3];
+//			for (int i = 0; i < 3; ++i)
+//				t[i] = boost::thread{ thread13 };
+//			for (int i = 0; i < 3; ++i)
+//				t[i].join();
+//			break;
+//		} // eof case 13
+//		case 14:
+//		{
+//			boost::promise<int> p;
+//			boost::future<int> f = p.get_future();
+//			boost::thread t{ accumulate, std::ref(p) };
+//			std::cout << "sum is: " << f.get() << '\n';
+//			break;
+//		} // eof case 14
+//		case 15:
+//		{
+//			boost::packaged_task<int> task{ accumulate15 };
+//			boost::future<int> f = task.get_future();
+//			boost::thread t{ std::move(task) };
+//			std::cout << "sum is: " << f.get() << '\n';
+//			break;
+//		} // eof case 15
+//		case 16:
+//		{
+//			boost::future<int> f = boost::async(accumulate15);
+//			std::cout << "sum is: " << f.get() << '\n';
+//			break;
+//		} // eof case 16
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_45
+//****************************************************************************
+//boost::atomic<int> a{ 0 };
+//void thread()
+//{
+//	++a;
+//}
+//void thread3()
+//{
+//	a.fetch_add(1, boost::memory_order_seq_cst);
+//}
+//void thread4()
+//{
+//	a.fetch_add(1, boost::memory_order_relaxed);
+//}
+//int b = 0;
+//void thread15()
+//{
+//	b = 1;
+//	a.store(1, boost::memory_order_release);
+//}
+//void thread25()
+//{
+//	while (a.load(boost::memory_order_acquire) != 1)
+//		;
+//	std::cout << "b is: " << b << '\n';
+//}
+//auto
+//chapter_45() -> void
+//{
+//	// further explanation of this stuff at:
+//	// https://gcc.gnu.org/wiki/Atomic/GCCMM/AtomicSync
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 45. Boost.Atomic\n";
+//		std::cout << "========================\n";
+//		std::cout << " 1) Example 1: Using boost::atomic\n";
+//		std::cout << " 2) Example 2: boost::atomic with or without lock\n";
+//		std::cout << " 3) Example 3: boost::atomic with boost::memory_order_seq_cst\n";
+//		std::cout << " 4) Example 4: boost::atomic with boost::memory_order_relaxed\n";
+//		std::cout << " 5) Example 5: boost::atomic with memory_order_release and memory_order_acquire\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::thread t1{ thread };
+//			std::thread t2{ thread };
+//			t1.join();
+//			t2.join();
+//			std::cout << "atomic<int> a is: " << a << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::cout.setf(std::ios::boolalpha);
+//			boost::atomic<short> s;
+//			std::cout << "s is lock free...: " << s.is_lock_free() << '\n';
+//			boost::atomic<int> i;
+//			std::cout << "i is lock free...: " << i.is_lock_free() << '\n';
+//			boost::atomic<long> l;
+//			std::cout << "l is lock free...: " << l.is_lock_free() << '\n';
+//			// macro for lock free chacking on variables
+//			// BOOST_ATOMIC_[INT | LONG | ...]_LOCK_FREE
+//			// trivial classes define objects that can be copied with std::memcpy()
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::thread t1{ thread3 };
+//			std::thread t2{ thread3 };
+//			t1.join();
+//			t2.join();
+//			std::cout << "atomic<int> a is: " << a << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::thread t1{ thread4 };
+//			std::thread t2{ thread4 };
+//			t1.join();
+//			t2.join();
+//			std::cout << "atomic<int> a is: " << a << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::thread t1{ thread15 };
+//			std::thread t2{ thread25 };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 5
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_46
+//****************************************************************************
+//boost::lockfree::spsc_queue<int> q{ 100 };
+//int sum = 0;
+//void produce()
+//{
+//	for (int i = 1; i <= 100; ++i)
+//		q.push(i);
+//}
+//void consume()
+//{
+//	int i;
+//	while (q.pop(i))
+//		sum += i;
+//}
+//using namespace boost::lockfree;
+//spsc_queue<int, capacity<100>> q2;
+//int sum2 = 0;
+//void produce2()
+//{
+//	for (int i = 1; i <= 100; ++i)
+//		q2.push(i);
+//}
+//void consume2()
+//{
+//	while (q2.consume_one([](int i) { sum2 += i; }))
+//		;
+//}
+//boost::lockfree::queue<int> q3{ 100 };
+//std::atomic<int> sum3{ 0 };
+//void produce3()
+//{
+//	for (int i = 0; i <= 10000; ++i)
+//		q3.push(i);
+//}
+//void consume3()
+//{
+//	int i;
+//	while (q3.pop(i))
+//		sum3 += i;
+//}
+//queue<int> q4{ 10000 };
+//std::atomic<int> sum4{ 0 };
+//void produce4()
+//{
+//	for (int i = 0; i <= 10000; ++i)
+//		q4.push(i);
+//}
+//void consume4()
+//{
+//	int i;
+//	while (q4.pop(i))
+//		sum4 += i;
+//}
+//auto
+//chapter_46() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 46. Boost.LockFree\n";
+//		std::cout << "==========================\n";
+//		std::cout << " 1) Example 1: Using boost::lockfree::spsc_queue\n";
+//		std::cout << " 2) Example 2: boost::lockfree::spsc_queue with boost::lockfree::capacity\n";
+//		std::cout << " 3) Example 3: boost::lockfree::queue with variable container size\n";
+//		std::cout << " 4) Example 4: boost::lockfree::queue with constant container size\n";
+//		std::cout << " 5) Exercise 5: implement 46.1 with std::queue instead of boost::lock::spsc_queue\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::thread t1{ produce };
+//			std::thread t2{ consume };
+//			t1.join();
+//			t2.join();
+//			consume();
+//			std::cout << "sum is: " << sum << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::thread t1{ produce2 };
+//			std::thread t2{ consume2 };
+//			t1.join();
+//			t2.join();
+//			q2.consume_all([](int i) {sum2 += i; });
+//			std::cout << "sum is: " << sum2 << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::thread t1{ produce3 };
+//			std::thread t2{ consume3 };
+//			std::thread t3{ consume3 };
+//			t1.join();
+//			t2.join();
+//			t3.join();
+//			consume3();
+//			std::cout << "sum is: " << sum3 << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::thread t1{ produce4 };
+//			std::thread t2{ consume4 };
+//			std::thread t3{ consume4 };
+//			t1.join();
+//			t2.join();
+//			t3.join();
+//			consume4();
+//			std::cout << "sum is: " << sum4 << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 5
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_47
+//****************************************************************************
+auto
+chapter_47() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 47. Boost.MPI\n";
+		std::cout << "=====================\n";
+		std::cout << "    Development and Runtime Environment\n";
+		std::cout << "    Simple Data Exchange\n";
+		std::cout << " 1) Example 1: MPI environment and communicator\n";
+		std::cout << " 2) Example 2: Blocking functions to send and receive data\n";
+		std::cout << " 3) Example 3: Receiving data from an process\n";
+		std::cout << " 4) Example 4: Detecting the sender with boost::mpi::status\n";
+		std::cout << " 5) Example 5: Transmitting an array with send() and recv()\n";
+		std::cout << " 6) Example 6: Transmitting a string with send() and recv()\n";
+		std::cout << "    Asynchronous data exchange\n";
+		std::cout << "    Collective Data Exchange\n";
+		std::cout << "    Communicators\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			break;
+		} // eof case 1
+		case 2:
+		{
+			break;
+		} // eof case 2
+		case 3:
+		{
+			break;
+		} // eof case 3
+		case 4:
+		{
+			break;
+		} // eof case 4
+		case 5:
+		{
+			break;
+		} // eof case 5
+		case 6:
+		{
+			break;
+		} // eof case 6
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
 ////****************************************************************************
 ////*                     chapter_48
 ////****************************************************************************
@@ -1183,39 +1895,447 @@
 //		} // eof switch
 //	}
 //}
+////****************************************************************************
+////*                     chapter_60
+////****************************************************************************
+//auto
+//chapter_60() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 60. Boost.Random\n";
+//		std::cout << "========================\n";
+//		std::cout << " 1) Example 1: Pseudo-random numbers with boost::random::mt19937\n";
+//		std::cout << " 2) Example 2: Real random numbers with boost::random::random_device\n";
+//		std::cout << " 3) Example 3: The random numbers 0 and 1 with bernoulli_distribution\n";
+//		std::cout << " 4) Example 4: Random numbers between 1 and 100 with uniform_distribution\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::time_t now = std::time(0);
+//			boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+//			std::cout << "generated random number: " << gen() << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			boost::random::random_device gen;
+//			std::cout << "generated random number: " << gen() << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::time_t now = std::time(0);
+//			boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+//			boost::random::bernoulli_distribution<> dist;
+//			std::cout << "generated random number: " << dist(gen) << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::time_t now = std::time(0);
+//			boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
+//			boost::random::uniform_int_distribution<> dist{ 1, 100 };
+//			std::cout << "generated random number: " << dist(gen) << '\n';
+//			break;
+//		} // eof case 4
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+////****************************************************************************
+////*                     chapter_61
+////****************************************************************************
+//auto
+//chapter_61() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 61. Boost.NumericConversion\n";
+//		std::cout << "===================================\n";
+//		std::cout << " 1) Example 1: Implicit conversion from int to short\n";
+//		std::cout << " 2) Example 2: Overflow detection with boost::numeric_cast\n";
+//		std::cout << " 3) Example 3: Overflow detection for negative numbers\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			int i = 0x10000;
+//			short s = i;
+//			std::cout << "int converted to short (errornous): " << s << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			try
+//			{
+//				int i = 0x10000;
+//				short s = boost::numeric_cast<short>(i);
+//				std::cout << "int converted to short: " << s << '\n';
+//			}
+//			catch (boost::numeric::bad_numeric_cast & e)
+//			{
+//				std::cout << "catched exception: " << e.what() << '\n';
+//			}
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			try
+//			{
+//				int i = -0x10000;
+//				short s = boost::numeric_cast<short>(i);
+//				std::cout << "int converted to short: " << s << '\n';
+//			}
+//			catch (boost::numeric::negative_overflow & e)
+//			{
+//				std::cout << "catched exception: " << e.what() << '\n';
+//			}
+//			break;
+//		} // eof case 3
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+////****************************************************************************
+////*                     chapter_62
+////****************************************************************************
+//bool only_warnings(const boost::log::attribute_value_set& set)
+//{
+//	return set["Severity"].extract<int>() > 0;
+//}
+//void severity_and_message(const boost::log::record_view& view
+//	, boost::log::formatting_ostream& os
+//)
+//{
+//	os << view.attribute_values()["Severity"].extract<int>() << ": "
+//		<< view.attribute_values()["Message"].extract<std::string>();
+//}
+//BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", int)
+//BOOST_LOG_ATTRIBUTE_KEYWORD(counter, "LineCounter", int)
+//BOOST_LOG_ATTRIBUTE_KEYWORD(timestamp, "Timestamp", 
+//	boost::posix_time::ptime)
+//BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", std::string)
+//struct handler
+//{
+//	void operator()(const boost::log::runtime_error& ex) const
+//	{
+//		std::cerr << "boost::log::runtime_error: " << ex.what() << '\n';
+//	}
+//	void operator()(const std::exception& ex) const
+//	{
+//		std::cerr << "std::exception: " << ex.what() << '\n';
+//	}
+//};
+//BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lg10, boost::log::sources::wlogger_mt)
+//auto
+//chapter_62() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 62. Boost.Log\n";
+//		std::cout << "=====================\n";
+//		std::cout << " 1) Example 1: Back-end, front-end, core, and logger\n";
+//		std::cout << " 2) Example 2: boost::sources::severity_logger with a filter\n";
+//		std::cout << " 3) Example 3: Changing the format of a log entry with set_formatter()\n";
+//		std::cout << " 4) Example 4: Filtering log entries and formatting them with lambda functions\n";
+//		std::cout << " 5) Example 5: Defining keywords for attributes\n";
+//		std::cout << " 6) Example 6: Defining attributes\n";
+//		std::cout << " 7) Example 7: Helper functions for filters and formats\n";
+//		std::cout << " 8) Example 8: Several loggers, front-ends, and back-ends\n";
+//		std::cout << " 9) Example 9: Handling exceptions centrally\n";
+//		std::cout << "10) Example 10: A macro to define a global logger\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			// it's not going to work
+//			// <boost/utility/empty_deleter.hpp>
+//			// will not be found
+//			//boost::shared_ptr<std::ostream> stream{ &std::clog,
+//			//	boost::empty_deleter{} };
+//			// changed, according to a hint in the comment
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::sources::logger lg;
+//			BOOST_LOG(lg) << "note";
+//			sink->flush();
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_filter(&only_warnings);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::sources::logger lg;
+//			// it will mess up the stream buffer
+//			BOOST_LOG(lg) << "note";
+//			BOOST_LOG_SEV(lg, 0) << "another note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			sink->flush();
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_formatter(&severity_and_message);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::sources::severity_logger<int> lg;
+//			BOOST_LOG_SEV(lg, 0) << "note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			sink->flush();
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_filter(boost::log::expressions::attr<int>("Severity") > 0);
+//			sink->set_formatter(boost::log::expressions::stream
+//				<< boost::log::expressions::attr<int>("Severity")
+//				<< ": "
+//				<< boost::log::expressions::smessage);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::sources::severity_logger<int> lg;
+//			BOOST_LOG_SEV(lg, 0) << "note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			BOOST_LOG_SEV(lg, 2) << "error";
+//			sink->flush();
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_filter(severity > 0);
+//			sink->set_formatter(boost::log::expressions::stream
+//				<< severity
+//				<< ": "
+//				<< boost::log::expressions::smessage);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::sources::severity_logger<int> lg;
+//			BOOST_LOG_SEV(lg, 0) << "note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			BOOST_LOG_SEV(lg, 2) << "error";
+//			sink->flush();
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_filter(severity > 0);
+//			sink->set_formatter(boost::log::expressions::stream
+//				<< counter
+//				<< " - "
+//				<< severity
+//				<< ": "
+//				<< boost::log::expressions::smessage
+//				<< " ("
+//				<< timestamp
+//				<< ")"
+//			);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::core::get()->add_global_attribute("LineCounter"
+//				, boost::log::attributes::counter<int>{});
+//			boost::log::sources::severity_logger<int> lg;
+//			BOOST_LOG_SEV(lg, 0) << "note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			{
+//				BOOST_LOG_SCOPED_LOGGER_ATTR(lg, "Timestamp"
+//					, boost::log::attributes::local_clock())
+//				BOOST_LOG_SEV(lg, 2) << "error";
+//			}
+//			
+//			BOOST_LOG_SEV(lg, 2) << "another error";
+//			sink->flush();
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			sink->set_filter(boost::log::expressions::is_in_range(severity, 1, 3));
+//			sink->set_formatter(boost::log::expressions::stream
+//				<< std::setw(5)
+//				<< counter
+//				<< " - "
+//				<< severity
+//				<< ": "
+//				<< boost::log::expressions::smessage
+//				<< " ("
+//				<< boost::log::expressions::format_date_time(timestamp, "%H:%M:%S")
+//				<< ")"
+//			);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::core::get()->add_global_attribute("LineCounter"
+//				, boost::log::attributes::counter<int>{});
+//			boost::log::sources::severity_logger<int> lg;
+//			BOOST_LOG_SEV(lg, 0) << "note";
+//			BOOST_LOG_SEV(lg, 1) << "warning";
+//			{
+//				BOOST_LOG_SCOPED_LOGGER_ATTR(lg, "Timestamp"
+//					, boost::log::attributes::local_clock())
+//					BOOST_LOG_SEV(lg, 2) << "error";
+//			}
+//			BOOST_LOG_SEV(lg, 2) << "another error";
+//			sink->flush();
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> ostream_sink;
+//			boost::shared_ptr<ostream_sink> ostream = boost::make_shared<ostream_sink>();
+//			boost::shared_ptr<std::ostream> clog{ &std::clog,
+//				boost::null_deleter{} };
+//			ostream->locked_backend()->add_stream(clog);
+//			boost::log::core::get()->add_sink(ostream);
+//			typedef boost::log::sinks::synchronous_sink<
+//				boost::log::sinks::text_multifile_backend> multifile_sink;
+//			boost::shared_ptr< multifile_sink> multifile = boost::make_shared<multifile_sink>();
+//			multifile->locked_backend()->set_file_name_composer(
+//				boost::log::sinks::file::as_file_name_composer(
+//					boost::log::expressions::stream
+//					<< channel.or_default<std::string>("None")
+//					<< "-"
+//					<< severity.or_default(0)
+//					<< ".log"
+//				)
+//			);
+//			boost::log::core::get()->add_sink(multifile);
+//			boost::log::sources::severity_logger<int> severity_lg;
+//			boost::log::sources::channel_logger<> channel_lg{
+//				boost::log::keywords::channel = "Main"
+//			};
+//			BOOST_LOG_SEV(severity_lg, 1) << "severity message";
+//			BOOST_LOG(channel_lg, 1) << "channel message";
+//			ostream->flush();
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			boost::log::core::get()->add_sink(sink);
+//			boost::log::core::get()->set_exception_handler(
+//				boost::log::make_exception_handler<
+//					  boost::log::runtime_error
+//					, std::exception>(handler{})
+//			);
+//			boost::log::sources::logger lg;
+//			BOOST_LOG(lg) << "note";
+//			break;
+//		} // eof case 9
+//		case 10:
+//		{
+//			typedef boost::log::sinks::asynchronous_sink<
+//				boost::log::sinks::text_ostream_backend> text_sink;
+//			boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+//			boost::shared_ptr<std::ostream> stream{ &std::clog,
+//				boost::null_deleter{} };
+//			sink->locked_backend()->add_stream(stream);
+//			boost::log::core::get()->add_sink(sink);
+//			BOOST_LOG(lg10::get()) << "note";
+//			break;
+//		} // eof case 10
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
-//*                     chapter_60
+//*                     chapter_63
 //****************************************************************************
 auto
-chapter_60() -> void
+chapter_63() -> void
 {
 	bool bProceed = true;
 	unsigned int iChar = 0;
 	while (bProceed)
 	{
-		std::cout << "Chapter 60. Boost.Random\n";
-		std::cout << "========================\n";
-		std::cout << " 1) Example 1: Pseudo-random numbers with boost::random::mt19937\n";
-		std::cout << " 2) Example 2: Real random numbers with boost::random::random_device\n";
+		std::cout << "Chapter 63. Boost.ProgramOptions\n";
+		std::cout << "=================================\n";
 		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
 		std::cin >> iChar;
 		// get rid of the newline character, to ensure the buffer sanity
 		std::cin.get();
 		switch (iChar)
 		{
-		case 1:
-		{
-			std::time_t now = std::time(0);
-			boost::random::mt19937 gen{ static_cast<std::uint32_t>(now) };
-			std::cout << "generated random number: " << gen() << '\n';
-			break;
-		} // eof case 1
-		case 2:
-		{
-			boost::random::random_device gen;
-			std::cout << "generated random number: " << gen() << '\n';
-			break;
-		} // eof case 2
 		case 0:
 			// the user wants to terminate
 			bProceed = false;
@@ -1228,17 +2348,46 @@ chapter_60() -> void
 	}
 }
 //****************************************************************************
-//*                     chapter_61
+//*                     chapter_64
 //****************************************************************************
 auto
-chapter_61() -> void
+chapter_64() -> void
 {
 	bool bProceed = true;
 	unsigned int iChar = 0;
 	while (bProceed)
 	{
-		std::cout << "Chapter 61. Boost.NumericConversion\n";
-		std::cout << "===================================\n";
+		std::cout << "Chapter 64. Boost.Serialization\n";
+		std::cout << "===============================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_65
+//****************************************************************************
+auto
+chapter_65() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 65. Boost.Uuid\n";
+		std::cout << "======================\n";
 		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
 		std::cin >> iChar;
 		// get rid of the newline character, to ensure the buffer sanity
@@ -1267,6 +2416,12 @@ int main()
 	{
 		std::cout << "The Boost C++ Libraries\n";
 		std::cout << "=======================\n";
+		std::cout << "Part X. Parallel Programming\n";
+		std::cout << "----------------------------\n";
+		std::cout << "44) Chapter 44. Boost.Thread\n";
+		std::cout << "45) Chapter 45. Boost.Atomic\n";
+		std::cout << "46) Chapter 46. Boost.Lockfree\n";
+		std::cout << "47) Chapter 47. Boost.MPI\n";
 		std::cout << "Part XI. Generic Programming\n";
 		std::cout << "----------------------------\n";
 		std::cout << "48) Chapter 48. Boost.TypeTraits\n";
@@ -1289,12 +2444,30 @@ int main()
 		std::cout << "59) Chapter 59. Boost.MinMax\n";
 		std::cout << "60) Chapter 60. Boost.Random\n";
 		std::cout << "61) Chapter 61. Boost.NumericConversion\n";
+		std::cout << "Part XV. Application Libraries\n";
+		std::cout << "==============================\n";
+		std::cout << "62) Chapter 62. Boost.Log\n";
+		std::cout << "63) Chapter 63. Boost.ProgramOptions\n";
+		std::cout << "64) Chapter 64. Boost.Serialization\n";
+		std::cout << "65) Chapter 65. Boost.Uuid\n";
 		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
 		std::cin >> iChar;
 		// get rid of the newline character, to ensure the buffer sanity
 		std::cin.get();
 		switch (iChar)
 		{
+		//case 44:
+		//	chapter_44();
+		//	break;
+		//case 45:
+		//	chapter_45();
+		//	break;
+		//case 46:
+		//	chapter_46();
+		//	break;
+		case 47:
+			chapter_47();
+			break;
 		//case 48:
 		//	chapter_48();
 		//	break;
@@ -1331,11 +2504,23 @@ int main()
 		//case 59:
 		//	chapter_59();
 		//	break;
-		case 60:
-			chapter_60();
+		//case 60:
+		//	chapter_60();
+		//	break;
+		//case 61:
+		//	chapter_61();
+		//	break;
+		//case 62:
+		//	chapter_62();
+		//	break;
+		case 63:
+			chapter_63();
 			break;
-		case 61:
-			chapter_61();
+		case 64:
+			chapter_64();
+			break;
+		case 65:
+			chapter_65();
 			break;
 		case 0:
 			// the user wants to terminate
