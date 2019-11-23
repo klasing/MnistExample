@@ -11,6 +11,7 @@
 //#include <boost/cstdint.hpp>
 //#include <boost/exception/all.hpp>
 //#include <boost/foreach.hpp>
+#include <boost/function.hpp>
 //#include <boost/fusion/adapted.hpp>
 //#include <boost/fusion/algorithm.hpp>
 //#include <boost/fusion/container.hpp>
@@ -40,6 +41,7 @@
 //#include <boost/mpl/placeholders.hpp>
 //#include <boost/numeric/conversion/cast.hpp>
 //#include <boost/parameter.hpp>
+#include <boost/phoenix/phoenix.hpp>
 //#include <boost/random.hpp>
 //#include <boost/random/random_device.hpp>
 //#include <boost/shared_ptr.hpp>
@@ -50,7 +52,7 @@
 //#include <boost/tuple/tuple.hpp>
 //#include <boost/type_traits.hpp>
 //#include <boost/utility/enable_if.hpp>
-//#include <algorithm>
+#include <algorithm>
 //#include <array>
 #include <atomic>
 #include <cstdlib>
@@ -69,6 +71,326 @@
 //#include <typeinfo>
 //#include <utility>
 #include <vector>
+//****************************************************************************
+//*                     chapter_39
+//****************************************************************************
+bool is_odd(int i) { return i % 2 == 1; }
+struct is_odd6_impl
+{
+	typedef bool result_type;
+	template<typename T>
+	bool operator()(T t) const { return t % 2 == 1; }
+};
+boost::phoenix::function<is_odd6_impl> is_odd6;
+BOOST_PHOENIX_ADAPT_FUNCTION(bool, is_odd7, is_odd, 1)
+auto
+chapter_39() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 39. Boost.Phoenix\n";
+		std::cout << "=========================\n";
+		std::cout << " 1) Example 1: Predicates as global function, lambda function, and Phoenix function\n";
+		std::cout << " 2) Example 2: Phoenix function versus lambda function\n";
+		std::cout << " 3) Example 3: Phoenix functions as deferred C++ code\n";
+		std::cout << " 4) Example 4: Explicit Phoenix types\n";
+		std::cout << " 5) Example 5: boost::phoenix::placeholders::arg1 and boost::phoenix::val()\n";
+		std::cout << " 6) Example 6: Creating your own Phoenix functions\n";
+		std::cout << " 7) Example 7: Transforming free-standing funtions into Phoenix functions\n";
+		std::cout << " 8) Example 8: Phoenix functions with boost::phoenix::bind()\n";
+		std::cout << " 9) Example 9: Arbitrarily complex Phoenix functions\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), is_odd) << '\n';
+			auto lambda = [](int i) { return i % 2 == 1; };
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), lambda) << '\n';
+			using namespace boost::phoenix::placeholders;
+			auto phoenix = arg1 % 2 == 1;
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), phoenix) << '\n';
+			break;
+		} // eof case 1
+		case 2:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			auto lambda = [](int i) { return i % 2 == 1; };
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), lambda) << '\n';
+			std::vector<long> v2;
+			v2.insert(v2.begin(), v.begin(), v.end());
+			using namespace boost::phoenix::placeholders;
+			auto phoenix = arg1 % 2 == 1;
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), phoenix) << '\n';
+			std::cout << "nof odd numbers: " << std::count_if(v2.begin(), v2.end(), phoenix) << '\n';
+			break;
+		} // eof case 2
+		case 3:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix::placeholders;
+			auto phoenix = arg1 > 2 && arg1 % 2 == 1;
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), phoenix) << '\n';
+			break;
+		} // eof case 3
+		case 4:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix;
+			using namespace boost::phoenix::placeholders;
+			auto phoenix = arg1 > val(2) && arg1 % val(2) == val(1);
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), phoenix) << '\n';
+			break;
+		} // eof case 4
+		case 5:
+		{
+			using namespace boost::phoenix::placeholders;
+			std::cout << "first element in arg1...: " << arg1(1, 2, 3, 4, 5) << '\n';
+			auto v = boost::phoenix::val(2);
+			std::cout << "value holded in v.......: " << v() << '\n';
+			break;
+		} // eof case 5
+		case 6:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix::placeholders;
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), is_odd6(arg1)) << '\n';
+			break;
+		} // eof case 6
+		case 7:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix::placeholders;
+			std::cout << "nof odd numbers: " << std::count_if(v.begin(), v.end(), is_odd7(arg1)) << '\n';
+			break;
+		} // eof case 7 
+		case 8:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix::placeholders;
+			std::cout << "nof odd numbers: " 
+				<< std::count_if(v.begin(), v.end(), bind(is_odd, arg1)) 
+				<< '\n';
+			break;
+		} // eof case 8
+		case 9:
+		{
+			std::vector<int> v{ 1, 2, 3, 4, 5 };
+			using namespace boost::phoenix;
+			using namespace boost::phoenix::placeholders;
+			int count = 0;
+			std::for_each(v.begin(), v.end(),
+				if_(arg1 > 2 && arg1 % 2 == 1)
+				[
+					++ref(count)
+				]
+			);
+			std::cout << "nof odd numbers: " << count << '\n';
+			break;
+			break;
+		} // eof case 9
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_40
+//****************************************************************************
+struct world
+{
+	void hello(std::ostream& os)
+	{
+		os << "Hello, world\n";
+	}
+};
+auto
+chapter_40() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 40. Boost.Function\n";
+		std::cout << "==========================\n";
+		std::cout << " 1) Example 1: Using boost::function\n";
+		std::cout << " 2) Example 2: boost::bad::function_call thrown if boost::function is empty\n";
+		std::cout << " 3) Example 3: Binding a class member function to boost::function\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			boost::function<int(const char*)> f = std::atoi;
+			std::cout << "\"42\" converted to an int is...: " << f("42") << '\n';
+			f = std::strlen;
+			std::cout << "length of string \"42\" is......: " << f("42") << '\n';
+			break;
+		} // eof case 1
+		case 2:
+		{
+			try
+			{
+				boost::function<int(const char*)> f;
+				f("");
+			}
+			catch (boost::bad_function_call & ex)
+			{
+				std::cerr << "exception thrown: " << ex.what() << '\n';
+			}
+			break;
+		} // eof case 2
+		case 3:
+		{
+			boost::function<void(world*, std::ostream&)> f = &world::hello;
+			world w;
+			f(&w, std::ref(std::cout));
+			break;
+		} // eof case 3
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_41
+//****************************************************************************
+void print(int i)
+{
+	std::cout << "i has value: " << i << '\n';
+}
+auto
+chapter_41() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 41. Boost.Bind\n";
+		std::cout << "======================\n";
+		std::cout << " 1) Example 1: std::for_each() with a compatible function\n";
+		std::cout << " 2) Example 2: std::for_each() with std::bind1st()\n";
+		std::cout << " 3) Example 3: std::for_each() winth boost::bind()\n";
+		std::cout << " 4) Example 4: std::sort() with boost::bind()\n";
+		std::cout << " 5) Example 5: std::sort() with boost::bind() and changed order of placeholders\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			std::vector<int> v{ 1, 3, 2 };
+			std::for_each(v.begin(), v.end(), print);
+			break;
+		} // eof case 1
+		case 2:
+		{
+			break;
+		} // eof case 2
+		case 3:
+		{
+			break;
+		} // eof case 3
+		case 4:
+		{
+			break;
+		} // eof case 4
+		case 5:
+		{
+			break;
+		} // eof case 5
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_42
+//****************************************************************************
+auto
+chapter_42() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 42. Boost.Ref\n";
+		std::cout << "=====================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_43
+//****************************************************************************
+auto
+chapter_43() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 43. Boost.Lambda\n";
+		std::cout << "========================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
 //****************************************************************************
 //*                     chapter_44
 //****************************************************************************
@@ -690,67 +1012,133 @@
 //****************************************************************************
 //*                     chapter_47
 //****************************************************************************
-auto
-chapter_47() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 47. Boost.MPI\n";
-		std::cout << "=====================\n";
-		std::cout << "    Development and Runtime Environment\n";
-		std::cout << "    Simple Data Exchange\n";
-		std::cout << " 1) Example 1: MPI environment and communicator\n";
-		std::cout << " 2) Example 2: Blocking functions to send and receive data\n";
-		std::cout << " 3) Example 3: Receiving data from an process\n";
-		std::cout << " 4) Example 4: Detecting the sender with boost::mpi::status\n";
-		std::cout << " 5) Example 5: Transmitting an array with send() and recv()\n";
-		std::cout << " 6) Example 6: Transmitting a string with send() and recv()\n";
-		std::cout << "    Asynchronous data exchange\n";
-		std::cout << "    Collective Data Exchange\n";
-		std::cout << "    Communicators\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 1:
-		{
-			break;
-		} // eof case 1
-		case 2:
-		{
-			break;
-		} // eof case 2
-		case 3:
-		{
-			break;
-		} // eof case 3
-		case 4:
-		{
-			break;
-		} // eof case 4
-		case 5:
-		{
-			break;
-		} // eof case 5
-		case 6:
-		{
-			break;
-		} // eof case 6
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//auto
+//chapter_47() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 47. Boost.MPI\n";
+//		std::cout << "=====================\n";
+//		std::cout << "    Development and Runtime Environment\n";
+//		std::cout << "    Simple Data Exchange\n";
+//		std::cout << " 1) Example 1: MPI environment and communicator\n";
+//		std::cout << " 2) Example 2: Blocking functions to send and receive data\n";
+//		std::cout << " 3) Example 3: Receiving data from an process\n";
+//		std::cout << " 4) Example 4: Detecting the sender with boost::mpi::status\n";
+//		std::cout << " 5) Example 5: Transmitting an array with send() and recv()\n";
+//		std::cout << " 6) Example 6: Transmitting a string with send() and recv()\n";
+//		std::cout << "    Asynchronous data exchange\n";
+//		std::cout << " 7) Example 7: Receiving data asynchronously with irecv()\n";
+//		std::cout << " 8) Example 8: Waiting for multiple asynchonous operations with wait_all()\n";
+//		std::cout << "    Collective Data Exchange\n";
+//		std::cout << " 9) Example 9: Receiving data from multiple processes with gather()\n";
+//		std::cout << "10) Example 10: Collecting data from all processes with gather()\n";
+//		std::cout << "11) Example 11: Scattering data with scatter() across all processes\n";
+//		std::cout << "12) Example 12: Sending data to all processes with broadcast()\n";
+//		std::cout << "13) Example 13: Gathering and analyzing data with reduce()\n";
+//		std::cout << "14) Example 14: Gathering and analyzing data with all_reduce()\n";
+//		std::cout << "    Communicators\n";
+//		std::cout << "15) Example 15: Working with multiple communicators\n";
+//		std::cout << "16) Example 16: Grouping processes with group\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 9
+//		case 10:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 10
+//		case 11:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 11
+//		case 12:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 12
+//		case 13:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 13
+//		case 14:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 14
+//		case 15:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 15
+//		case 16:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 16
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 ////****************************************************************************
 ////*                     chapter_48
 ////****************************************************************************
@@ -2416,6 +2804,12 @@ int main()
 	{
 		std::cout << "The Boost C++ Libraries\n";
 		std::cout << "=======================\n";
+		std::cout << "Part IX. Functional Programming\n";
+		std::cout << "39) Chapter 39. Boost.Phoenix\n";
+		std::cout << "40) Chapter 40. Boost.Function\n";
+		std::cout << "41) Chapter 41. Boost.Bind\n";
+		std::cout << "42) Chapter 42. Boost.Ref\n";
+		std::cout << "43) Chapter 43. Boost.Lambda\n";
 		std::cout << "Part X. Parallel Programming\n";
 		std::cout << "----------------------------\n";
 		std::cout << "44) Chapter 44. Boost.Thread\n";
@@ -2456,7 +2850,22 @@ int main()
 		std::cin.get();
 		switch (iChar)
 		{
-		//case 44:
+		case 39:
+			chapter_39();
+			break;
+		case 40:
+			chapter_40();
+			break;
+		case 41:
+			chapter_41();
+			break;
+		case 42:
+			chapter_42();
+			break;
+		case 43:
+			chapter_43();
+			break;
+			//case 44:
 		//	chapter_44();
 		//	break;
 		//case 45:
@@ -2465,9 +2874,9 @@ int main()
 		//case 46:
 		//	chapter_46();
 		//	break;
-		case 47:
-			chapter_47();
-			break;
+		//case 47:
+		//	chapter_47();
+		//	break;
 		//case 48:
 		//	chapter_48();
 		//	break;
