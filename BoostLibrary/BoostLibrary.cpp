@@ -1,4 +1,7 @@
+#define BOOST_POOL_NO_MT
+#define BOOST_SP_USE_QUICK_ALLOCATOR
 #define BOOST_THREAD_PROVIDES_FUTURE
+#include <boost/assign/list_inserter.hpp>
 #include <boost/atomic.hpp>
 //#include <boost/accumulators/accumulators.hpp>
 //#include <boost/accumulators/statistics.hpp>
@@ -45,9 +48,18 @@
 //#include <boost/numeric/conversion/cast.hpp>
 //#include <boost/parameter.hpp>
 #include <boost/phoenix/phoenix.hpp>
+#include <boost/pool/object_pool.hpp>
+#include <boost/pool/pool_alloc.hpp>
+#include <boost/pool/simple_segregated_storage.hpp>
+#include <boost/pool/singleton_pool.hpp>
+#include <boost/ptr_container/ptr_set.hpp>
+#include <boost/ptr_container/indirect_fun.hpp>
+#include <boost/ptr_container/ptr_inserter.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 //#include <boost/random.hpp>
 #include <boost/ref.hpp>
 //#include <boost/random/random_device.hpp>
+#include <boost/scope_exit.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -65,6 +77,8 @@
 #include <algorithm>
 //#include <array>
 #include <atomic>
+#include <cstddef>
+#include <cstdio>
 #include <cstdlib>
 //#include <cstddef>
 //#include <cstdint>
@@ -73,199 +87,498 @@
 #include <functional>
 #include <iostream>
 //#include <limits>
+#include <list>
+#include <memory>
 //#include <new>
+#include <set>
 //#include <stdexcept>
-//#include <string>
+#include <string>
 #include <thread>
 //#include <tuple>
 //#include <typeinfo>
-//#include <utility>
+#include <utility>
 #include <vector>
 //****************************************************************************
 //*                     chapter_1
 //****************************************************************************
-auto
-chapter_1() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 1. Boost.SmartPointers\n";
-		std::cout << "==============================\n";
-		std::cout << "    Sole Ownership\n";
-		std::cout << " 1) Example 1: Using boost::scoped_ptr\n";
-		std::cout << " 2) Example 2: Using boost::scoped_array\n";
-		std::cout << "    Shared Ownership\n";
-		std::cout << " 3) Example 3: \n";
-		std::cout << " 4) Example 4: \n";
-		std::cout << " 5) Example 5: \n";
-		std::cout << " 6) Example 6: \n";
-		std::cout << " 7) Example 7: \n";
-		std::cout << "    Special Smart Pointers\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 1:
-		{
-			boost::scoped_ptr<int> p{ new int{1} };
-			std::cout << "p has value: " << *p << '\n';
-			p.reset(new int{ 2 });
-			std::cout << "p has value: " << *p.get() << '\n';
-			p.reset();
-			std::cout << "p has state: " << std::boolalpha << static_cast<bool>(p) << '\n';
-			break;
-		} // eof case 1
-		case 2:
-		{
-			const std::size_t ARRAY_SIZE = 2;
-			boost::scoped_array<int> p{ new int[ARRAY_SIZE] };
-			*p.get() = 1;
-			p[1] = 2;
-			for (int i = 0; i < ARRAY_SIZE; i++)
-				std::cout << "p[i] has value....: " << p[i] << '\n';
-			const std::size_t NEW_ARRAY_SIZE = 3;
-			p.reset(new int[NEW_ARRAY_SIZE]);
-			std::cout << "p's size is now...: " << NEW_ARRAY_SIZE << '\n';
-			break;
-		} // eof case 2
-		case 3:
-		{
-			boost::shared_ptr<int> p1{ new int{1} };
-			std::cout << "p1 has value: " << *p1 << '\n';
-			boost::shared_ptr<int> p2{ p1 };
-			p1.reset(new int{ 2 });
-			std::cout << "p1 has value: " << *p1.get() << '\n';
-			p1.reset();
-			std::cout << "p2 has state: " << std::boolalpha << static_cast<bool>(p2) << '\n';
-			break;
-		} // eof case 3
-		case 4:
-		{
-			boost::shared_ptr<void> handle(OpenProcess(PROCESS_SET_INFORMATION
-				, FALSE
-				, GetCurrentProcessId())
-				, CloseHandle);
-			std::cout << "boost::shared_ptr with a user-defined deleter\n";
-			break;
-		} // eof case 4
-		case 5:
-		{
-			auto p1 = boost::make_shared<int>(1);
-			std::cout << "p1 is of type: " << typeid(p1).name() << '\n';
-			auto p2 = boost::make_shared<int[]>(10);
-			std::cout << "p2 is of type: " << typeid(p2).name() << '\n';
-			break;
-		} // eof case 5
-		case 6:
-		{
-			break;
-		} // eof case 6
-		case 7:
-		{
-			break;
-		} // eof case 7
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//void reset(boost::shared_ptr<int>& sh)
+//{
+//	sh.reset();
+//}
+//void print18(boost::weak_ptr<int>& w)
+//{
+//	boost::shared_ptr<int> sh = w.lock();
+//	if (sh)
+//		std::cout << "shared_ptr: " << *sh << '\n';
+//}
+//auto
+//chapter_1() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 1. Boost.SmartPointers\n";
+//		std::cout << "==============================\n";
+//		std::cout << "    Sole Ownership\n";
+//		std::cout << " 1) Example 1: Using boost::scoped_ptr\n";
+//		std::cout << " 2) Example 2: Using boost::scoped_array\n";
+//		std::cout << "    Shared Ownership\n";
+//		std::cout << " 3) Example 3: Using boost::shared_ptr\n";
+//		std::cout << " 4) Example 4: boost::shared_ptr with a user-defined deleter\n";
+//		std::cout << " 5) Example 5: Using boost::make_shared\n";
+//		std::cout << " 6) Example 6: Using boost::shared_array\n";
+//		std::cout << " 7) Example 7: boost::shared_array with BOOST_SP_USE_QUICK_ALLOCATOR\n";
+//		std::cout << "    Special Smart Pointers\n";
+//		std::cout << " 8) Example 8: Using boost::weak_ptr\n";
+//		std::cout << " 9) Example 9: Using boost::inttrusive_ptr\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			boost::scoped_ptr<int> p{ new int{1} };
+//			std::cout << "p has value: " << *p << '\n';
+//			p.reset(new int{ 2 });
+//			std::cout << "p has value: " << *p.get() << '\n';
+//			p.reset();
+//			std::cout << "p has state: " << std::boolalpha << static_cast<bool>(p) << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			const std::size_t ARRAY_SIZE = 2;
+//			boost::scoped_array<int> p{ new int[ARRAY_SIZE] };
+//			*p.get() = 1;
+//			p[1] = 2;
+//			for (int i = 0; i < ARRAY_SIZE; i++)
+//				std::cout << "p[i] has value....: " << p[i] << '\n';
+//			const std::size_t NEW_ARRAY_SIZE = 3;
+//			p.reset(new int[NEW_ARRAY_SIZE]);
+//			std::cout << "p's size is now...: " << NEW_ARRAY_SIZE << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			boost::shared_ptr<int> p1{ new int{1} };
+//			std::cout << "p1 has value: " << *p1 << '\n';
+//			boost::shared_ptr<int> p2{ p1 };
+//			p1.reset(new int{ 2 });
+//			std::cout << "p1 has value: " << *p1.get() << '\n';
+//			p1.reset();
+//			std::cout << "p2 has state: " << std::boolalpha << static_cast<bool>(p2) << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			boost::shared_ptr<void> handle(OpenProcess(PROCESS_SET_INFORMATION
+//				, FALSE
+//				, GetCurrentProcessId())
+//				, CloseHandle);
+//			std::cout << "boost::shared_ptr with a user-defined deleter\n";
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			auto p1 = boost::make_shared<int>(1);
+//			std::cout << "p1 is of type: " << typeid(p1).name() << '\n';
+//			auto p2 = boost::make_shared<int[]>(10);
+//			std::cout << "p2 is of type: " << typeid(p2).name() << '\n';
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			boost::shared_array<int> p1{ new int[1] };
+//			{
+//				boost::shared_array<int> p2{ p1 };
+//				p2[0] = 1;
+//			}
+//			std::cout << "p1[0] holds value: " << p1[0] << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			boost::shared_ptr<int> p;
+//			std::time_t then = std::time(nullptr);
+//			for (int i = 0; i < 1000000; ++i)
+//				p.reset(new int{ i });
+//			std::time_t now = std::time(nullptr);
+//			std::cout << "time duration: " << now - then << " (s)\n";
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			boost::shared_ptr<int> sh{ new int{99} };
+//			boost::weak_ptr<int> w{ sh };
+//			std::thread t1{ reset, std::ref(sh) };
+//			std::thread t2{ print18, std::ref(w) };
+//			t1.join();
+//			t2.join();
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			std::cout << "TODO\n";
+//		} // eof case 9
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
 //*                     chapter_2
 //****************************************************************************
-auto
-chapter_2() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 2. Boost.PointerContainer\n";
-		std::cout << "=================================\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//class animal {
+//public:
+//	animal(const std::string& inName, const int& inLegs,
+//		const bool& in_has_tail) :
+//		name(inName), legs(inLegs), has_tail(in_has_tail) {}
+//	friend bool operator<(const animal&, const animal&);
+//	std::string toString() const {
+//		return "name: " + name +
+//			", legs: " + std::to_string(legs) +
+//			", has tail: " + (has_tail ? "yes" : "no");
+//	}
+//	animal* do_clone() const {
+//		return new animal(*this);
+//	}
+//private:
+//	std::string name;
+//	int legs;
+//	bool has_tail;
+//};
+//inline bool operator<(const animal& lhs, const animal& rhs) {
+//	return lhs.legs < rhs.legs;
+//}
+//auto
+//chapter_2() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 2. Boost.PointerContainer\n";
+//		std::cout << "=================================\n";
+//		std::cout << " 1) Example 1: Using boost::ptr_vector\n";
+//		std::cout << " 2) Example 2: boost::ptr_set with intuively correct_order\n";
+//		std::cout << " 3) Example 3: Inserters for containers from Boost.PointerContainer\n";
+//		std::cout << " 4) Exercise: Create objects of type animal ...\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			boost::ptr_vector<int> v;
+//			v.push_back(new int{ 1 });
+//			v.push_back(new int{ 2 });
+//			std::cout << "last element in v is: " << v.back() << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			boost::ptr_set<int> s;
+//			s.insert(new int{ 2 });
+//			s.insert(new int{ 1 });
+//			std::cout << "first element in s is: " << *s.begin() << '\n';
+//			std::set<std::unique_ptr<int>, boost::indirect_fun<std::less<int>>> v;
+//			v.insert(std::unique_ptr<int>(new int{ 2 }));
+//			v.insert(std::unique_ptr<int>(new int{ 1 }));
+//			std::cout << "first element in v is: " << **v.begin() << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			boost::ptr_vector<int> v;
+//			std::array<int, 3> a{ {0,1,2} };
+//			std::copy(a.begin(), a.end(), boost::ptr_container::ptr_back_inserter(v));
+//			std::cout << "v's size is: " << v.size() << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			boost::ptr_vector<animal> vec;
+//			boost::void_ptr_indirect_fun<std::less<animal>, animal> cast_fun;
+//			// a) storing object pointer
+//			//boost::assign::push_back(vec)(new animal("millipede", 742, false))
+//			//	(new animal("tarantula", 8, false))
+//			//	(new animal("fly", 6, false))
+//			//	(new animal("dog", 4, true))
+//			//	(new animal("trush", 2, true))
+//			//	(new animal("rattlesnake", 0, false));
+//			// b) storing object pointer from cloned object
+//			animal diplopoda("millipede", 742, false);
+//			animal spider("tarantula", 8, false);
+//			animal insect("fly", 6, false);
+//			animal mammal("dog", 4, true);
+//			animal bird("trush", 2, true); // trush (ENG) = lijster (NL)
+//			animal snake("rattlesnake", 0, false);
+//			boost::assign::push_back(vec)(diplopoda.do_clone())
+//				(spider.do_clone())
+//				(insect.do_clone())
+//				(mammal.do_clone())
+//				(bird.do_clone())
+//				(snake.do_clone());
+//			sort(vec.begin().base(), vec.end().base(), cast_fun);
+//			for (auto it = vec.cbegin(); it != vec.cend(); ++it)
+//				std::cout << (*it).toString() << std::endl;
+//			break;
+//		} // eof case 4
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
 //*                     chapter_3
 //****************************************************************************
-auto
-chapter_3() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 3. Boost.ScopeExit\n";
-		std::cout << "==========================\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//int* foo()
+//{
+//	int* i = new int{ 10 };
+//	BOOST_SCOPE_EXIT(&i)
+//	{
+//		delete i;
+//		i = 0;
+//	} BOOST_SCOPE_EXIT_END
+//	std::cout << "i has value: " << *i << '\n';
+//	return i;
+//}
+//template<typename T>
+//struct scope_exit
+//{
+//	scope_exit(T&& t) : t_{std::move(t)} {}
+//	~scope_exit() { t_(); }
+//	T t_;
+//};
+//template<typename T>
+//scope_exit<T> make_scope_exit(T&& t) 
+//{
+//	return scope_exit<T>{std::move(t)};
+//}
+//int* foo2()
+//{
+//	int* i = new int{ 10 };
+//	auto cleanup = make_scope_exit([&i]() mutable { delete i; i = 0; });
+//	std::cout << "i has value: " << *i << '\n';
+//	return i;
+//}
+//struct x
+//{
+//	int i;
+//	void foo()
+//	{
+//		i = 10;
+//		BOOST_SCOPE_EXIT(void)
+//		{
+//			std::cout << "last\n";
+//		} BOOST_SCOPE_EXIT_END
+//		BOOST_SCOPE_EXIT(this_)
+//		{
+//			this_->i = 20;
+//			std::cout << "first\n";
+//		} BOOST_SCOPE_EXIT_END
+//	}
+//};
+//struct CloseFile {
+//	void operator()(FILE* file) {
+//		std::cout << "closing file" << std::endl;
+//		fclose(file);
+//	}
+//};
+////void write_to_file(const std::string& s) {
+////	unique_ptr<FILE, CloseFile> file{
+////		fopen("hello-world.txt", "a")};
+////	fprintf(file.get(), s.c_str());
+////}
+//// the exercise is to replace the code above,
+//// with a BOOST_SCOPE_EXIT macro
+//void write_to_file(const std::string& s, const int& length) {
+//	FILE* pFile = new FILE();
+//	BOOST_SCOPE_EXIT(&pFile) {
+//		// this is not what it should be
+//		fclose(pFile);
+//	} BOOST_SCOPE_EXIT_END
+//	pFile = fopen("hello-world.txt", "a");
+//	fwrite(s.c_str(), sizeof(char), length, pFile);
+//}
+//auto
+//chapter_3() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 3. Boost.ScopeExit\n";
+//		std::cout << "==========================\n";
+//		std::cout << " 1) Example 1: Using BOOST_SCOPE_EXIT\n";
+//		std::cout << " 2) Example 2: Boost.ScopeExit with C++11 lambda functions\n";
+//		std::cout << " 3) Example 3: Peculiarities of BOOST_SCOPE_EXIT\n";
+//		std::cout << " 4) Exercise: Replace std::unique_ptr and the user-defined deleter with BOOST_SCOPE_EXIT\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			int* j = foo();
+//			std::cout << "j has value: " << j << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			int* j = foo2();
+//			std::cout << "j has value: " << j << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			x obj;
+//			obj.foo();
+//			std::cout << "member variable i has value: " << obj.i << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			write_to_file("HELLO, ", 7);
+//			write_to_file("WORLD!", 6);
+//			break;
+//		} // eof case 4
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
 //*                     chapter_4
 //****************************************************************************
-auto
-chapter_4() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 4. Boost.Pool\n";
-		std::cout << "=====================\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//struct int_pool {};
+//typedef boost::singleton_pool<int_pool, sizeof(int)> singleton_int_pool;
+//auto
+//chapter_4() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 4. Boost.Pool\n";
+//		std::cout << "=====================\n";
+//		std::cout << " 1) Example 1: Using boost::simple_segregated_storage\n";
+//		std::cout << " 2) Example 2: Using boost::object_pool\n";
+//		std::cout << " 3) Example 3: Changing the segment size with boost::object_pool\n";
+//		std::cout << " 4) Example 4: Using boost::singleton_pool\n";
+//		std::cout << " 5) Example 5: Using boost::pool_allocator\n";
+//		std::cout << " 6) Example 6: Using boost::fast_pool_allocator\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::cout << "Example 4.1\n";
+//			boost::simple_segregated_storage<std::size_t> storage;
+//			std::vector<char> v(1024);
+//			storage.add_block(&v.front(), v.size(), 256);
+//			int* i = static_cast<int*>(storage.malloc());
+//			*i = 1;
+//			int* j = static_cast<int*>(storage.malloc_n(1, 512));
+//			j[10] = 2;
+//			storage.free(i);
+//			storage.free_n(j, 1, 512);
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::cout << "Example 4.2\n";
+//			boost::object_pool<int> pool;
+//			int* i = pool.malloc();
+//			*i = 1;
+//			int* j = pool.construct(2);
+//			pool.destroy(i);
+//			pool.destroy(j);
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			boost::object_pool<int> pool{ 32, 0 };
+//			pool.construct();
+//			std::cout << "pool's next size will be: " << pool.get_next_size() << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::cout << "Example 4.4\n";
+//			int* i = static_cast<int*>(singleton_int_pool::malloc());
+//			*i = 1;
+//			int* j = static_cast<int*>(singleton_int_pool::ordered_malloc(10));
+//			j[9] = 2;
+//			singleton_int_pool::release_memory();
+//			singleton_int_pool::purge_memory();
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::cout << "Example 4.5\n";
+//			std::vector<int, boost::pool_allocator<int>> v;
+//			for (int i = 0; i < 1000; ++i)
+//				v.push_back(i);
+//			v.clear();
+//			boost::singleton_pool<boost::pool_allocator_tag, sizeof(int)>::
+//				purge_memory();
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::cout << "Example 4.6\n";
+//			typedef boost::fast_pool_allocator<int
+//				, boost::default_user_allocator_new_delete
+//				, boost::details::pool::default_mutex
+//				, 64, 128> allocator;
+//			std::list<int, allocator> l;
+//			for (int i = 0; i < 1000; ++i)
+//				l.push_back(i);
+//			l.clear();
+//			boost::singleton_pool<boost::fast_pool_allocator_tag, sizeof(int)>
+//				::purge_memory();
+//			break;
+//		} // eof case 6
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
 //*                     chapter_39
 //****************************************************************************
@@ -3066,6 +3379,7 @@ int main()
 		std::cout << " 2) Chapter 2. Boost.PointerContainer\n";
 		std::cout << " 3) Chapter 3. Boost.ScopeExit\n";
 		std::cout << " 4) Chapter 4. Boost.Pool\n";
+
 		std::cout << "Part IX. Functional Programming\n";
 		std::cout << "39) Chapter 39. Boost.Phoenix\n";
 		std::cout << "40) Chapter 40. Boost.Function\n";
@@ -3112,18 +3426,18 @@ int main()
 		std::cin.get();
 		switch (iChar)
 		{
-		case 1:
-			chapter_1();
-			break;
-		case 2:
-			chapter_2();
-			break;
-		case 3:
-			chapter_3();
-			break;
-		case 4:
-			chapter_4();
-			break;
+		//case 1:
+		//	chapter_1();
+		//	break;
+		//case 2:
+		//	chapter_2();
+		//	break;
+		//case 3:
+		//	chapter_3();
+		//	break;
+		//case 4:
+		//	chapter_4();
+		//	break;
 		//case 39:
 		//	chapter_39();
 		//	break;
