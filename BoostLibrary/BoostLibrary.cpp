@@ -7,6 +7,8 @@
 //#include <boost/accumulators/statistics.hpp>
 //#include <boost/algorithm/minmax.hpp>
 //#include <boost/algorithm/minmax_element.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/regex.hpp>
 //#include <boost/cast.hpp>
 #include <boost/chrono.hpp>
 //#include <boost/core/null_deleter.hpp>
@@ -14,6 +16,7 @@
 //#include <boost/cstdint.hpp>
 //#include <boost/exception/all.hpp>
 //#include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <boost/function.hpp>
 //#include <boost/fusion/adapted.hpp>
 //#include <boost/fusion/algorithm.hpp>
@@ -22,6 +25,7 @@
 //#include <boost/fusion/iterator.hpp>
 //#include <boost/fusion/tuple.hpp>
 //#include <boost/fusion/view.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/lockfree/policies.hpp>
 #include <boost/lockfree/spsc_queue.hpp>
 #include <boost/lockfree/queue.hpp>
@@ -57,20 +61,25 @@
 #include <boost/ptr_container/ptr_inserter.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 //#include <boost/random.hpp>
-#include <boost/ref.hpp>
 //#include <boost/random/random_device.hpp>
+#include <boost/ref.hpp>
+#include <boost/regex.hpp>
 #include <boost/scope_exit.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/spirit/include/qi.hpp>
 //#include <boost/system/error_code.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/future.hpp>
 #include <boost/thread/scoped_thread.hpp>
+#include <boost/tokenizer.hpp>
 //#include <boost/tuple/tuple.hpp>
 //#include <boost/type_traits.hpp>
 //#include <boost/utility/enable_if.hpp>
+#include <boost/xpressive/regex_actions.hpp>
+#include <boost/xpressive/xpressive.hpp>
 
 #include <Windows.h>
 
@@ -86,12 +95,15 @@
 //#include <exception>
 #include <functional>
 #include <iostream>
+#include <iterator>
 //#include <limits>
 #include <list>
+#include <locale>
 #include <memory>
 //#include <new>
 #include <set>
 //#include <stdexcept>
+#include <sstream>
 #include <string>
 #include <thread>
 //#include <tuple>
@@ -579,6 +591,848 @@
 //		} // eof switch
 //	}
 //}
+//****************************************************************************
+//*                     chapter_5
+//****************************************************************************
+//auto
+//chapter_5() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 5. Boost.StringAlgorithms\n";
+//		std::cout << "=================================\n";
+//		std::cout << " 1) Example 1: Converting string to uppercase\n";
+//		std::cout << " 2) Example 2: Converting a string to uppercase with a locale\n";
+//		std::cout << " 3) Example 3: Algorithms to remove characters from a string\n";
+//		std::cout << " 4) Example 4: Searching for substrings with boost::algorithm::find_first()\n";
+//		std::cout << " 5) Example 5: Concatenating string with boost::algorithm::join()\n";
+//		std::cout << " 6) Example 6: Algorithms to replace characters in a string\n";
+//		std::cout << " 7) Example 7: Algorithms to trim strings\n";
+//		std::cout << " 8) Example 8: Creating predicates with boost::algorithm::is_any_of()\n";
+//		std::cout << " 9) Example 9: Creating predicates with boost::algorithm::is_digit()\n";
+//		std::cout << "10) Example 10: Algorithms to compare string with others\n";
+//		std::cout << "11) Example 11: Splitting strings with boost::algorithm::split()\n";
+//		std::cout << "12) Example 12: Searching strings with boost::algorithm::find_regex()\n";
+//		std::cout << "13) Exercise: ask for full name, and reply\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			std::cout << boost::algorithm::to_upper_copy(s) << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::string s = "Boost C++ k\xfct\xfcphaneleri";
+//			std::string upper_case1 = boost::algorithm::to_upper_copy(s);
+//			std::string upper_case2 = boost::algorithm::to_upper_copy(s
+//				, std::locale{"Turkish"}
+//			);
+//			std::locale::global(std::locale{ "Turkish" });
+//			std::cout << upper_case1 << '\n';
+//			std::cout << upper_case2 << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			std::cout << boost::algorithm::erase_first_copy(s, "s") << '\n';
+//			std::cout << boost::algorithm::erase_nth_copy(s, "s", 0) << '\n';
+//			std::cout << boost::algorithm::erase_last_copy(s, "s") << '\n';
+//			std::cout << boost::algorithm::erase_all_copy(s, "s") << '\n';
+//			std::cout << boost::algorithm::erase_head_copy(s, 5) << '\n';
+//			std::cout << boost::algorithm::erase_tail_copy(s, 9) << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			boost::iterator_range<std::string::iterator> r =
+//				boost::algorithm::find_first(s, "C++");
+//			std::cout << "find first result: " << r << '\n';
+//			r = boost::algorithm::find_first(s, "xyz");
+//			std::cout << "find first result: " << r << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::vector<std::string> v{ "Boost", "C++", "Libraries" };
+//			std::cout << boost::algorithm::join(v, " ") << '\n';
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			std::cout << boost::algorithm::replace_first_copy(s, "+", "-") << '\n';
+//			std::cout << boost::algorithm::replace_nth_copy(s, "+", 0, "-") << '\n';
+//			std::cout << boost::algorithm::replace_last_copy(s, "+", "-") << '\n';
+//			std::cout << boost::algorithm::replace_all_copy(s, "+", "-") << '\n';
+//			std::cout << boost::algorithm::replace_head_copy(s, 5, "BOOST") << '\n';
+//			std::cout << boost::algorithm::replace_tail_copy(s, 9, "LIBRARIES") << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::string s = "\t Boost C++ Libraries \t";
+//			std::cout << boost::algorithm::trim_left_copy(s) << '\n';
+//			std::cout << boost::algorithm::trim_right_copy(s) << '\n';
+//			std::cout << boost::algorithm::trim_copy(s) << '\n';
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			std::string s = "--Boost C++ Libraries--";
+//			std::cout << boost::algorithm::trim_left_copy_if(s
+//				, boost::algorithm::is_any_of("-")) << '\n';
+//			std::cout << boost::algorithm::trim_right_copy_if(s
+//				, boost::algorithm::is_any_of("-")) << '\n';
+//			std::cout << boost::algorithm::trim_copy_if(s
+//				, boost::algorithm::is_any_of("-")) << '\n';
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			std::string s = "123456789Boost C++ Libraries123456789";
+//			std::cout << boost::algorithm::trim_left_copy_if(s
+//				, boost::algorithm::is_digit()) << '\n';
+//			std::cout << boost::algorithm::trim_right_copy_if(s
+//				, boost::algorithm::is_digit()) << '\n';
+//			std::cout << boost::algorithm::trim_copy_if(s
+//				, boost::algorithm::is_digit()) << '\n';
+//			break;
+//		} // eof case 9
+//		case 10:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			std::cout.setf(std::ios::boolalpha);
+//			std::cout << "s starts with \"Boost\".....: "
+//				<< boost::algorithm::starts_with(s, "Boost") << '\n';
+//			std::cout << "s ends with \"Libraries\"...: "
+//				<< boost::algorithm::ends_with(s, "Libraries") << '\n';
+//			std::cout << "s contains \"C++\"..........: "
+//				<< boost::algorithm::contains(s, "C++") << '\n';
+//			std::cout << "s compared with \"Boost\"...: "
+//				<< boost::algorithm::lexicographical_compare(s, "Boost") << '\n';
+//			break;
+//		} // eof case 10
+//		case 11:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			std::vector<std::string> v;
+//			boost::algorithm::split(v
+//				, s
+//				, boost::algorithm::is_space());
+//			std::cout << "nof of words in s: " << v.size() << '\n';
+//			break;
+//		} // eof case 11
+//		case 12:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			boost::iterator_range<std::string::iterator> r =
+//				boost::algorithm::find_regex(s, boost::regex{ "\\w\\+\\+" });
+//			std::cout << "find_regex \"\\w\\+\\+\": " << r << '\n';
+//			break;
+//		} // eof case 12
+//		case 13:
+//		{
+//			std::string full_name;
+//			std::vector<std::string> name;
+//			std::cout << "Please enter your full name (first_name last_name): ";
+//			std::getline(std::cin, full_name);
+//			boost::algorithm::split(name, full_name, boost::algorithm::is_space());
+//			std::for_each(name.begin(), name.end(), [](std::string& term)
+//			{
+//				auto range_it = boost::algorithm::find_regex
+//					(term, boost::regex{ "^[[:alpha:]]" });
+//				boost::algorithm::to_upper(range_it);
+//			});
+//			std::ostringstream oss;
+//			oss << "Hello, ";
+//			for (const auto& term : name)
+//				oss << term << " ";
+//			std::cout << boost::algorithm::trim_copy(oss.str()) << "!\n";
+//			break;
+//		} // eof case 13
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_6
+//****************************************************************************
+//auto
+//chapter_6() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 6. Boost.LexicalCast\n";
+//		std::cout << "============================\n";
+//		std::cout << " 1) Example 1: Using boost::lexical_cast\n";
+//		std::cout << " 2) Example 2: boost::lexical_cast in case of an error\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s = boost::lexical_cast<std::string>(123);
+//			std::cout << "s contains: " << s << '\n';
+//			double d = boost::lexical_cast<double>(s);
+//			std::cout << "d contains: " << d << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			try
+//			{
+//				int i = boost::lexical_cast<int>("abc");
+//				std::cout << i << '\n';
+//			}
+//			catch (const boost::bad_lexical_cast & e)
+//			{
+//				std::cerr << "catched error: " << e.what() << '\n';
+//			}
+//			break;
+//		} // eof case 2
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_7
+//****************************************************************************
+//struct animal
+//{
+//	std::string name;
+//	int legs;
+//};
+//std::ostream& operator<<(std::ostream& os, const animal& a)
+//{
+//	return os << a.name << ',' << a.legs;
+//}
+//auto
+//chapter_7() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 7. Boost.Format\n";
+//		std::cout << "=======================\n";
+//		std::cout << " 1) Example 1: Formatted output with boost::format\n";
+//		std::cout << " 2) Example 2: Numbered placeholders with boost::format\n";
+//		std::cout << " 3) Example 3: Using manipulators with boost::io::group()\n";
+//		std::cout << " 4) Example 4: Placeholders with special characters\n";
+//		std::cout << " 5) Example 5: boost::io::foramt_error in case of an error\n";
+//		std::cout << " 6) Example 6: Placeholders without numbers\n";
+//		std::cout << " 7) Example 7: boost::format with the syntax used from std::printf()\n";
+//		std::cout << " 8) Example 8: boost::format with seemingly invalid placeholders\n";
+//		std::cout << " 9) Example 9: boost::format with user-defined type\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::cout << "display a date: "
+//				<< boost::format{ "%1.%2.%3" } % 12 % 5 % 2014
+//				<< '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::cout << "display a date: "
+//				<< boost::format{ "%2/%2/%3" } % 12 % 5 % 2014
+//				<< '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::cout << boost::format{"%1% %2% %1%"}
+//			% boost::io::group(std::showpos, 1) % 2 << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::cout << boost::format{ "%|1$+| %2% %1%" }
+//			% 1 % 2 << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			try
+//			{
+//				std::cout << boost::format{ "%|+| %2% %1%" }
+//				% 1 % 2 << '\n';
+//			}
+//			catch (const boost::io::format_error& ex)
+//			{
+//				std::cerr << "catched error: " << ex.what() << '\n';
+//			}
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::cout << boost::format{ "%|+| %|| %||" }
+//			% 1 % 2 % 1 << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::cout << boost::format{ "%+d %d %d" } % 1 % 2 % 1 << '\n';
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			std::cout << boost::format{ "%+s %s %s" } % 1 % 2 % 1 << '\n';
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			animal a{ "cat", 4 };
+//			std::cout << boost::format{ "%1%" } % a << '\n';
+//			break;
+//		} // eof case 9
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_8
+//****************************************************************************
+//auto
+//chapter_8() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 8. Boost.Regex\n";
+//		std::cout << "=================================\n";
+//		std::cout << " 1) Example 1: Comparing strings with boost::regex_match()\n";
+//		std::cout << " 2) Example 2: Searching strings with boost::regex_match()\n";
+//		std::cout << " 3) Example 3: Replacing characters in strings with boost::regex_replace()\n";
+//		std::cout << " 4) Example 4: Format with references to groups in regular expressions\n";
+//		std::cout << " 5) Example 5: Flags for formats\n";
+//		std::cout << " 6) Example 6: Iterating over strings with boost::regex_token_iterator\n";
+//		std::cout << " 7) Example 7: Accessing groups with boost::regex_token_iterator\n";
+//		std::cout << " 8) Example 8: Linking a locale to a regular expression\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "\\w+\\s\\w+" };
+//			std::cout << "expression matches s: " 
+//				<< std::boolalpha 
+//				<< boost::regex_match(s, expr) 
+//				<< '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "(\\w+)\\s(\\w+)" };
+//			boost::smatch what;
+//			if (boost::regex_search(s, what, expr))
+//			{
+//				std::cout << "the whole string...: " << what[0] << '\n';
+//				std::cout << "the words in s.....: " << what[1] << "_" << what[2] << '\n';
+//			}
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::string s = " Boost Libraries ";
+//			boost::regex expr{ "\\s" };
+//			std::string fmt("_");
+//			std::cout << "spaces replaced by underscores: "
+//				<< boost::regex_replace(s, expr, fmt)
+//				<< '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "(\\w+)\\s(\\w+)" };
+//			std::string fmt("\\2 \\1");
+//			std::cout << "words in s are swapped: "
+//				<< boost::regex_replace(s, expr, fmt)
+//				<< '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "(\\w+)\\s(\\w+)" };
+//			std::string fmt("\\2 \\1");
+//			std::cout << "words in s are swapped: "
+//				<< boost::regex_replace(s, expr, fmt
+//					, boost::regex_constants::format_literal)
+//				<< '\n';
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "\\w+" };
+//			boost::regex_token_iterator<std::string::iterator> it{ s.begin()
+//				, s.end(), expr };
+//			boost::regex_token_iterator<std::string::iterator> end;
+//			std::cout << "words in s: ";
+//			while (it != end)
+//				std::cout << *it++ << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::regex expr{ "(\\w)\\w+" };
+//			boost::regex_token_iterator<std::string::iterator> it{ s.begin()
+//				, s.end(), expr, 1 };
+//			boost::regex_token_iterator<std::string::iterator> end;
+//			std::cout << "first letter of the words in s: ";
+//			while (it != end)
+//				std::cout << *it++ << '\n';
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			std::string s = "Boost C++ k\xfct\xfcphaneleri";
+//			boost::basic_regex<char, boost::cpp_regex_traits<char>> expr;
+//			expr.imbue(std::locale{ "Turkish" });
+//			expr = "\\w+\\s\\w+";
+//			std::cout << "expression matches s: "
+//				<< std::boolalpha
+//				<< boost::regex_match(s, expr)
+//				<< '\n';
+//			break;
+//		} // eof case 8
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_9
+//****************************************************************************
+//auto
+//chapter_9() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 9. Boost.Xpressive\n";
+//		std::cout << "==========================\n";
+//		std::cout << " 1) Example 1: Comparing strings with boost::xpressive::regex_match\n";
+//		std::cout << " 2) Example 2: boost::xpressive::cregex with strings of type const char*\n";
+//		std::cout << " 3) Example 3: A regular expression with C++ code\n";
+//		std::cout << " 4) Example 4: Linking actions to expressions\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::xpressive::sregex expr = 
+//				boost::xpressive::sregex::compile("\\w+\\s\\w+");
+//			std::cout << "expression matches s: "
+//				<< std::boolalpha
+//				<< boost::xpressive::regex_match(s, expr)
+//				<< '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			const char* c = "Boost Libraries";
+//			boost::xpressive::cregex expr =
+//				boost::xpressive::cregex::compile("\\w+\\s\\w+");
+//			std::cout << "expression matches c: "
+//				<< std::boolalpha
+//				<< boost::xpressive::regex_match(c, expr)
+//				<< '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::string s = "Boost Libraries";
+//			boost::xpressive::sregex expr = +boost::xpressive::_w 
+//				>> boost::xpressive::_s 
+//				>> +boost::xpressive::_w;
+//			std::cout << "expression matches s: "
+//				<< std::boolalpha
+//				<< boost::xpressive::regex_match(s, expr)
+//				<< '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::string s = "Boost Libraries";
+//			std::ostream_iterator<std::string> it{ std::cout, "\n" };
+//			boost::xpressive::sregex expr = (+boost::xpressive::_w)
+//				[*boost::xpressive::ref(it) = boost::xpressive::_]
+//				>> boost::xpressive::_s
+//				>> +boost::xpressive::_w;
+//			std::cout << "expression matches s: "
+//				<< std::boolalpha
+//				<< boost::xpressive::regex_match(s, expr)
+//				<< '\n';
+//			break;
+//		} // eof case 4
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_10
+//****************************************************************************
+//auto
+//chapter_10() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 10. Boost.Tokenizer\n";
+//		std::cout << "===========================\n";
+//		std::cout << " 1) Example 1: Iterating over partial expressions in a string with boost::tokenizer\n";
+//		std::cout << " 2) Example 2: Initializing boost::char_separator to adapt the iteration\n";
+//		std::cout << " 3) Example 3: Simulating the default behavior with boost::char_separator\n";
+//		std::cout << " 4) Example 4: Initializing boost::char_separator to display empty partial expressions\n";
+//		std::cout << " 5) Example 5: Boost.Tokenizer with wide strings\n";
+//		std::cout << " 6) Example 6: Parsing CSV files with boost::escaped_list_separator\n";
+//		std::cout << " 7) Example 7: Iterating over partial expressions with boost::offset_separator\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+//			tokenizer tok{ s };
+//			std::cout << "iterating over s: ";
+//			for (tokenizer::iterator it = tok.begin(); it != tok.end(); ++it)
+//				std::cout << *it;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+//			boost::char_separator<char> sep{ " " };
+//			tokenizer tok{ s, sep };
+//			std::cout << "iterating over s: ";
+//			for (const auto& t : tok)
+//				std::cout << t;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+//			boost::char_separator<char> sep{ " ", "+" };
+//			tokenizer tok{ s, sep };
+//			std::cout << "iterating over s: ";
+//			for (const auto& t : tok)
+//				std::cout << t;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::string s = "Boost C++ Libraries";
+//			typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+//			boost::char_separator<char> sep{ " ", "+", boost::keep_empty_tokens };
+//			tokenizer tok{ s, sep };
+//			std::cout << "iterating over s: ";
+//			for (const auto& t : tok)
+//				std::cout << t;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::wstring s = L"Boost C++ Libraries";
+//			typedef boost::tokenizer<boost::char_separator<wchar_t>
+//				, std::wstring::const_iterator
+//				, std::wstring> tokenizer;
+//			boost::char_separator<wchar_t> sep{ L" " };
+//			tokenizer tok{ s, sep };
+//			std::wcout << L"iterating over s: ";
+//			for (const auto& t : tok)
+//				std::wcout << t;
+//			std::wcout << '\n';
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::string s = "Boost,\"C++ Libraries\"";
+//			typedef boost::tokenizer<boost::escaped_list_separator<char>> tokenizer;
+//			tokenizer tok{ s };
+//			std::cout << "iterating over s: ";
+//			for (const auto& t : tok)
+//				std::cout << t;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::string s = "Boost_C++_Libraries";
+//			typedef boost::tokenizer<boost::offset_separator> tokenizer;
+//			int offsets[] = { 5,5,9 };
+//			boost::offset_separator sep{ offsets, offsets + 3 };
+//			tokenizer tok{ s, sep };
+//			std::cout << "iterating over s: ";
+//			for (const auto& t : tok)
+//				std::cout << t;
+//			std::cout << '\n';
+//			break;
+//		} // eof case 7
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_11
+//****************************************************************************
+auto
+chapter_11() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 11. Boost.Spirit\n";
+		std::cout << "========================\n";
+		std::cout << "    API\n";
+		std::cout << " 1) Example 1: Using boost::spirit::qi::parse()\n";
+		std::cout << " 2) Example 2: Using boost::spirit::qi::phrase_parse()\n";
+		std::cout << " 3) Example 3: phrase_parse() with boost::spirit::qi::skip_flag::dont_postskip\n";
+		std::cout << " 4) Example 4: boost::spirit::qi::phrase_parse() with wide strings\n";
+		std::cout << "    Parsers\n";
+		std::cout << " 5) Example 5: A parser for two consecutive digits\n";
+		std::cout << " 6) Example 6: Parsing character by character with boost::spirit::qi::lexeme\n";
+		std::cout << " 7) Example 7: Boost.Spirit rules similar to regular expressions\n";
+		std::cout << " 8) Example 8: Numeric parsers\n";
+		std::cout << "    Actions\n";
+		std::cout << " 9) Example 9: Linking actions with parsers\n";
+		std::cout << "10) Example 10: Boost.Spirit with Boost.Phoenix\n";
+		std::cout << "    Attributes\n";
+		std::cout << "    Rules\n";
+		std::cout << "    Grammar\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			std::string s;
+			std::cout << "enter a letter or a digit: ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::parse(it
+				, s.end()
+				, boost::spirit::ascii::digit
+			);
+			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 1
+		case 2:
+		{
+			std::string s;
+			std::cout << "enter a letter or a digit: ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::ascii::digit
+				, boost::spirit::ascii::space
+			);
+			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 2
+		case 3:
+		{
+			std::string s;
+			std::cout << "enter a letter or a digit: ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::ascii::digit
+				, boost::spirit::ascii::space
+				, boost::spirit::qi::skip_flag::dont_postskip
+			);
+			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 3
+		case 4:
+		{
+			std::wstring s;
+			std::wcout << L"enter a letter or a digit: ";
+			std::getline(std::wcin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::ascii::digit
+				, boost::spirit::ascii::space
+				, boost::spirit::qi::skip_flag::dont_postskip
+			);
+			std::wcout << "first char is digit: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::wcout << std::wstring{ it, s.end() } << '\n';
+			break;
+		} // eof case 4
+		case 5:
+		{
+			std::string s;
+			std::cout << "enter letter(s) or digit(s): ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::ascii::digit >> boost::spirit::ascii::digit
+				, boost::spirit::ascii::space
+			);
+			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 5
+		case 6:
+		{
+			std::string s;
+			std::cout << "enter letter(s) or digit(s): ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::qi::lexeme[boost::spirit::ascii::digit >> boost::spirit::ascii::digit]
+				, boost::spirit::ascii::space
+			);
+			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 6
+		case 7:
+		{
+			std::string s;
+			std::cout << "enter letter(s) or digit(s): ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, +boost::spirit::ascii::digit
+				, boost::spirit::ascii::space
+			);
+			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 7
+		case 8:
+		{
+			std::string s;
+			std::cout << "enter letter(s) or digit(s): ";
+			std::getline(std::cin, s);
+			auto it = s.begin();
+			bool match = boost::spirit::qi::phrase_parse(it
+				, s.end()
+				, boost::spirit::qi::int_
+				, boost::spirit::ascii::space
+			);
+			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+			if (it != s.end())
+				std::cout << std::string{ it, s.end() } << '\n';
+			break;
+		} // eof case 8
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
 //****************************************************************************
 //*                     chapter_39
 //****************************************************************************
@@ -3379,7 +4233,15 @@ int main()
 		std::cout << " 2) Chapter 2. Boost.PointerContainer\n";
 		std::cout << " 3) Chapter 3. Boost.ScopeExit\n";
 		std::cout << " 4) Chapter 4. Boost.Pool\n";
-
+		std::cout << "Part II. String Handling\n";
+		std::cout << "========================\n";
+		std::cout << " 5) Chapter 5. Boost.StringAlgorithms\n";
+		std::cout << " 6) Chapter 6. Boost.LexicalCast\n";
+		std::cout << " 7) Chapter 7. Boost.Format\n";
+		std::cout << " 8) Chapter 8. Boost.Regex\n";
+		std::cout << " 9) Chapter 9. Boost.Xpressive\n";
+		std::cout << "10) Chapter 10. Boost.Tokenizer\n";
+		std::cout << "11) Chapter 11. Boost.Spirit\n";
 		std::cout << "Part IX. Functional Programming\n";
 		std::cout << "39) Chapter 39. Boost.Phoenix\n";
 		std::cout << "40) Chapter 40. Boost.Function\n";
@@ -3438,6 +4300,27 @@ int main()
 		//case 4:
 		//	chapter_4();
 		//	break;
+		//case 5:
+		//	chapter_5();
+		//	break;
+		//case 6:
+		//	chapter_6();
+		//	break;
+		//case 7:
+		//	chapter_7();
+		//	break;
+		//case 8:
+		//	chapter_8();
+		//	break;
+		//case 9:
+		//	chapter_9();
+		//	break;
+		//case 10:
+		//	chapter_10();
+		//	break;
+		case 11:
+			chapter_11();
+			break;
 		//case 39:
 		//	chapter_39();
 		//	break;
