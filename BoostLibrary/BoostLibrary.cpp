@@ -1,5 +1,6 @@
 #define BOOST_POOL_NO_MT
 #define BOOST_SP_USE_QUICK_ALLOCATOR
+#define BOOST_SPIRIT_USE_PHOENNIX_V3
 #define BOOST_THREAD_PROVIDES_FUTURE
 #include <boost/assign/list_inserter.hpp>
 #include <boost/atomic.hpp>
@@ -1262,177 +1263,264 @@
 //****************************************************************************
 //*                     chapter_11
 //****************************************************************************
-auto
-chapter_11() -> void
-{
-	bool bProceed = true;
-	unsigned int iChar = 0;
-	while (bProceed)
-	{
-		std::cout << "Chapter 11. Boost.Spirit\n";
-		std::cout << "========================\n";
-		std::cout << "    API\n";
-		std::cout << " 1) Example 1: Using boost::spirit::qi::parse()\n";
-		std::cout << " 2) Example 2: Using boost::spirit::qi::phrase_parse()\n";
-		std::cout << " 3) Example 3: phrase_parse() with boost::spirit::qi::skip_flag::dont_postskip\n";
-		std::cout << " 4) Example 4: boost::spirit::qi::phrase_parse() with wide strings\n";
-		std::cout << "    Parsers\n";
-		std::cout << " 5) Example 5: A parser for two consecutive digits\n";
-		std::cout << " 6) Example 6: Parsing character by character with boost::spirit::qi::lexeme\n";
-		std::cout << " 7) Example 7: Boost.Spirit rules similar to regular expressions\n";
-		std::cout << " 8) Example 8: Numeric parsers\n";
-		std::cout << "    Actions\n";
-		std::cout << " 9) Example 9: Linking actions with parsers\n";
-		std::cout << "10) Example 10: Boost.Spirit with Boost.Phoenix\n";
-		std::cout << "    Attributes\n";
-		std::cout << "    Rules\n";
-		std::cout << "    Grammar\n";
-		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
-		std::cin >> iChar;
-		// get rid of the newline character, to ensure the buffer sanity
-		std::cin.get();
-		switch (iChar)
-		{
-		case 1:
-		{
-			std::string s;
-			std::cout << "enter a letter or a digit: ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::parse(it
-				, s.end()
-				, boost::spirit::ascii::digit
-			);
-			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 1
-		case 2:
-		{
-			std::string s;
-			std::cout << "enter a letter or a digit: ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::ascii::digit
-				, boost::spirit::ascii::space
-			);
-			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 2
-		case 3:
-		{
-			std::string s;
-			std::cout << "enter a letter or a digit: ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::ascii::digit
-				, boost::spirit::ascii::space
-				, boost::spirit::qi::skip_flag::dont_postskip
-			);
-			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 3
-		case 4:
-		{
-			std::wstring s;
-			std::wcout << L"enter a letter or a digit: ";
-			std::getline(std::wcin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::ascii::digit
-				, boost::spirit::ascii::space
-				, boost::spirit::qi::skip_flag::dont_postskip
-			);
-			std::wcout << "first char is digit: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::wcout << std::wstring{ it, s.end() } << '\n';
-			break;
-		} // eof case 4
-		case 5:
-		{
-			std::string s;
-			std::cout << "enter letter(s) or digit(s): ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::ascii::digit >> boost::spirit::ascii::digit
-				, boost::spirit::ascii::space
-			);
-			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 5
-		case 6:
-		{
-			std::string s;
-			std::cout << "enter letter(s) or digit(s): ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::qi::lexeme[boost::spirit::ascii::digit >> boost::spirit::ascii::digit]
-				, boost::spirit::ascii::space
-			);
-			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 6
-		case 7:
-		{
-			std::string s;
-			std::cout << "enter letter(s) or digit(s): ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, +boost::spirit::ascii::digit
-				, boost::spirit::ascii::space
-			);
-			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 7
-		case 8:
-		{
-			std::string s;
-			std::cout << "enter letter(s) or digit(s): ";
-			std::getline(std::cin, s);
-			auto it = s.begin();
-			bool match = boost::spirit::qi::phrase_parse(it
-				, s.end()
-				, boost::spirit::qi::int_
-				, boost::spirit::ascii::space
-			);
-			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
-			if (it != s.end())
-				std::cout << std::string{ it, s.end() } << '\n';
-			break;
-		} // eof case 8
-		case 0:
-			// the user wants to terminate
-			bProceed = false;
-			break;
-		default:
-			// the input, given by the user, is not an available option
-			std::cout << "The entered number is not recognized, please try again.\n";
-			break;
-		} // eof switch
-	}
-}
+//auto
+//chapter_11() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 11. Boost.Spirit\n";
+//		std::cout << "========================\n";
+//		std::cout << "    API\n";
+//		std::cout << " 1) Example 1: Using boost::spirit::qi::parse()\n";
+//		std::cout << " 2) Example 2: Using boost::spirit::qi::phrase_parse()\n";
+//		std::cout << " 3) Example 3: phrase_parse() with boost::spirit::qi::skip_flag::dont_postskip\n";
+//		std::cout << " 4) Example 4: boost::spirit::qi::phrase_parse() with wide strings\n";
+//		std::cout << "    Parsers\n";
+//		std::cout << " 5) Example 5: A parser for two consecutive digits\n";
+//		std::cout << " 6) Example 6: Parsing character by character with boost::spirit::qi::lexeme\n";
+//		std::cout << " 7) Example 7: Boost.Spirit rules similar to regular expressions\n";
+//		std::cout << " 8) Example 8: Numeric parsers\n";
+//		std::cout << "    Actions\n";
+//		std::cout << " 9) Example 9: Linking actions with parsers\n";
+//		std::cout << "10) Example 10: Boost.Spirit with Boost.Phoenix\n";
+//		std::cout << "    Attributes\n";
+//		std::cout << "11) Example 11: Storing an int in an attribute\n";
+//		std::cout << "12) Example 12: Storing several int values in an attribute\n";
+//		std::cout << "    Rules\n";
+//		std::cout << "13) Example 13: Defining rules with boost::spirit::qi::rule\n";
+//		std::cout << "14) Example 14: Nesting rules\n";
+//		std::cout << "    Grammar\n";
+//		std::cout << "15) Example 15: Grouping rules in a grammar\n";
+//		std::cout << "16) Example 16: Storing parsed values in structures\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 1:
+//		{
+//			std::string s;
+//			std::cout << "enter a letter or a digit: ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::parse(it
+//				, s.end()
+//				, boost::spirit::ascii::digit
+//			);
+//			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 1
+//		case 2:
+//		{
+//			std::string s;
+//			std::cout << "enter a letter or a digit: ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::ascii::digit
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 2
+//		case 3:
+//		{
+//			std::string s;
+//			std::cout << "enter a letter or a digit: ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::ascii::digit
+//				, boost::spirit::ascii::space
+//				, boost::spirit::qi::skip_flag::dont_postskip
+//			);
+//			std::cout << "first char is digit: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 3
+//		case 4:
+//		{
+//			std::wstring s;
+//			std::wcout << L"enter a letter or a digit: ";
+//			std::getline(std::wcin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::ascii::digit
+//				, boost::spirit::ascii::space
+//				, boost::spirit::qi::skip_flag::dont_postskip
+//			);
+//			std::wcout << "first char is digit: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::wcout << std::wstring{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 4
+//		case 5:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::ascii::digit >> boost::spirit::ascii::digit
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 5
+//		case 6:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::qi::lexeme[boost::spirit::ascii::digit >> boost::spirit::ascii::digit]
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 6
+//		case 7:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, +boost::spirit::ascii::digit
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 7
+//		case 8:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::qi::int_
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 8
+//		case 9:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::qi::int_[([](int i) { 
+//					std::cout << "i holds: " << i << '\n'; 
+//					})]
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 9
+//		case 10:
+//		{
+//			std::string s;
+//			std::cout << "enter letter(s) or digit(s): ";
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			int i;
+//			bool match = boost::spirit::qi::phrase_parse(it
+//				, s.end()
+//				, boost::spirit::qi::int_[boost::phoenix::ref(i) = boost::spirit::qi::_1]
+//				, boost::spirit::ascii::space
+//			);
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (match)
+//				std::cout << "i holds: " << i << '\n';
+//			std::cout << "expression matches s: " << std::boolalpha << match << '\n';
+//			if (it != s.end())
+//				std::cout << std::string{ it, s.end() } << '\n';
+//			break;
+//		} // eof case 10
+//		case 11:
+//		{
+//			std::string s;
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			int i;
+//			if (boost::spirit::qi::phrase_parse(it, s.end(), boost::spirit::qi::int_, boost::spirit::ascii::space, i))
+//				std::cout << i << '\n';
+//			break;
+//		} // eof case 11
+//		case 12:
+//		{
+//			std::string s;
+//			std::getline(std::cin, s);
+//			auto it = s.begin();
+//			std::vector<int> v;
+//			if (boost::spirit::qi::phrase_parse(it, s.end(), boost::spirit::qi::int_ % ',', boost::spirit::ascii::space, v))
+//			{
+//				std::ostream_iterator<int> out{ std::cout, ";" };
+//				std::copy(v.begin(), v.end(), out);
+//			}
+//			break;
+//		} // eof case 12
+//		case 13:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 13
+//		case 14:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 14
+//		case 15:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 15
+//		case 16:
+//		{
+//			std::cout << "TODO\n";
+//			break;
+//		} // eof case 16
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
 //****************************************************************************
 //*                     chapter_39
 //****************************************************************************
@@ -4229,12 +4317,13 @@ int main()
 		std::cout << "The Boost C++ Libraries\n";
 		std::cout << "=======================\n";
 		std::cout << "Part I. RAII and Memory Management\n";
+		std::cout << "----------------------------------\n";
 		std::cout << " 1) Chapter 1. Boost.SmartPointers\n";
 		std::cout << " 2) Chapter 2. Boost.PointerContainer\n";
 		std::cout << " 3) Chapter 3. Boost.ScopeExit\n";
 		std::cout << " 4) Chapter 4. Boost.Pool\n";
 		std::cout << "Part II. String Handling\n";
-		std::cout << "========================\n";
+		std::cout << "------------------------\n";
 		std::cout << " 5) Chapter 5. Boost.StringAlgorithms\n";
 		std::cout << " 6) Chapter 6. Boost.LexicalCast\n";
 		std::cout << " 7) Chapter 7. Boost.Format\n";
@@ -4242,7 +4331,19 @@ int main()
 		std::cout << " 9) Chapter 9. Boost.Xpressive\n";
 		std::cout << "10) Chapter 10. Boost.Tokenizer\n";
 		std::cout << "11) Chapter 11. Boost.Spirit\n";
+		std::cout << "Part III. Containers\n";
+		std::cout << "--------------------\n";
+		std::cout << "12) Chapter 12. Boost.MultiIndex\n";
+		std::cout << "13) Chapter 13. Boost.\n";
+		std::cout << "14) Chapter 14. Boost.\n";
+		std::cout << "15) Chapter 15. Boost.\n";
+		std::cout << "16) Chapter 16. Boost.\n";
+		std::cout << "17) Chapter 17. Boost.\n";
+		std::cout << "18) Chapter 18. Boost.\n";
+		std::cout << "19) Chapter 19. Boost.\n";
+		std::cout << "20) Chapter 20. Boost.\n";
 		std::cout << "Part IX. Functional Programming\n";
+		std::cout << "-------------------------------\n";
 		std::cout << "39) Chapter 39. Boost.Phoenix\n";
 		std::cout << "40) Chapter 40. Boost.Function\n";
 		std::cout << "41) Chapter 41. Boost.Bind\n";
@@ -4277,7 +4378,7 @@ int main()
 		std::cout << "60) Chapter 60. Boost.Random\n";
 		std::cout << "61) Chapter 61. Boost.NumericConversion\n";
 		std::cout << "Part XV. Application Libraries\n";
-		std::cout << "==============================\n";
+		std::cout << "------------------------------\n";
 		std::cout << "62) Chapter 62. Boost.Log\n";
 		std::cout << "63) Chapter 63. Boost.ProgramOptions\n";
 		std::cout << "64) Chapter 64. Boost.Serialization\n";
@@ -4318,9 +4419,9 @@ int main()
 		//case 10:
 		//	chapter_10();
 		//	break;
-		case 11:
-			chapter_11();
-			break;
+		//case 11:
+		//	chapter_11();
+		//	break;
 		//case 39:
 		//	chapter_39();
 		//	break;
