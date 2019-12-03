@@ -2,23 +2,24 @@
 #define BOOST_SP_USE_QUICK_ALLOCATOR
 #define BOOST_SPIRIT_USE_PHOENNIX_V3
 #define BOOST_THREAD_PROVIDES_FUTURE
-#include <boost/assign/list_inserter.hpp>
-#include <boost/atomic.hpp>
+//#include <boost/assign/list_inserter.hpp>
+//#include <boost/atomic.hpp>
 //#include <boost/accumulators/accumulators.hpp>
 //#include <boost/accumulators/statistics.hpp>
 //#include <boost/algorithm/minmax.hpp>
 //#include <boost/algorithm/minmax_element.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/regex.hpp>
+//#include <boost/algorithm/string.hpp>
+//#include <boost/algorithm/string/regex.hpp>
 //#include <boost/cast.hpp>
-#include <boost/chrono.hpp>
+//#include <boost/chrono.hpp>
 //#include <boost/core/null_deleter.hpp>
 //#include <boost/coroutine/all.hpp>
 //#include <boost/cstdint.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 //#include <boost/exception/all.hpp>
 //#include <boost/foreach.hpp>
-#include <boost/format.hpp>
-#include <boost/function.hpp>
+//#include <boost/format.hpp>
+//#include <boost/function.hpp>
 //#include <boost/fusion/adapted.hpp>
 //#include <boost/fusion/algorithm.hpp>
 //#include <boost/fusion/container.hpp>
@@ -26,12 +27,12 @@
 //#include <boost/fusion/iterator.hpp>
 //#include <boost/fusion/tuple.hpp>
 //#include <boost/fusion/view.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/lockfree/policies.hpp>
-#include <boost/lockfree/spsc_queue.hpp>
-#include <boost/lockfree/queue.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/if.hpp>
+//#include <boost/lexical_cast.hpp>
+//#include <boost/lockfree/policies.hpp>
+//#include <boost/lockfree/spsc_queue.hpp>
+//#include <boost/lockfree/queue.hpp>
+//#include <boost/lambda/lambda.hpp>
+//#include <boost/lambda/if.hpp>
 //#include <boost/log/attributes.hpp>
 //#include <boost/log/attributes/clock.hpp>
 //#include <boost/log/attributes/counter.hpp>
@@ -45,72 +46,72 @@
 //#include <boost/log/support/date_time.hpp>
 //#include <boost/log/utility/exception_handler.hpp>
 //#include <boost/log/utility/string_literal.hpp>
-#include <boost/make_shared.hpp>
+//#include <boost/make_shared.hpp>
 //#include <boost/math/constants/constants.hpp>
 //#include <boost/mpl/arg.hpp>
 //#include <boost/mpl/int.hpp>
 //#include <boost/mpl/placeholders.hpp>
 //#include <boost/numeric/conversion/cast.hpp>
 //#include <boost/parameter.hpp>
-#include <boost/phoenix/phoenix.hpp>
-#include <boost/pool/object_pool.hpp>
-#include <boost/pool/pool_alloc.hpp>
-#include <boost/pool/simple_segregated_storage.hpp>
-#include <boost/pool/singleton_pool.hpp>
-#include <boost/ptr_container/ptr_set.hpp>
-#include <boost/ptr_container/indirect_fun.hpp>
-#include <boost/ptr_container/ptr_inserter.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+//#include <boost/phoenix/phoenix.hpp>
+//#include <boost/pool/object_pool.hpp>
+//#include <boost/pool/pool_alloc.hpp>
+//#include <boost/pool/simple_segregated_storage.hpp>
+//#include <boost/pool/singleton_pool.hpp>
+//#include <boost/ptr_container/ptr_set.hpp>
+//#include <boost/ptr_container/indirect_fun.hpp>
+//#include <boost/ptr_container/ptr_inserter.hpp>
+//#include <boost/ptr_container/ptr_vector.hpp>
 //#include <boost/random.hpp>
 //#include <boost/random/random_device.hpp>
-#include <boost/ref.hpp>
-#include <boost/regex.hpp>
-#include <boost/scope_exit.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_array.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/spirit/include/qi.hpp>
+//#include <boost/ref.hpp>
+//#include <boost/regex.hpp>
+//#include <boost/scope_exit.hpp>
+//#include <boost/scoped_array.hpp>
+//#include <boost/scoped_ptr.hpp>
+//#include <boost/shared_array.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/spirit/include/qi.hpp>
 //#include <boost/system/error_code.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread/future.hpp>
-#include <boost/thread/scoped_thread.hpp>
-#include <boost/tokenizer.hpp>
+//#include <boost/thread.hpp>
+//#include <boost/thread/future.hpp>
+//#include <boost/thread/scoped_thread.hpp>
+//#include <boost/tokenizer.hpp>
 //#include <boost/tuple/tuple.hpp>
 //#include <boost/type_traits.hpp>
 //#include <boost/utility/enable_if.hpp>
-#include <boost/xpressive/regex_actions.hpp>
-#include <boost/xpressive/xpressive.hpp>
-
-#include <Windows.h>
-
-#include <algorithm>
+//#include <boost/xpressive/regex_actions.hpp>
+//#include <boost/xpressive/xpressive.hpp>
+//
+//#include <Windows.h>
+//
+//#include <algorithm>
 //#include <array>
-#include <atomic>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
+//#include <atomic>
+//#include <cstddef>
+//#include <cstdio>
+//#include <cstdlib>
 //#include <cstddef>
 //#include <cstdint>
-#include <ctime>
+//#include <ctime>
 //#include <exception>
-#include <functional>
+//#include <functional>
 #include <iostream>
-#include <iterator>
+//#include <iterator>
 //#include <limits>
-#include <list>
-#include <locale>
-#include <memory>
+//#include <list>
+//#include <locale>
+//#include <memory>
 //#include <new>
-#include <set>
+//#include <set>
 //#include <stdexcept>
-#include <sstream>
-#include <string>
-#include <thread>
+//#include <sstream>
+//#include <string>
+//#include <thread>
 //#include <tuple>
 //#include <typeinfo>
-#include <utility>
-#include <vector>
+//#include <utility>
+//#include <vector>
 //****************************************************************************
 //*                     chapter_1
 //****************************************************************************
@@ -1521,6 +1522,467 @@
 //		} // eof switch
 //	}
 //}
+//****************************************************************************
+//*                     chapter_12
+//****************************************************************************
+auto
+chapter_12() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 12. Boost.MultiIndex\n";
+		std::cout << "============================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_13
+//****************************************************************************
+//auto
+//chapter_13() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 13. Boost.Bimap\n";
+//		std::cout << "=======================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_14
+//****************************************************************************
+//auto
+//chapter_14() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 14. Boost.Array\n";
+//		std::cout << "=======================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_15
+//****************************************************************************
+//auto
+//chapter_15() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 15. Boost.Unordered\n";
+//		std::cout << "===========================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_16
+//****************************************************************************
+//auto
+//chapter_16() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 16. Boost.CircularBuffer\n";
+//		std::cout << "================================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_17
+//****************************************************************************
+//auto
+//chapter_17() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 17. Boost.Heap\n";
+//		std::cout << "======================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_18
+//****************************************************************************
+//auto
+//chapter_18() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 18. Boost.Intrusive\n";
+//		std::cout << "===========================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_19
+//****************************************************************************
+//auto
+//chapter_19() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 19. Boost.MultiArray\n";
+//		std::cout << "============================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_20
+//****************************************************************************
+//auto
+//chapter_20() -> void
+//{
+//	bool bProceed = true;
+//	unsigned int iChar = 0;
+//	while (bProceed)
+//	{
+//		std::cout << "Chapter 20. Boost.Container\n";
+//		std::cout << "===========================\n";
+//		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+//		std::cin >> iChar;
+//		// get rid of the newline character, to ensure the buffer sanity
+//		std::cin.get();
+//		switch (iChar)
+//		{
+//		case 0:
+//			// the user wants to terminate
+//			bProceed = false;
+//			break;
+//		default:
+//			// the input, given by the user, is not an available option
+//			std::cout << "The entered number is not recognized, please try again.\n";
+//			break;
+//		} // eof switch
+//	}
+//}
+//****************************************************************************
+//*                     chapter_36
+//****************************************************************************
+auto
+chapter_36() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 36. Boost.DateTime\n";
+		std::cout << "==========================\n";
+		std::cout << "    Calendar Dates\n";
+		std::cout << " 1) Example 1: Creating a date with boost::gregorian::date\n";
+		std::cout << " 2) Example 2: Getting a date from a clock or a string\n";
+		std::cout << " 3) Example 3: Using boost::gregorian::date_duration\n";
+		std::cout << " 4) Example 4: Specialized durations\n";
+		std::cout << " 5) Example 5: Processing specialized durations\n";
+		std::cout << " 6) Example 6: Surprises when processing specialized durations\n";
+		std::cout << " 7) Example 7: Using boost::gregorian::date_period\n";
+		std::cout << " 8) Example 8: Testing whether a period cintains dates\n";
+		std::cout << " 9) Example 9: Iteratng over dates\n";
+		std::cout << "    Exercise 1: \n";
+		std::cout << "    Exercise 2: \n";
+		std::cout << "    Location-independent Times\n";
+		std::cout << "10) Example 10: Using boost::posix_time::ptime\n";
+		std::cout << "11) Example 11: Creating a timepoint with a clock or a string\n";
+		std::cout << "12) Example 12: Using boost::posix_time::time_duration\n";
+		std::cout << "13) Example 13: Processing timepoints\n";
+		std::cout << "14) Example 14: Processing time durations\n";
+		std::cout << "15) Example 15: Using boost::posix_time::time_period\n";
+		std::cout << "16) Example 16: Iterating over points in time\n";
+		std::cout << "    Location-dependent Times\n";
+		std::cout << "17) Example 17: Using boost::local_time::local_date_time\n";
+		std::cout << "18) Example 18: Location-dependent points in time and different time zones\n";
+		std::cout << "19) Example 19: Using boost::logical_time::local_time_period\n";
+		std::cout << "    Formatted Input and Output\n";
+		std::cout << "20) Example 20: A user-defined format for a date\n";
+		std::cout << "21) Example 21: Changing names of weekdays and months\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 1:
+		{
+			boost::gregorian::date d{ 2014, 1, 31 };
+			std::cout << "year...........: " << d.year() << '\n';
+			std::cout << "month..........: " << d.month() << '\n';
+			std::cout << "day............: " << d.day() << '\n';
+			std::cout << "day of week....: " << d.day_of_week() << '\n';
+			std::cout << "end of month...: " << d.end_of_month() << '\n';
+			break;
+		} // eof case 1
+		case 2:
+		{
+			break;
+		} // eof case 2
+		case 3:
+		{
+			break;
+		} // eof case 3
+		case 4:
+		{
+			break;
+		} // eof case 4
+		case 5:
+		{
+			break;
+		} // eof case 5
+		case 6:
+		{
+			break;
+		} // eof case 6
+		case 7:
+		{
+			break;
+		} // eof case 7
+		case 8:
+		{
+			break;
+		} // eof case 8
+		case 9:
+		{
+			break;
+		} // eof case 9
+		case 10:
+		{
+			break;
+		} // eof case 10
+		case 11:
+		{
+			break;
+		} // eof case 11
+		case 12:
+		{
+			break;
+		} // eof case 12
+		case 13:
+		{
+			break;
+		} // eof case 13
+		case 14:
+		{
+			break;
+		} // eof case 14
+		case 15:
+		{
+			break;
+		} // eof case 15
+		case 16:
+		{
+			break;
+		} // eof case 16
+		case 17:
+		{
+			break;
+		} // eof case 17
+		case 18:
+		{
+			break;
+		} // eof case 18
+		case 19:
+		{
+			break;
+		} // eof case 19
+		case 20:
+		{
+			break;
+		} // eof case 20
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_37
+//****************************************************************************
+auto
+chapter_37() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 37. Boost.Chrono\n";
+		std::cout << "========================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
+//****************************************************************************
+//*                     chapter_38
+//****************************************************************************
+auto
+chapter_38() -> void
+{
+	bool bProceed = true;
+	unsigned int iChar = 0;
+	while (bProceed)
+	{
+		std::cout << "Chapter 38. Boost.Timer\n";
+		std::cout << "=======================\n";
+		std::cout << "Enter the number of a subject, or enter a zero to quit: ";
+		std::cin >> iChar;
+		// get rid of the newline character, to ensure the buffer sanity
+		std::cin.get();
+		switch (iChar)
+		{
+		case 0:
+			// the user wants to terminate
+			bProceed = false;
+			break;
+		default:
+			// the input, given by the user, is not an available option
+			std::cout << "The entered number is not recognized, please try again.\n";
+			break;
+		} // eof switch
+	}
+}
 //****************************************************************************
 //*                     chapter_39
 //****************************************************************************
@@ -4334,14 +4796,19 @@ int main()
 		std::cout << "Part III. Containers\n";
 		std::cout << "--------------------\n";
 		std::cout << "12) Chapter 12. Boost.MultiIndex\n";
-		std::cout << "13) Chapter 13. Boost.\n";
-		std::cout << "14) Chapter 14. Boost.\n";
-		std::cout << "15) Chapter 15. Boost.\n";
-		std::cout << "16) Chapter 16. Boost.\n";
-		std::cout << "17) Chapter 17. Boost.\n";
-		std::cout << "18) Chapter 18. Boost.\n";
-		std::cout << "19) Chapter 19. Boost.\n";
-		std::cout << "20) Chapter 20. Boost.\n";
+		std::cout << "13) Chapter 13. Boost.Bimap\n";
+		std::cout << "14) Chapter 14. Boost.Array\n";
+		std::cout << "15) Chapter 15. Boost.Unordered\n";
+		std::cout << "16) Chapter 16. Boost.CircularBuffer\n";
+		std::cout << "17) Chapter 17. Boost.Heap\n";
+		std::cout << "18) Chapter 18. Boost.Intrusive\n";
+		std::cout << "19) Chapter 19. Boost.MultiArray\n";
+		std::cout << "20) Chapter 20. Boost.Container\n";
+		std::cout << "Part VIII. Time\n";
+		std::cout << "===============\n";
+		std::cout << "36) Chapter 36. Boost.DateTime\n";
+		std::cout << "37) Chapter 37. Boost.Chrono\n";
+		std::cout << "38) Chapter 38. Boost.Timer\n";
 		std::cout << "Part IX. Functional Programming\n";
 		std::cout << "-------------------------------\n";
 		std::cout << "39) Chapter 39. Boost.Phoenix\n";
@@ -4422,6 +4889,42 @@ int main()
 		//case 11:
 		//	chapter_11();
 		//	break;
+		//case 12:
+		//	chapter_12();
+		//	break;
+		//case 13:
+		//	chapter_13();
+		//	break;
+		//case 14:
+		//	chapter_14();
+		//	break;
+		//case 15:
+		//	chapter_15();
+		//	break;
+		//case 16:
+		//	chapter_16();
+		//	break;
+		//case 17:
+		//	chapter_17();
+		//	break;
+		//case 18:
+		//	chapter_18();
+		//	break;
+		//case 19:
+		//	chapter_19();
+		//	break;
+		//case 20:
+		//	chapter_20();
+		//	break;
+		case 36:
+			chapter_36();
+			break;
+		case 37:
+			chapter_37();
+			break;
+		case 38:
+			chapter_38();
+			break;
 		//case 39:
 		//	chapter_39();
 		//	break;
@@ -4494,15 +4997,15 @@ int main()
 		//case 62:
 		//	chapter_62();
 		//	break;
-		case 63:
-			chapter_63();
-			break;
-		case 64:
-			chapter_64();
-			break;
-		case 65:
-			chapter_65();
-			break;
+		//case 63:
+		//	chapter_63();
+		//	break;
+		//case 64:
+		//	chapter_64();
+		//	break;
+		//case 65:
+		//	chapter_65();
+		//	break;
 		case 0:
 			// the user wants to terminate
 			bProceed = false;
